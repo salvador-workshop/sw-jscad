@@ -44,6 +44,7 @@ const mathUtils = ({ lib, swLib }) => {
          * @param {*} numInches 
          * @returns ...
          */
+        // todo: fix casing typo
         inchesToMM: (numInches) => numInches * INCHES_MM_FACTOR,
         /**
          * ...
