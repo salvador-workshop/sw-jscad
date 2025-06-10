@@ -5,18 +5,14 @@
  * @namespace core
  */
 
-const init = ({ lib }) => {
-    const core = {
-        constants: require('./constants'),
-        errors: require('./errors'),
-        position: require('./position').init({ lib }),
-        text: require('./text').init({ lib }),
-    }
+const init = ({ stdSpecs, lib }) => {
+    const nextCoreLayer = {}
 
-    core.internals = require('./internals').init({ lib, swLib: core });
-    core.parts = require('./parts').init({ lib, swLib: core });
+    nextCoreLayer.position = require('./position').init({ stdSpecs, lib, swLib: { core: { ...stdSpecs, ...nextCoreLayer } } });
+    nextCoreLayer.text = require('./text').init({ stdSpecs, lib, swLib: { core: { ...stdSpecs, ...nextCoreLayer } } });
+    nextCoreLayer.parts = require('./parts').init({ stdSpecs, lib, swLib: { core: { ...stdSpecs, ...nextCoreLayer } } });
 
-    return core;
+    return nextCoreLayer;
 }
 
 module.exports = { init };

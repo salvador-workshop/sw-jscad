@@ -23,7 +23,9 @@
     "jscad"
   ],
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "sw-jscad-std-specs": "0.0.2"
+  },
   "devDependencies": {
     "jsdoc": "^4.0.4"
   }
