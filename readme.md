@@ -2,49 +2,14 @@
 
 Salvador Workshop's JSCAD utilities and toolkit.
 
-Online viewer: [https://sw-jscad-viewer.netlify.app/](https://sw-jscad-viewer.netlify.app/)  
-API Docs: [https://salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/)  
-NPM package: [https://www.npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad)  
+Online viewer: [sw-jscad-viewer.netlify.app/](https://sw-jscad-viewer.netlify.app/)  
+API Docs: [salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/)  
+NPM package: [npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad)  
 
-![sw-jscad lib demo - gallery (light)](./static/img/gallery-1.png "sw-jscad lib demo - gallery (light)")
-![sw-jscad lib demo - gallery (dark)](./static/img/gallery-2.png "sw-jscad lib demo - gallery (dark)")
-![sw-jscad lib demo - wall](./static/img/wall-1.png "sw-jscad lib demo - wall")
-![sw-jscad lib demo - entryways](./static/img/entryways-1.png "sw-jscad lib demo - entryways")
-
-## Packages
-
-The toolkit is composed of several packages, arranged in a layered architecture.
-
-![sw-jscad package architecture](./static/design/system.svg "sw-jscad package architecture")
-
-| Package | Documentation | NPM |
-| --- | --- | --- |
-| sw-jscad | [salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/) | [npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad) |
-| sw-jscad-families | [salvador-workshop.github.io/sw-jscad-families](https://salvador-workshop.github.io/sw-jscad-families/)| [npmjs.com/package/sw-jscad-families](https://www.npmjs.com/package/sw-jscad-families) |
-| sw-jscad-std-specs | [salvador-workshop.github.io/sw-jscad-std-specs](https://salvador-workshop.github.io/sw-jscad-std-specs/) | [npmjs.com/package/sw-jscad-std-specs](https://www.npmjs.com/package/sw-jscad-std-specs) |
-| sw-jscad-ui | [salvador-workshop.github.io/sw-jscad-ui](https://salvador-workshop.github.io/sw-jscad-ui/)| [npmjs.com/package/sw-jscad-ui](https://www.npmjs.com/package/sw-jscad-ui) |
-| sw-jscad-builders | [salvador-workshop.github.io/sw-jscad-builders](https://salvador-workshop.github.io/sw-jscad-builders/)| [npmjs.com/package/sw-jscad-builders](https://www.npmjs.com/package/sw-jscad-builders) |
-| sw-jscad-factory | ... | ... |
-
-### Core packages
-
-The _core packages_ power everything
-
-| Package | Description |
-| --- | --- |
-| sw-jscad | JSCAD library for parametric modelling of architectural components |
-| sw-jscad-families | Designs groups of related models |
-| sw-jscad-std-specs | Definitions for building elements and various standards/specs |
-| sw-jscad-ui | UX, layouts, etc |
-
-### Sub packages
-
-The _sub packages_ build larger and more complicated components using the core packages as building blocks.
-
-| Package | Description |
-| --- | --- |
-| sw-jscad-builders | Tools and functions for building assemblies |
-| sw-jscad-factory | Doesn't exist yet. For larger and more complicated assemblies, compared to the `builders` package |
+![sw-jscad demo - gallery (light)](./static/img/gallery-1.png "sw-jscad demo - gallery (light)")
+![sw-jscad demo - gallery (dark)](./static/img/gallery-2.png "sw-jscad demo - gallery (dark)")
+![sw-jscad demo - wall](./static/img/wall-1.png "sw-jscad demo - wall")
+![sw-jscad demo - entryways](./static/img/entryways-1.png "sw-jscad demo - entryways")
 
 ## Usage
 
@@ -185,3 +150,38 @@ const main = () => {
 
 module.exports = { main }
 ```
+
+## Packages
+
+The toolkit is composed of several packages, arranged in a layered architecture.
+
+![sw-jscad package architecture](./static/design/system.svg "sw-jscad package architecture")
+
+| Package | Documentation | NPM |
+| --- | --- | --- |
+| sw-jscad | [salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/) | [npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad) |
+| sw-jscad-families | [salvador-workshop.github.io/sw-jscad-families](https://salvador-workshop.github.io/sw-jscad-families/)| [npmjs.com/package/sw-jscad-families](https://www.npmjs.com/package/sw-jscad-families) |
+| sw-jscad-std-specs | [salvador-workshop.github.io/sw-jscad-std-specs](https://salvador-workshop.github.io/sw-jscad-std-specs/) | [npmjs.com/package/sw-jscad-std-specs](https://www.npmjs.com/package/sw-jscad-std-specs) |
+| sw-jscad-ui | [salvador-workshop.github.io/sw-jscad-ui](https://salvador-workshop.github.io/sw-jscad-ui/)| [npmjs.com/package/sw-jscad-ui](https://www.npmjs.com/package/sw-jscad-ui) |
+| sw-jscad-builders | [salvador-workshop.github.io/sw-jscad-builders](https://salvador-workshop.github.io/sw-jscad-builders/)| [npmjs.com/package/sw-jscad-builders](https://www.npmjs.com/package/sw-jscad-builders) |
+| sw-jscad-factory | ... | ... |
+
+### Core packages
+
+The _core packages_ power everything
+
+| Package | Description |
+| --- | --- |
+| sw-jscad | JSCAD library for parametric modelling of architectural components |
+| sw-jscad-families | Designs groups of related models |
+| sw-jscad-std-specs | Definitions for building elements and various standards/specs |
+| sw-jscad-ui | UX, layouts, etc |
+
+### Sub packages
+
+The _sub packages_ build larger and more complicated components using the core packages as building blocks.
+
+| Package | Description |
+| --- | --- |
+| sw-jscad-builders | Tools and functions for building assemblies |
+| sw-jscad-factory | Doesn't exist yet. For larger and more complicated assemblies, compared to the `builders` package |
