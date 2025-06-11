@@ -6,6 +6,11 @@ Online viewer: [https://sw-jscad-viewer.netlify.app/](https://sw-jscad-viewer.ne
 API Docs: [https://salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/)  
 NPM package: [https://www.npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad)  
 
+![sw-jscad lib demo - gallery (light)](./static/img/gallery-1.png "sw-jscad lib demo - gallery (light)")
+![sw-jscad lib demo - gallery (dark)](./static/img/gallery-2.png "sw-jscad lib demo - gallery (dark)")
+![sw-jscad lib demo - wall](./static/img/wall-1.png "sw-jscad lib demo - wall")
+![sw-jscad lib demo - entryways](./static/img/entryways-1.png "sw-jscad lib demo - entryways")
+
 ## Packages
 
 The toolkit is composed of several packages, arranged in a layered architecture.
