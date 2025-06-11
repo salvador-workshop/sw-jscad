@@ -7,8 +7,8 @@
 
 const geometryUtils = ({ lib, swLib }) => {
     const {
-        arrayCartesianProduct
-    } = swLib.utils.maths;
+        maths
+    } = swLib.utils;
 
     return {
         /**
@@ -34,7 +34,7 @@ const geometryUtils = ({ lib, swLib }) => {
             do {
                 let xCtr = 0;
                 do {
-                    if (utils.isEven(yIdxCtr)) {
+                    if (maths.isEven(yIdxCtr)) {
                         allPoints.push({ x: xCtr, y: allYCoords[yIdxCtr] });
                     } else {
                         allPoints.push({ x: radius + xCtr, y: allYCoords[yIdxCtr] });
@@ -71,7 +71,7 @@ const geometryUtils = ({ lib, swLib }) => {
             } while (yCtr <= y);
 
             console.log(allXCoords, allYCoords);
-            const allPoints = arrayCartesianProduct(allXCoords, allYCoords);
+            const allPoints = maths.arrayCartesianProduct(allXCoords, allYCoords);
 
             return allPoints.map(pt => { return { x: pt[0], y: pt[1] } });
         },
