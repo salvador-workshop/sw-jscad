@@ -1,0 +1,140 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320pt" height="430pt" viewBox="0.00 0.00 319.75 430.4">
+<g id="graph0" class="graph" transform="translate(22.893700727165125,390.6136406639872) scale(0.8924833852220854)" data-name="">
+<polygon fill="white" stroke="none" points="-4,4 -4,-426.4 315.75,-426.4 315.75,4 -4,4"/>
+<g id="clust1" class="cluster" data-name="cluster_0">
+
+<polygon fill="#e5e5e5" stroke="black" stroke-width="2" points="20.75,-193.6 20.75,-414.4 249.75,-414.4 249.75,-193.6 20.75,-193.6"/>
+<text text-anchor="middle" x="135.25" y="-397.8" font-family="Times,serif" font-size="14.00">sw-jscad core</text>
+</g><text text-anchor="middle" x="155.87" y="-25" font-family="Times,serif" font-size="14.00">sw-jscad</text>
+<!-- jscad --><text text-anchor="middle" x="155.87" y="-8.2" font-family="Times,serif" font-size="14.00">Package Relationships</text>
+<g id="node1" class="node" pointer-events="visible" data-name="jscad">
+
+<polygon fill="none" stroke="red" points="311.75,-381.6 261.75,-381.6 257.75,-377.6 257.75,-345.6 307.75,-345.6 311.75,-349.6 311.75,-381.6"/>
+<polyline fill="none" stroke="red" points="307.75,-377.6 257.75,-377.6"/>
+<polyline fill="none" stroke="red" points="307.75,-377.6 307.75,-345.6"/>
+<polyline fill="none" stroke="red" points="307.75,-377.6 311.75,-381.6"/>
+<text text-anchor="middle" x="284.75" y="-359.4" font-family="Times,serif" font-size="14.00">jscad</text>
+</g>
+<!-- swJscad -->
+<g id="node2" class="node" pointer-events="visible" data-name="swJscad">
+
+<polygon fill="none" stroke="blue" points="119.23,-309.6 58.26,-309.6 54.26,-305.6 54.26,-273.6 115.23,-273.6 119.23,-277.6 119.23,-309.6"/>
+<polyline fill="none" stroke="blue" points="115.23,-305.6 54.26,-305.6"/>
+<polyline fill="none" stroke="blue" points="115.23,-305.6 115.23,-273.6"/>
+<polyline fill="none" stroke="blue" points="115.23,-305.6 119.23,-309.6"/>
+<text text-anchor="middle" x="86.75" y="-287.4" font-family="Times,serif" font-size="14.00">sw-jscad</text>
+</g>
+<!-- jscad&#45;&gt;swJscad -->
+<g id="edge1" class="edge" data-name="jscad-&gt;swJscad">
+
+<path fill="none" stroke="red" d="M257.51,-347.29C256.25,-346.7 254.99,-346.13 253.75,-345.6 213.05,-328.18 164.65,-313.43 130.46,-303.96"/>
+<polygon fill="red" stroke="red" points="131.47,-300.6 120.9,-301.34 129.62,-307.36 131.47,-300.6"/>
+</g>
+<!-- swJscadUi -->
+<g id="node4" class="node" pointer-events="visible" data-name="swJscadUi">
+
+<polygon fill="none" stroke="darkgreen" points="241.79,-237.6 161.71,-237.6 161.71,-201.6 241.79,-201.6 241.79,-237.6"/>
+<text text-anchor="middle" x="201.75" y="-215.4" font-family="Times,serif" font-size="14.00">sw-jscad-ui</text>
+</g>
+<!-- jscad&#45;&gt;swJscadUi -->
+<g id="edge5" class="edge" data-name="jscad-&gt;swJscadUi">
+
+<path fill="none" stroke="red" d="M274.57,-345.19C260.31,-320.78 234.24,-276.18 217.47,-247.49"/>
+<polygon fill="red" stroke="red" points="220.58,-245.88 212.51,-239.02 214.54,-249.42 220.58,-245.88"/>
+</g>
+<!-- swJscadFamilies -->
+<g id="node5" class="node" pointer-events="visible" data-name="swJscadFamilies">
+
+<polygon fill="none" stroke="darkgreen" points="142.99,-237.6 28.5,-237.6 28.5,-201.6 142.99,-201.6 142.99,-237.6"/>
+<text text-anchor="middle" x="85.75" y="-215.4" font-family="Times,serif" font-size="14.00">sw-jscad-families</text>
+</g>
+<!-- jscad&#45;&gt;swJscadFamilies -->
+<g id="edge6" class="edge" data-name="jscad-&gt;swJscadFamilies">
+
+<path fill="none" stroke="red" d="M260.35,-345.19C224.97,-319.94 159.3,-273.08 119.36,-244.58"/>
+<polygon fill="red" stroke="red" points="121.44,-241.77 111.27,-238.81 117.38,-247.47 121.44,-241.77"/>
+</g>
+<!-- swJscadBuilders -->
+<g id="node6" class="node" pointer-events="visible" data-name="swJscadBuilders">
+
+<polygon fill="none" stroke="orange" points="185,-165.6 70.5,-165.6 70.5,-129.6 185,-129.6 185,-165.6"/>
+<text text-anchor="middle" x="127.75" y="-143.4" font-family="Times,serif" font-size="14.00">sw-jscad-builders</text>
+</g>
+<!-- jscad&#45;&gt;swJscadBuilders -->
+<g id="edge7" class="edge" data-name="jscad-&gt;swJscadBuilders">
+
+<path fill="none" stroke="red" d="M286.79,-345.16C289.71,-311.63 291.14,-237.58 253.75,-193.6 239.14,-176.42 217.49,-165.8 196.25,-159.23"/>
+<polygon fill="red" stroke="red" points="197.24,-155.88 186.67,-156.56 195.36,-162.62 197.24,-155.88"/>
+</g>
+<!-- swJscadFactory -->
+<g id="node7" class="node" pointer-events="visible" data-name="swJscadFactory">
+
+<polygon fill="none" stroke="black" points="139.54,-93.6 29.96,-93.6 29.96,-57.6 139.54,-57.6 139.54,-93.6"/>
+<text text-anchor="middle" x="84.75" y="-71.4" font-family="Times,serif" font-size="14.00">sw-jscad-factory</text>
+</g>
+<!-- jscad&#45;&gt;swJscadFactory -->
+<g id="edge8" class="edge" data-name="jscad-&gt;swJscadFactory">
+
+<path fill="none" stroke="red" d="M289.38,-345.17C296.98,-312.61 308.47,-241.5 278.75,-193.6 249.72,-146.83 194.45,-116.22 150.3,-98.09"/>
+<polygon fill="red" stroke="red" points="151.62,-94.85 141.04,-94.42 149.04,-101.36 151.62,-94.85"/>
+</g>
+<!-- swJscadPrefab -->
+
+<!-- jscad&#45;&gt;swJscadPrefab -->
+
+<!-- swJscad&#45;&gt;swJscadUi -->
+<g id="edge3" class="edge" data-name="swJscad-&gt;swJscadUi">
+
+<path fill="none" stroke="blue" d="M115.47,-273.12C130.13,-264.2 148.14,-253.23 163.91,-243.63"/>
+<polygon fill="blue" stroke="blue" points="165.38,-246.84 172.1,-238.65 161.74,-240.86 165.38,-246.84"/>
+</g>
+<!-- swJscad&#45;&gt;swJscadFamilies -->
+<g id="edge4" class="edge" data-name="swJscad-&gt;swJscadFamilies">
+
+<path fill="none" stroke="blue" d="M86.5,-273.3C86.4,-266.01 86.27,-257.33 86.16,-249.14"/>
+<polygon fill="blue" stroke="blue" points="89.66,-249.17 86.01,-239.22 82.66,-249.27 89.66,-249.17"/>
+</g>
+<!-- swJscad&#45;&gt;swJscadBuilders -->
+<g id="edge9" class="edge" data-name="swJscad-&gt;swJscadBuilders">
+
+<path fill="none" stroke="blue" d="M53.87,-273.35C40.71,-264.57 26.98,-252.55 19.75,-237.6 11.23,-220 8.9,-209.87 19.75,-193.6 29.18,-179.46 43.98,-169.75 59.63,-163.1"/>
+<polygon fill="blue" stroke="blue" points="60.49,-166.52 68.58,-159.69 57.99,-159.98 60.49,-166.52"/>
+</g>
+<!-- swJscad&#45;&gt;swJscadFactory -->
+<g id="edge10" class="edge" data-name="swJscad-&gt;swJscadFactory">
+
+<path fill="none" stroke="blue" d="M53.9,-277.68C36.83,-269.09 17.54,-255.96 7.75,-237.6 -17.41,-190.42 26.34,-133.68 57.53,-101.72"/>
+<polygon fill="blue" stroke="blue" points="59.83,-104.36 64.46,-94.83 54.9,-99.4 59.83,-104.36"/>
+</g>
+<!-- swJscad&#45;&gt;swJscadPrefab -->
+
+<!-- swJscadStdSpecs -->
+<g id="node3" class="node" pointer-events="visible" data-name="swJscadStdSpecs">
+
+<path fill="none" stroke="rgb(147, 112, 219)" d="M149.22,-378.33C149.22,-380.13 122.12,-381.6 88.75,-381.6 55.38,-381.6 28.28,-380.13 28.28,-378.33 28.28,-378.33 28.28,-348.87 28.28,-348.87 28.28,-347.07 55.38,-345.6 88.75,-345.6 122.12,-345.6 149.22,-347.07 149.22,-348.87 149.22,-348.87 149.22,-378.33 149.22,-378.33"/>
+<path fill="none" stroke="rgb(147, 112, 219)" d="M149.22,-378.33C149.22,-376.52 122.12,-375.05 88.75,-375.05 55.38,-375.05 28.28,-376.52 28.28,-378.33"/>
+<text text-anchor="middle" x="88.75" y="-359.4" font-family="Times,serif" font-size="14.00">sw-jscad-std-specs</text>
+</g>
+<!-- swJscadStdSpecs&#45;&gt;swJscad -->
+<g id="edge2" class="edge" data-name="swJscadStdSpecs-&gt;swJscad">
+
+<path fill="none" stroke="rgb(147, 112, 219)" d="M88.25,-345.3C88.05,-338.01 87.8,-329.33 87.56,-321.14"/>
+<polygon fill="mediumpurple" stroke="mediumpurple" points="91.06,-321.11 87.28,-311.22 84.07,-321.31 91.06,-321.11"/>
+</g>
+<g id="edge11" class="edge" data-name="swJscadFamilies-&gt;swJscadBuilders" data-comment="swJscadStdSpecs-&gt;swJscad">
+
+<path fill="none" stroke="darkgreen" d="M96.13,-201.3C100.81,-193.5 106.44,-184.11 111.65,-175.43"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="114.56,-177.38 116.71,-167 108.56,-173.78 114.56,-177.38"/>
+</g><g id="edge12" class="edge" data-name="swJscadFamilies-&gt;swJscadFactory" data-comment="swJscadStdSpecs-&gt;swJscad">
+
+<path fill="none" stroke="darkgreen" d="M75.54,-201.1C70.29,-191.07 64.43,-178.04 61.75,-165.6 58.37,-149.96 58.5,-145.27 61.75,-129.6 63.54,-120.96 66.82,-111.99 70.35,-103.95"/>
+<polygon fill="darkgreen" stroke="darkgreen" points="73.45,-105.58 74.56,-95.04 67.12,-102.59 73.45,-105.58"/>
+</g><g id="edge13" class="edge" data-name="swJscadBuilders-&gt;swJscadFactory" data-comment="swJscadStdSpecs-&gt;swJscad">
+
+<path fill="none" stroke="orange" d="M117.12,-129.3C112.33,-121.5 106.56,-112.11 101.23,-103.43"/>
+<polygon fill="orange" stroke="orange" points="104.26,-101.68 96.05,-94.99 98.3,-105.35 104.26,-101.68"/>
+</g>
+
+</g>
+</svg>

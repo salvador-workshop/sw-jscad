@@ -19,7 +19,7 @@
         "default": {
             "staticFiles": {
                 "include": [
-                    "./static/tweaks.css"
+                    "./static"
                 ]
             },
             "useLongnameInNav": true
