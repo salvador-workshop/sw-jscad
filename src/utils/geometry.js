@@ -84,10 +84,28 @@ const geometryUtils = ({ lib, swLib }) => {
             /**
              * Finds the central point (avg.) between the given points
              * @param {[]} points
+             * @memberof utils.geometry.points
              * @returns central point (avg.) between the given points
              */
             centroid: (points) => {
-                return 0;
+                const min = [Number.Infinity, Number.Infinity, Number.Infinity]
+                const max = [-Number.Infinity, -Number.Infinity, -Number.Infinity]
+
+                points.forEach(pt => {
+                    min.x = Math.min(min.x, pt.x)
+                    min.y = Math.min(min.y, pt.y)
+                    min.x = Math.min(min.z, pt.z)
+
+                    max.x = Math.max(max.x, pt.x)
+                    max.y = Math.max(max.y, pt.y)
+                    max.z = Math.max(max.z, pt.z)
+                })
+
+                return [
+                    (max.x + min.x) / 2,
+                    (max.y + min.y) / 2,
+                    (max.z + min.z) / 2,
+                ];
             }
         },
         /**
