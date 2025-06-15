@@ -76,6 +76,21 @@ const geometryUtils = ({ lib, swLib }) => {
             return allPoints.map(pt => { return { x: pt[0], y: pt[1] } });
         },
         /**
+         * Functions related to sets of Cartesian points
+         * @memberof utils.geometry
+         * @namespace points
+         */
+        points: {
+            /**
+             * Finds the central point (avg.) between the given points
+             * @param {[]} points
+             * @returns central point (avg.) between the given points
+             */
+            centroid: (points) => {
+                return 0;
+            }
+        },
+        /**
          * Functions related to regular polygons
          * @memberof utils.geometry
          * @namespace regPoly

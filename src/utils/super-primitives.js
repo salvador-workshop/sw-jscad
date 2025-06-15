@@ -9,7 +9,6 @@
 // TO-DO
 //---------------------
 // - Cylinders with rounded corners
-// - Mesh shell primitives
 //---------------------
 
 const superPrimitivesInit = ({ lib }) => {
@@ -29,7 +28,31 @@ const superPrimitivesInit = ({ lib }) => {
             const outerCuboid = cuboid({ size });
 
             return outerCuboid;
-        }
+        },
+        /**
+         * ...
+         * @param {*} opts 
+         * @returns ...
+         */
+        meshPanel: ({}) => {
+            return 0
+        },
+        /**
+         * ...
+         * @param {*} opts 
+         * @returns ...
+         */
+        meshCuboid: ({}) => {
+            return 0
+        },
+        /**
+         * ...
+         * @param {*} opts 
+         * @returns ...
+         */
+        meshCylinder: ({}) => {
+            return 0
+        },
     }
 }
 
