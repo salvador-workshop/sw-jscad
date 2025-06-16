@@ -18,6 +18,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const { translate, rotate, align } = lib.transforms
     const { subtract, union } = lib.booleans
     const { measureBoundingBox } = lib.measurements
+    const { TAU } = lib.maths.constants
 
     const { geometry, maths } = swLib.utils
 
@@ -121,8 +122,45 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} opts 
      * @returns ...
      */
-    const meshCylinder = ({ }) => {
-        return 0
+    const meshCylinder = ({ radius, height, segments = 16, thickness = 2, meshRadius, meshMinWidth, meshSegments = 16 }) => {
+        const circumference = TAU * radius;
+        let numPunches = 1;
+        let circCtr = numPunches * meshRadius;
+        console.log('radius, circumference', radius, circumference)
+        while (circCtr < circumference) {
+            circCtr += meshRadius * 2 + meshMinWidth;
+            console.log(circCtr)
+            if (circCtr < circumference) {
+                numPunches += 1
+            }
+        }
+        // const numPunches = Math.floor(circumference / (meshRadius + meshMinWidth));
+        console.log('numPunches', numPunches)
+        console.log('meshRadius * numPunches + (meshMinWidth * (numPunches - 1))', meshRadius * numPunches + (meshMinWidth * (numPunches - 1)))
+
+        const punches = []
+        for (let idx = 0; idx < numPunches; idx++) {
+            const currAngle = idx / numPunches * TAU
+            punches.push(rotate([0, 0, currAngle], align(
+                { modes: ['min', 'center', 'center'] },
+                rotate(
+                    [0, Math.PI / 2, 0],
+                    cylinder({ radius: meshRadius, height: radius + (meshRadius / 2), segments: meshSegments })
+                )
+            )))
+        }
+
+        const baseCylinder = cylinder({ radius, height, segments });
+        const cutCylinder = cylinder({ radius: radius - (thickness * 2), height: height + radius, segments });
+
+        const completePunch = union(...punches)
+        const baseShape = subtract(baseCylinder, cutCylinder)
+
+        const parts = [
+            subtract(baseShape, completePunch)
+        ]
+
+        return union(...parts)
     }
 
     /**
