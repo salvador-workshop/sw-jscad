@@ -6,9 +6,7 @@
  */
 
 const geometryUtils = ({ lib, swLib }) => {
-    const {
-        maths
-    } = swLib.utils;
+    const { maths } = swLib.utils;
 
     return {
         /**
@@ -88,23 +86,23 @@ const geometryUtils = ({ lib, swLib }) => {
              * @returns central point (avg.) between the given points
              */
             centroid: (points) => {
-                const min = [Number.Infinity, Number.Infinity, Number.Infinity]
-                const max = [-Number.Infinity, -Number.Infinity, -Number.Infinity]
+                const min = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+                const max = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
 
                 points.forEach(pt => {
-                    min.x = Math.min(min.x, pt.x)
-                    min.y = Math.min(min.y, pt.y)
-                    min.x = Math.min(min.z, pt.z)
+                    min[0] = Math.min(min[0], pt[0])
+                    min[1] = Math.min(min[1], pt[1])
+                    min[2] = Math.min(min[2], pt[2])
 
-                    max.x = Math.max(max.x, pt.x)
-                    max.y = Math.max(max.y, pt.y)
-                    max.z = Math.max(max.z, pt.z)
+                    max[0] = Math.max(max[0], pt[0])
+                    max[1] = Math.max(max[1], pt[1])
+                    max[2] = Math.max(max[2], pt[2])
                 })
 
                 return [
-                    (max.x + min.x) / 2,
-                    (max.y + min.y) / 2,
-                    (max.z + min.z) / 2,
+                    (max[0] + min[0]) / 2,
+                    (max[1] + min[1]) / 2,
+                    (max[2] + min[2]) / 2,
                 ];
             }
         },
