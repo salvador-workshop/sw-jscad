@@ -30,7 +30,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {Number} opts.segments - # of segments in mesh holes
      * @param {Number} opts.edgeMargin - distance between edges and mesh holes
      * @param {String} opts.pattern - 'tri' (default) or 'square'
-     * @returns 
+     * @returns ...
      */
     const meshPanel = ({ size, radius, segments, edgeMargin, pattern = 'tri' }) => {
         const punchSpecs = {
@@ -66,7 +66,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
      * @param {*} param0 
-     * @returns 
+     * @returns ...
      */
     const meshCuboid = ({ size, meshPanelThickness, radius, segments, edgeMargin, pattern = 'tri', openTop = false }) => {
         const specs = {

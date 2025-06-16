@@ -33,10 +33,41 @@
  * @namespace utils.geometry
  */
 
+/**
+ * Finds the central point (avg.) between the given points
+ * @param {[]} points
+ * @memberof utils.geometry.points
+ * @returns central point (avg.) between the given points
+ */
+const ptCentroid = (points, mode = '3d') => {
+    const min = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+    const max = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
+
+    points.forEach(pt => {
+        min[0] = Math.min(min[0], pt[0])
+        min[1] = Math.min(min[1], pt[1])
+
+        max[0] = Math.max(max[0], pt[0])
+        max[1] = Math.max(max[1], pt[1])
+
+        if (mode === '3d') {
+            min[2] = Math.min(min[2], pt[2])
+            max[2] = Math.max(max[2], pt[2])
+        }
+    })
+
+    let output = [
+        (max[0] + min[0]) / 2,
+        (max[1] + min[1]) / 2,
+    ]
+    if (mode === '3d') {
+        output = [...output, (max[2] + min[2]) / 2]
+    }
+    return output;
+}
+
 const geometryUtils = ({ lib, swLib }) => {
-    const {
-        arrayCartesianProduct
-    } = swLib.utils.maths;
+    const { maths } = swLib.utils;
 
     return {
         /**
@@ -47,7 +78,7 @@ const geometryUtils = ({ lib, swLib }) => {
          * @param {*} radius 
          * @returns ...
          */
-        getTriangularPtsInArea: (x, y, radius) => {
+        getTriangularPtsInArea: (x, y, radius, centrePoints = true) => {
             const diam = radius * 2;
             const allPoints = [];
 
@@ -62,7 +93,7 @@ const geometryUtils = ({ lib, swLib }) => {
             do {
                 let xCtr = 0;
                 do {
-                    if (utils.isEven(yIdxCtr)) {
+                    if (maths.isEven(yIdxCtr)) {
                         allPoints.push({ x: xCtr, y: allYCoords[yIdxCtr] });
                     } else {
                         allPoints.push({ x: radius + xCtr, y: allYCoords[yIdxCtr] });
@@ -70,9 +101,21 @@ const geometryUtils = ({ lib, swLib }) => {
                     xCtr = xCtr + diam;
                 } while (xCtr &lt;= x);
                 yIdxCtr = yIdxCtr + 1;
-            } while (yIdxCtr &lt;= allYCoords.length);
+            } while (yIdxCtr &lt; allYCoords.length);
 
-            return allPoints;
+            if (!centrePoints) {
+                return allPoints
+            }
+
+            const simplePts = allPoints.map(pt => [pt.x, pt.y])
+            const pointCentroid = ptCentroid(simplePts, '2d');
+
+            return allPoints.map(pt => {
+                return {
+                    x: pt.x - pointCentroid[0],
+                    y: pt.y - pointCentroid[1],
+                }
+            });
         },
         /**
          * Gets square points in area
@@ -82,7 +125,7 @@ const geometryUtils = ({ lib, swLib }) => {
          * @param {*} radius 
          * @returns ...
          */
-        getSquarePtsInArea: (x, y, radius) => {
+        getSquarePtsInArea: (x, y, radius, centrePoints = true) => {
             const diam = radius * 2;
             const allXCoords = [];
             let xCtr = 0;
@@ -98,10 +141,30 @@ const geometryUtils = ({ lib, swLib }) => {
                 yCtr = yCtr + diam;
             } while (yCtr &lt;= y);
 
-            console.log(allXCoords, allYCoords);
-            const allPoints = arrayCartesianProduct(allXCoords, allYCoords);
+            const allPoints = maths.arrayCartesianProduct(allXCoords, allYCoords);
+            const outPts = allPoints.map(pt => { return { x: pt[0], y: pt[1] } });
 
-            return allPoints.map(pt => { return { x: pt[0], y: pt[1] } });
+            if (!centrePoints) {
+                return outPts
+            }
+
+            const simplePts = outPts.map(pt => [pt.x, pt.y])
+            const pointCentroid = ptCentroid(simplePts, '2d');
+
+            return outPts.map(pt => {
+                return {
+                    x: pt.x - pointCentroid[0],
+                    y: pt.y - pointCentroid[1],
+                }
+            });
+        },
+        /**
+         * Functions related to sets of Cartesian points
+         * @memberof utils.geometry
+         * @namespace points
+         */
+        points: {
+            centroid: ptCentroid,
         },
         /**
          * Functions related to regular polygons
@@ -180,13 +243,13 @@ module.exports = { init: geometryUtils };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.parts.html">core.parts</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.text.html">core.text</a></li><li><a href="details.html">details</a></li><li><a href="details.foils.html">details.foils</a></li><li><a href="details.moulds.html">details.moulds</a></li><li><a href="details.profiles.html">details.profiles</a></li><li><a href="details.profiles.edge.html">details.profiles.edge</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.geometry.html">utils.geometry</a></li><li><a href="utils.geometry.regPoly.html">utils.geometry.regPoly</a></li><li><a href="utils.maths.html">utils.maths</a></li><li><a href="utils.superPrimitives.html">utils.superPrimitives</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.parts.html">core.parts</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.text.html">core.text</a></li><li><a href="details.html">details</a></li><li><a href="details.foils.html">details.foils</a></li><li><a href="details.moulds.html">details.moulds</a></li><li><a href="details.profiles.html">details.profiles</a></li><li><a href="details.profiles.edge.html">details.profiles.edge</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.geometry.html">utils.geometry</a></li><li><a href="utils.geometry.points.html">utils.geometry.points</a></li><li><a href="utils.geometry.regPoly.html">utils.geometry.regPoly</a></li><li><a href="utils.maths.html">utils.maths</a></li><li><a href="utils.superPrimitives.html">utils.superPrimitives</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jun 10 2025 22:40:33 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Jun 16 2025 18:15:01 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
