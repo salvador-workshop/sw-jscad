@@ -122,21 +122,27 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} opts 
      * @returns ...
      */
-    const meshCylinder = ({ radius, height, segments = 16, thickness = 2, meshRadius, meshMinWidth, meshSegments = 16 }) => {
+    const meshCylinder = ({ radius, height, segments = 16, thickness = 2, edgeMargin, meshRadius, meshMinWidth, meshSegments = 16 }) => {
+        const specs = {
+            edgeMargin: edgeMargin || meshRadius * 2
+        }
+
+        const baseCylinder = cylinder({ radius, height, segments });
+        const cutCylinder = cylinder({ radius: radius - thickness, height: height + radius, segments });
+        const baseShape = align(
+            { modes: ['center', 'center', 'min'] },
+            subtract(baseCylinder, cutCylinder)
+        )
         const circumference = TAU * radius;
+
         let numPunches = 1;
         let circCtr = numPunches * meshRadius;
-        console.log('radius, circumference', radius, circumference)
         while (circCtr < circumference) {
             circCtr += meshRadius * 2 + meshMinWidth;
-            console.log(circCtr)
             if (circCtr < circumference) {
                 numPunches += 1
             }
         }
-        // const numPunches = Math.floor(circumference / (meshRadius + meshMinWidth));
-        console.log('numPunches', numPunches)
-        console.log('meshRadius * numPunches + (meshMinWidth * (numPunches - 1))', meshRadius * numPunches + (meshMinWidth * (numPunches - 1)))
 
         const punches = []
         for (let idx = 0; idx < numPunches; idx++) {
@@ -149,18 +155,35 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 )
             )))
         }
+        const completePunch = align(
+            { modes: ['center', 'center', 'min'], relativeTo: [0, 0, specs.edgeMargin] },
+            union(...punches)
+        )
 
-        const baseCylinder = cylinder({ radius, height, segments });
-        const cutCylinder = cylinder({ radius: radius - (thickness * 2), height: height + radius, segments });
+        let numPunchDiscs = 1;
+        let htCtr = specs.edgeMargin
+        let discHeightInterval = (meshRadius * 2 + meshMinWidth) * 0.86603
+        while (htCtr < height) {
+            htCtr += discHeightInterval;
+            if (htCtr < height) {
+                numPunchDiscs += 1
+            }
+        }
 
-        const completePunch = union(...punches)
-        const baseShape = subtract(baseCylinder, cutCylinder)
+        let punchedTube = subtract(baseShape, completePunch)
+        for (let idx = 0; idx < numPunchDiscs - 1; idx++) {
+            const zOffset = discHeightInterval * idx;
+            let discRotation = [0, 0, 0]
+            if (maths.isOdd(idx)) {
+                discRotation = [0, 0, TAU / (numPunches * 2)]
+            }
+            punchedTube = subtract(punchedTube, translate(
+                [0, 0, zOffset],
+                rotate(discRotation, completePunch))
+            )
+        }
 
-        const parts = [
-            subtract(baseShape, completePunch)
-        ]
-
-        return union(...parts)
+        return punchedTube;
     }
 
     /**
