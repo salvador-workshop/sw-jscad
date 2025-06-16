@@ -15,7 +15,7 @@
 const superPrimitivesInit = ({ lib, swLib }) => {
     const { cuboid, cylinder } = lib.primitives
     const { expand } = lib.expansions
-    const { translate } = lib.transforms
+    const { translate, rotate, align } = lib.transforms
     const { subtract, union } = lib.booleans
     const { measureBoundingBox } = lib.measurements
 
@@ -32,7 +32,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @returns 
      */
     const meshPanel = ({ size, radius, segments, edgeMargin, pattern = 'tri' }) => {
-        console.log(size, radius, segments)
         const punchSpecs = {
             radius: radius,
             height: size[2] * 2,
@@ -54,7 +53,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         if (pattern === 'square') {
             punchPoints = geometry.getSquarePtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
         }
-        console.log('punchPoints', punchPoints)
 
         const parts = [basePlate]
         punchPoints.forEach(punchPt => {
@@ -69,11 +67,13 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} param0 
      * @returns 
      */
-    const meshCuboid = ({ size, meshPanelThickness, edgeMargin, radius, segments }) => {
+    const meshCuboid = ({ size, meshPanelThickness, radius, segments, edgeMargin, pattern = 'tri', openTop = false }) => {
         const specs = {
-            marginOffset: edgeMargin * 2,
             meshPanelThickness: meshPanelThickness || maths.inchesToMM(3 / 32),
+            edgeMargin: edgeMargin || radius * 2,
         }
+        specs.marginOffset = specs.edgeMargin * 2;
+
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
 
@@ -96,55 +96,52 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             },
         ]
 
-        console.log('mPanelSpecs', mPanelSpecs)
-
         const parts = []
-        mPanelSpecs.forEach(mPanelSpec => {
-            const panelFrame = subtract(
-                cuboid({ size: mPanelSpec.size }),
-                cuboid({
-                    size: [
-                        mPanelSpec.size[0] - specs.marginOffset,
-                        mPanelSpec.size[1] - specs.marginOffset,
-                        mPanelSpec.size[2]]
-                })
-            )
-            const rotatedPanel = rotate(mPanelSpec.rotation, union(panelFrame, meshPanel({
+        mPanelSpecs.forEach((mPanelSpec, idx) => {
+            const rotatedPanel = rotate(mPanelSpec.rotation, meshPanel({
                 size: mPanelSpec.size,
                 radius,
                 segments,
-            })));
+                marginOffset: specs.marginOffset,
+                pattern,
+            }));
 
             parts.push(align({ modes: ['min', 'min', 'min'], relativeTo: baseCuboidBb[0] }, rotatedPanel))
-            parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, rotatedPanel))
+            const skipTop = openTop && idx == 2;
+            if (!skipTop) {
+                parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, rotatedPanel))
+            }
         });
 
         return union(...parts)
     }
 
-    return {
-        /**
-         * Frame cuboid
-         * @memberof utils.superPrimitives
-         * @param {*} param0 
-         * @returns ...
-         */
-        frameCuboid: ({ size, frameWidth }) => {
-            console.log(`frameCuboid() size = ${JSON.stringify(size)}, frameWidth = ${JSON.stringify(frameWidth)}`);
-            const outerCuboid = cuboid({ size });
+    /**
+     * ...
+     * @param {*} opts 
+     * @returns ...
+     */
+    const meshCylinder = ({ }) => {
+        return 0
+    }
 
-            return outerCuboid;
-        },
+    /**
+     * Frame cuboid
+     * @memberof utils.superPrimitives
+     * @param {*} param0 
+     * @returns ...
+     */
+    const frameCuboid = ({ size, frameWidth }) => {
+        const outerCuboid = cuboid({ size });
+
+        return outerCuboid;
+    }
+
+    return {
+        frameCuboid,
         meshPanel,
         meshCuboid,
-        /**
-         * ...
-         * @param {*} opts 
-         * @returns ...
-         */
-        meshCylinder: ({ }) => {
-            return 0
-        },
+        meshCylinder,
     }
 }
 
