@@ -68,6 +68,12 @@ const mathUtils = ({ lib, swLib }) => {
             const int2 = (num - rem) / int1
             return [int1, int2 + 1]
         },
+        getRandomInt: (min, max) => {
+            const minCeiled = Math.ceil(min);
+            const maxFloored = Math.floor(max);
+            // The maximum is exclusive and the minimum is inclusive
+            return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+        },
     }
 }
 
