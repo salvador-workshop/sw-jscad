@@ -8,12 +8,12 @@
 const init = ({ lib, swLib }) => {
     const utils = {
         transform: require('./transform').init({ lib }),
-        superPrimitives: require('./super-primitives').init({ lib }),
     }
 
     // Dependent on lib and core modules
     utils.maths = require('./maths').init({ lib, swLib: { ...swLib, utils } });
     utils.geometry = require('./geometry').init({ lib, swLib: { ...swLib, utils } });
+    utils.superPrimitives = require('./super-primitives').init({ lib, swLib: { ...swLib, utils } });
 
     return utils;
 }
