@@ -124,7 +124,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      */
     const meshCylinder = ({ radius, height, segments = 16, thickness = 2, edgeMargin, meshRadius, meshMinWidth, meshSegments = 16 }) => {
         const specs = {
-            edgeMargin: edgeMargin || meshRadius * 2
+            edgeMargin: edgeMargin || meshMinWidth
         }
 
         const baseCylinder = cylinder({ radius, height, segments });
@@ -155,20 +155,23 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 )
             )))
         }
-        const completePunch = align(
-            { modes: ['center', 'center', 'min'], relativeTo: [0, 0, specs.edgeMargin] },
-            union(...punches)
-        )
 
         let numPunchDiscs = 1;
-        let htCtr = specs.edgeMargin
+        let htCtr = 0
+        let remainingHt = height
         let discHeightInterval = (meshRadius * 2 + meshMinWidth) * 0.86603
         while (htCtr < height) {
             htCtr += discHeightInterval;
             if (htCtr < height) {
                 numPunchDiscs += 1
+                remainingHt -= discHeightInterval;
             }
         }
+
+        const completePunch = align(
+            { modes: ['center', 'center', 'min'], relativeTo: [0, 0, (specs.edgeMargin + remainingHt) / 2 * 0.86603] },
+            union(...punches)
+        )
 
         let punchedTube = subtract(baseShape, completePunch)
         for (let idx = 0; idx < numPunchDiscs - 1; idx++) {
