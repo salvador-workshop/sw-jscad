@@ -7,6 +7,7 @@
  */
 
 const geoTriangle = ({ lib, swLib }) => {
+    const { measureDimensions, measureBoundingBox } = lib.measurements;
 
     const getControlPoints = (points) => {
         return null;

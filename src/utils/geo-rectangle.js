@@ -7,6 +7,7 @@
  */
 
 const geoRectangle = ({ lib, swLib }) => {
+    const { measureDimensions, measureBoundingBox } = lib.measurements;
 
     const getControlPoints = (length, width) => {
         return null;

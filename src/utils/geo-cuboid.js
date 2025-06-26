@@ -7,6 +7,7 @@
  */
 
 const geoCuboid = ({ lib, swLib }) => {
+    const { measureDimensions, measureBoundingBox } = lib.measurements;
 
     const getControlPoints = (length, width, height) => {
         return null;
