@@ -11,7 +11,6 @@ const init = ({ lib, swLib }) => {
     }
 
     // Dependent on lib and core modules
-    utils.maths = require('./maths').init({ lib, swLib: { ...swLib, utils } });
     utils.geometry = require('./geometry').init({ lib, swLib: { ...swLib, utils } });
     utils.superPrimitives = require('./super-primitives').init({ lib, swLib: { ...swLib, utils } });
 

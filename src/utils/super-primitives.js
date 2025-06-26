@@ -20,7 +20,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const { measureBoundingBox } = lib.measurements
     const { TAU } = lib.maths.constants
 
-    const { geometry, maths } = swLib.utils
+    const { maths } = swLib.core
+    const { geometry } = swLib.utils
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
@@ -30,37 +31,49 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {Number} opts.segments - # of segments in mesh holes
      * @param {Number} opts.edgeMargin - distance between edges and mesh holes
      * @param {String} opts.pattern - 'tri' (default) or 'square'
+     * @param {String} opts.patternMode - 'contain' (default) or 'fill'
      * @returns ...
      */
-    const meshPanel = ({ size, radius, segments, edgeMargin, pattern = 'tri' }) => {
+    const meshPanel = ({ size, radius, segments, edgeMargin, pattern = 'tri', patternMode = 'contain' }) => {
         const punchSpecs = {
             radius: radius,
             height: size[2] * 2,
             segments,
         }
+
         const panelSpecs = {
             radius: radius + (size[2] / 2),
-            edgeMargin: edgeMargin || radius * 2,
+            edgeMargin: edgeMargin || radius + size[2],
         }
         panelSpecs.length = size[0] - (panelSpecs.edgeMargin * 2)
         panelSpecs.width = size[1] - (panelSpecs.edgeMargin * 2)
         panelSpecs.height = size[2]
 
-        const basePlate = cuboid({ size });
+        let outputPanel = null
 
-        const punch = cylinder(punchSpecs);
+        if (patternMode === 'contain') {
+            // pattern is neatly contained in the bounding rectangle
+            const basePlate = cuboid({ size });
 
-        let punchPoints = geometry.getTriangularPtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
-        if (pattern === 'square') {
-            punchPoints = geometry.getSquarePtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
+            const punch = cylinder(punchSpecs);
+
+            let punchPoints = geometry.getTriangularPtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
+            if (pattern === 'square') {
+                punchPoints = geometry.getSquarePtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
+            }
+
+            const parts = [basePlate]
+            punchPoints.forEach(punchPt => {
+                parts.push(translate([punchPt.x, punchPt.y, 0], punch))
+            });
+
+            outputPanel = subtract(...parts)
+        }
+        else if (patternMode === 'fill') {
+            // pattern extends outside the bounding rectangle, and gets cut off
         }
 
-        const parts = [basePlate]
-        punchPoints.forEach(punchPt => {
-            parts.push(translate([punchPt.x, punchPt.y, 0], punch))
-        });
-
-        return subtract(...parts)
+        return outputPanel
     }
 
     /**
@@ -70,7 +83,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      */
     const meshCuboid = ({ size, meshPanelThickness, radius, segments, edgeMargin, pattern = 'tri', openTop = false }) => {
         const specs = {
-            meshPanelThickness: meshPanelThickness || maths.inchesToMM(3 / 32),
+            meshPanelThickness: meshPanelThickness || maths.inchesToMm(3 / 32),
             edgeMargin: edgeMargin || radius * 2,
         }
         specs.marginOffset = specs.edgeMargin * 2;
@@ -122,7 +135,18 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} opts 
      * @returns ...
      */
-    const meshCylinder = ({ radius, height, segments = 16, thickness = 2, edgeMargin, meshRadius, meshMinWidth, meshSegments = 16 }) => {
+    const meshCylinder = ({
+        radius,
+        height,
+        segments = 16,
+        thickness = 2,
+        edgeMargin,
+        edgeInsets = [0, 0],
+        edgeOffsets = [0, 0],
+        meshRadius,
+        meshMinWidth,
+        meshSegments = 16,
+    }) => {
         const specs = {
             edgeMargin: edgeMargin || meshMinWidth
         }

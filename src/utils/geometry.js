@@ -39,7 +39,7 @@ const ptCentroid = (points, mode = '3d') => {
 }
 
 const geometryUtils = ({ lib, swLib }) => {
-    const { maths } = swLib.utils;
+    const { maths } = swLib.core;
 
     return {
         /**
