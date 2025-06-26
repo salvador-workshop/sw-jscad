@@ -12,11 +12,13 @@
 //---------------------
 
 const superPrimitivesInit = ({ lib, swLib }) => {
-    const { cuboid, cylinder } = lib.primitives
+    const { cuboid, cylinder, triangle } = lib.primitives
     const { expand } = lib.expansions
     const { translate, rotate, align } = lib.transforms
     const { subtract, union } = lib.booleans
     const { measureBoundingBox } = lib.measurements
+    const { extrudeRotate } = lib.extrusions
+
     const { TAU } = lib.maths.constants
 
     const { maths } = swLib.core
@@ -79,7 +81,12 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         }
         else if (patternMode === 'fill') {
             // pattern extends outside the bounding rectangle, and gets cut off
-            const punchPoints = getPunchPoints(pattern, size[0], size[1], meshSpecs.radius)
+            const punchPoints = getPunchPoints(
+                pattern,
+                size[0] + (meshSpecs.radius * 2),
+                size[1] + (meshSpecs.radius * 2),
+                meshSpecs.radius
+            )
             punchPoints.forEach(punchPt => {
                 parts.push(translate([punchPt.x, punchPt.y, 0], punch))
             });
@@ -87,11 +94,13 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             const punchedPanel = subtract(...parts)
             const panelEdge = subtract(
                 basePlate,
-                cuboid({ size: [
-                    size[0] - (meshSpecs.edgeMargin * 2),
-                    size[1] - (meshSpecs.edgeMargin * 2),
-                    size[2] * 1.5,
-                ] })
+                cuboid({
+                    size: [
+                        size[0] - (meshSpecs.edgeMargin * 2),
+                        size[1] - (meshSpecs.edgeMargin * 2),
+                        size[2] * 1.5,
+                    ]
+                })
             );
 
             outputPanel = union(punchedPanel, panelEdge)
@@ -229,7 +238,33 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             union(...punches)
         )
 
-        let punchedTube = subtract(baseShape, completePunch)
+        let reinforcedTube = baseShape;
+
+        const hasInset = edgeInsets.every(insetVal => insetVal !== 0)
+        if (hasInset) {
+            edgeInsets.forEach((insetWidth, idx) => {
+                const isTop = idx === 0;
+                const insetHeight = insetWidth * Math.sqrt(3);
+                const insetSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] });
+                const insetRing = extrudeRotate({ segments }, translate([radius, 0, 0], insetSection));
+
+                reinforcedTube = union(reinforcedTube, insetRing)
+            })
+        }
+
+        const hasOffset = edgeOffsets.every(offsetVal => offsetVal !== 0)
+        if (hasOffset) {
+            edgeOffsets.forEach((offsetWidth, idx) => {
+                const isTop = idx === 0;
+                const offsetHeight = offsetWidth * Math.sqrt(3);
+                const offsetSection = triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] });
+                const offsetRing = extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection));
+
+                reinforcedTube = union(reinforcedTube, offsetRing)
+            })
+        }
+
+        let punchedTube = subtract(reinforcedTube, completePunch)
         for (let idx = 0; idx < numPunchDiscs - 1; idx++) {
             const zOffset = discHeightInterval * idx;
             let discRotation = [0, 0, 0]
