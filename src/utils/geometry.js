@@ -1,5 +1,9 @@
 "use strict"
 
+const geoCuboid = require('./geo-cuboid');
+const geoRectangle = require('./geo-rectangle');
+const geoTriangle = require('./geo-triangle');
+
 /**
  * ...
  * @namespace utils.geometry
@@ -200,7 +204,10 @@ const geometryUtils = ({ lib, swLib }) => {
             interiorAngle: (numSides) => {
                 return 2 * Math.PI / numSides;
             },
-        }
+        },
+        triangle: geoTriangle.init({ lib, swLib }),
+        rectangle: geoRectangle.init({ lib, swLib }),
+        cuboid: geoCuboid.init({ lib, swLib }),
     }
 }
 
