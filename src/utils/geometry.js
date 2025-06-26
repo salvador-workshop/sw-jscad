@@ -11,7 +11,7 @@ const geoTriangle = require('./geo-triangle');
 
 /**
  * Finds the central point (avg.) between the given points
- * @param {[]} points
+ * @param {number[]} points
  * @memberof utils.geometry.points
  * @returns central point (avg.) between the given points
  */

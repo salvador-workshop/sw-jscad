@@ -35,7 +35,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
      * @param {*} opts 
-     * @param {[]} opts.size
+     * @param {number[]} opts.size
      * @param {Number} opts.radius - radius
      * @param {Number} opts.segments - # of segments in mesh holes
      * @param {Number} opts.edgeMargin - distance between edges and mesh holes
