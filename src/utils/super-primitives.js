@@ -131,6 +131,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
+        console.log(baseCuboidBb);
 
         // [x,y,z (default)]
         const mPanelSpecs = [

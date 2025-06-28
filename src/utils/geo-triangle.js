@@ -7,9 +7,9 @@
  */
 
 const geoTriangle = ({ lib, swLib }) => {
-    const { measureDimensions, measureBoundingBox } = lib.measurements;
+    const { measureDimensions, measureBoundingBox, measureCenter } = lib.measurements;
 
-    const getControlPoints = (points) => {
+    const getTriangleCtrlPoints = (points) => {
         return null;
     }
 
@@ -42,7 +42,7 @@ const geoTriangle = ({ lib, swLib }) => {
     }
 
     return {
-        getControlPoints,
+        getTriangleCtrlPoints,
         centroid,
         orthocentre,
         circumcentre,
