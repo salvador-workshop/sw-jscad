@@ -16,7 +16,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox } = lib.measurements
+    const { measureBoundingBox, measureDimensions } = lib.measurements
     const { extrudeRotate } = lib.extrusions
 
     const { TAU } = lib.maths.constants
@@ -132,6 +132,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
         console.log(baseCuboidBb);
+        console.log(measureDimensions(baseCuboid));
 
         // [x,y,z (default)]
         const mPanelSpecs = [

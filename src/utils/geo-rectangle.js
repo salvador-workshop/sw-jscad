@@ -49,20 +49,21 @@ const geoRectangle = ({ lib, swLib }) => {
         const centre = getRectangleCentre(rectGeom);
 
         const edgeMidpoints = {
-            e1: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, +Y,)
-            e2: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, -Y,)
-            e3: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, +X,)
-            e4: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, -X,)
+            e1: [coords.right, centre[1], centre[2]], // midpoint of edge (Y axis, +X,)
+            e2: [centre[0], coords.back, centre[2]], // midpoint of edge (X axis, +Y,)
+            e3: [coords.left, centre[1], centre[2]], // midpoint of edge (Y axis, -X,)
+            e4: [centre[0], coords.front, centre[2]], // midpoint of edge (X axis, -Y,)
         }
 
         // i1 to i4 are inside the rectangle, at the centre of each quadrant
         // (each quadrant is practically a sub-rectangle)
+        const halfRectDims = [dims[0] / 2, dims[1] / 2, 0]
         const internal = {
             i0: centre,
-            i1: [0, 0, 0], // quadrant I (+X, +Y)
-            i2: [0, 0, 0], // quadrant II (-X, +Y)
-            i3: [0, 0, 0], // quadrant III (-X, -Y)
-            i4: [0, 0, 0], // quadrant VI (+X, -Y)
+            i1: [centre[0] + halfRectDims[0], centre[1] + halfRectDims[1], centre[2]], // quadrant I (+X, +Y)
+            i2: [centre[0] - halfRectDims[0], centre[1] + halfRectDims[1], centre[2]], // quadrant II (-X, +Y)
+            i3: [centre[0] - halfRectDims[0], centre[1] - halfRectDims[1], centre[2]], // quadrant III (-X, -Y)
+            i4: [centre[0] + halfRectDims[0], centre[1] - halfRectDims[1], centre[2]], // quadrant VI (+X, -Y)
 
         }
 
