@@ -55,41 +55,74 @@ const geoCuboid = ({ lib, swLib }) => {
         const centre = getCuboidCentre(cuboidGeom);
 
         const edgeMidpoints = {
-            e1: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, +Y, +Z)
-            e2: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, -Y, +Z)
-            e3: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, -Y, -Z)
-            e4: [centre[0], centre[1], centre[2]], // midpoint of edge (X axis, +Y, -Z)
-            e5: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, +X, +Z)
-            e6: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, -X, +Z)
-            e7: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, -X, -Z)
-            e8: [centre[0], centre[1], centre[2]], // midpoint of edge (Y axis, +X, -Z)
-            e9: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, +Y)
-            e10: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, -Y)
-            e11: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, -Y)
-            e12: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, +Y)
+            e1: [coords.right, centre[1], coords.bottom], // midpoint of edge (Y axis, +Y, +Z)
+            e2: [centre[0], coords.front, coords.bottom], // midpoint of edge (X axis, -Y, +Z)
+            e3: [coords.left, centre[1], coords.bottom], // midpoint of edge (Y axis, -Y, -Z)
+            e4: [centre[0], coords.back, coords.bottom], // midpoint of edge (X axis, +Y, -Z)
+            e5: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, +Z)
+            e6: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, +Z)
+            e7: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, -Z)
+            e8: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, -Z)
+            e9: [coords.right, centre[1], coords.top], // midpoint of edge (Y axis, +X, +Y)
+            e10: [centre[0], coords.front, coords.top], // midpoint of edge (X axis, +X, -Y)
+            e11: [coords.left, centre[1], coords.top], // midpoint of edge (Y axis, -X, -Y)
+            e12: [centre[0], coords.back, coords.top], // midpoint of edge (X axis, -X, +Y)
         };
 
         const faceMidpoints = {
-            f1: [centre[0], centre[1], centre[2]], // right (+X)
-            f2: [centre[0], centre[1], centre[2]], // left (-X)
-            f3: [centre[0], centre[1], centre[2]], // back (+Y)
-            f4: [centre[0], centre[1], centre[2]], // front (-Y)
-            f5: [centre[0], centre[1], centre[2]], // top (+Z)
-            f6: [centre[0], centre[1], centre[2]], // bottom (-Z)
+            f1: [coords.right, centre[1], centre[2]], // right (+X)
+            f2: [coords.left, centre[1], centre[2]], // left (-X)
+            f3: [centre[0], coords.back, centre[2]], // back (+Y)
+            f4: [centre[0], coords.front, centre[2]], // front (-Y)
+            f5: [centre[0], centre[1], coords.top], // top (+Z)
+            f6: [centre[0], centre[1], coords.bottom], // bottom (-Z)
         };
 
         // i1 to i8 are inside the cuboid, at the centre of each octant
         // (each octant is practically a sub-cuboid)
+        const halfCuboidDims = [dims[0] / 2, dims[1] / 2, dims[2] / 2]
         const internal = {
             i0: centre,
-            i1: [0, 0, 0], // octant I (+X, +Y, +Z)
-            i2: [0, 0, 0], // octant II (-X, +Y, +Z)
-            i3: [0, 0, 0], // octant III (+X, -Y, +Z)
-            i4: [0, 0, 0], // octant VI (-X, -Y, +Z)
-            i5: [0, 0, 0], // octant V (+X, +Y, -Z)
-            i6: [0, 0, 0], // octant VI (-X, +Y, -Z)
-            i7: [0, 0, 0], // octant VII (+X, -Y, -Z)
-            i8: [0, 0, 0], // octant VIII (-X, -Y, -Z)
+            i1: [
+                centre[0] + halfCuboidDims[0], // octant I (+X, +Y, +Z)
+                centre[1] + halfCuboidDims[1],
+                centre[2] + halfCuboidDims[2],
+            ],
+            i2: [
+                centre[0] - halfCuboidDims[0], // octant II (-X, +Y, +Z)
+                centre[1] + halfCuboidDims[1],
+                centre[2] + halfCuboidDims[2],
+            ],
+            i3: [
+                centre[0] + halfCuboidDims[0], // octant III (+X, -Y, +Z)
+                centre[1] - halfCuboidDims[1],
+                centre[2] + halfCuboidDims[2],
+            ],
+            i4: [
+                centre[0] - halfCuboidDims[0], // octant VI (-X, -Y, +Z)
+                centre[1] - halfCuboidDims[1],
+                centre[2] + halfCuboidDims[2],
+            ],
+            i5: [
+                centre[0] + halfCuboidDims[0], // octant V (+X, +Y, -Z)
+                centre[1] + halfCuboidDims[1],
+                centre[2] - halfCuboidDims[2],
+            ],
+            i6: [
+                centre[0] - halfCuboidDims[0], // octant VI (-X, +Y, -Z)
+                centre[1] + halfCuboidDims[1],
+                centre[2] - halfCuboidDims[2],
+            ],
+            i7: [
+                centre[0] + halfCuboidDims[0], // octant VII (+X, -Y, -Z)
+                centre[1] - halfCuboidDims[1],
+                centre[2] - halfCuboidDims[2],
+            ],
+            i8: [
+                centre[0] - halfCuboidDims[0], // octant VIII (-X, -Y, -Z)
+                centre[1] - halfCuboidDims[1],
+                centre[2] - halfCuboidDims[2],
+            ],
         }
 
         return {
