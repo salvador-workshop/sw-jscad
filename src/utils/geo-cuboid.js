@@ -80,48 +80,48 @@ const geoCuboid = ({ lib, swLib }) => {
 
         // i1 to i8 are inside the cuboid, at the centre of each octant
         // (each octant is practically a sub-cuboid)
-        const halfCuboidDims = [dims[0] / 2, dims[1] / 2, dims[2] / 2]
+        const qtrCuboidDims = [dims[0] / 4, dims[1] / 4, dims[2] / 4]
         const internal = {
             i0: centre,
             i1: [
-                centre[0] + halfCuboidDims[0], // octant I (+X, +Y, +Z)
-                centre[1] + halfCuboidDims[1],
-                centre[2] + halfCuboidDims[2],
+                centre[0] + qtrCuboidDims[0], // octant I (+X, +Y, +Z)
+                centre[1] + qtrCuboidDims[1],
+                centre[2] + qtrCuboidDims[2],
             ],
             i2: [
-                centre[0] - halfCuboidDims[0], // octant II (-X, +Y, +Z)
-                centre[1] + halfCuboidDims[1],
-                centre[2] + halfCuboidDims[2],
+                centre[0] - qtrCuboidDims[0], // octant II (-X, +Y, +Z)
+                centre[1] + qtrCuboidDims[1],
+                centre[2] + qtrCuboidDims[2],
             ],
             i3: [
-                centre[0] + halfCuboidDims[0], // octant III (+X, -Y, +Z)
-                centre[1] - halfCuboidDims[1],
-                centre[2] + halfCuboidDims[2],
+                centre[0] + qtrCuboidDims[0], // octant III (+X, -Y, +Z)
+                centre[1] - qtrCuboidDims[1],
+                centre[2] + qtrCuboidDims[2],
             ],
             i4: [
-                centre[0] - halfCuboidDims[0], // octant VI (-X, -Y, +Z)
-                centre[1] - halfCuboidDims[1],
-                centre[2] + halfCuboidDims[2],
+                centre[0] - qtrCuboidDims[0], // octant VI (-X, -Y, +Z)
+                centre[1] - qtrCuboidDims[1],
+                centre[2] + qtrCuboidDims[2],
             ],
             i5: [
-                centre[0] + halfCuboidDims[0], // octant V (+X, +Y, -Z)
-                centre[1] + halfCuboidDims[1],
-                centre[2] - halfCuboidDims[2],
+                centre[0] + qtrCuboidDims[0], // octant V (+X, +Y, -Z)
+                centre[1] + qtrCuboidDims[1],
+                centre[2] - qtrCuboidDims[2],
             ],
             i6: [
-                centre[0] - halfCuboidDims[0], // octant VI (-X, +Y, -Z)
-                centre[1] + halfCuboidDims[1],
-                centre[2] - halfCuboidDims[2],
+                centre[0] - qtrCuboidDims[0], // octant VI (-X, +Y, -Z)
+                centre[1] + qtrCuboidDims[1],
+                centre[2] - qtrCuboidDims[2],
             ],
             i7: [
-                centre[0] + halfCuboidDims[0], // octant VII (+X, -Y, -Z)
-                centre[1] - halfCuboidDims[1],
-                centre[2] - halfCuboidDims[2],
+                centre[0] + qtrCuboidDims[0], // octant VII (+X, -Y, -Z)
+                centre[1] - qtrCuboidDims[1],
+                centre[2] - qtrCuboidDims[2],
             ],
             i8: [
-                centre[0] - halfCuboidDims[0], // octant VIII (-X, -Y, -Z)
-                centre[1] - halfCuboidDims[1],
-                centre[2] - halfCuboidDims[2],
+                centre[0] - qtrCuboidDims[0], // octant VIII (-X, -Y, -Z)
+                centre[1] - qtrCuboidDims[1],
+                centre[2] - qtrCuboidDims[2],
             ],
         }
 

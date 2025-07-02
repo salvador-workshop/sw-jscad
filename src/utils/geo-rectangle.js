@@ -57,13 +57,13 @@ const geoRectangle = ({ lib, swLib }) => {
 
         // i1 to i4 are inside the rectangle, at the centre of each quadrant
         // (each quadrant is practically a sub-rectangle)
-        const halfRectDims = [dims[0] / 2, dims[1] / 2, 0]
+        const qtrRectDims = [dims[0] / 4, dims[1] / 4, 0]
         const internal = {
             i0: centre,
-            i1: [centre[0] + halfRectDims[0], centre[1] + halfRectDims[1], centre[2]], // quadrant I (+X, +Y)
-            i2: [centre[0] - halfRectDims[0], centre[1] + halfRectDims[1], centre[2]], // quadrant II (-X, +Y)
-            i3: [centre[0] - halfRectDims[0], centre[1] - halfRectDims[1], centre[2]], // quadrant III (-X, -Y)
-            i4: [centre[0] + halfRectDims[0], centre[1] - halfRectDims[1], centre[2]], // quadrant VI (+X, -Y)
+            i1: [centre[0] + qtrRectDims[0], centre[1] + qtrRectDims[1], centre[2]], // quadrant I (+X, +Y)
+            i2: [centre[0] - qtrRectDims[0], centre[1] + qtrRectDims[1], centre[2]], // quadrant II (-X, +Y)
+            i3: [centre[0] - qtrRectDims[0], centre[1] - qtrRectDims[1], centre[2]], // quadrant III (-X, -Y)
+            i4: [centre[0] + qtrRectDims[0], centre[1] - qtrRectDims[1], centre[2]], // quadrant VI (+X, -Y)
 
         }
 
