@@ -42,9 +42,9 @@
 const superPrimitivesInit = ({ lib, swLib }) => {
     const { cuboid, cylinder, triangle } = lib.primitives
     const { expand } = lib.expansions
-    const { translate, rotate, align } = lib.transforms
+    const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox } = lib.measurements
+    const { measureBoundingBox, measureDimensions } = lib.measurements
     const { extrudeRotate } = lib.extrusions
 
     const { TAU } = lib.maths.constants
@@ -94,8 +94,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         meshSpecs.height = size[2]
 
         let outputPanel = null
-        const parts = [basePlate]
         const basePlate = cuboid({ size });
+        const parts = [basePlate]
         const punch = cylinder(punchSpecs);
 
         if (patternMode === 'contain') {
@@ -159,6 +159,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
+        console.log(baseCuboidBb);
+        console.log(measureDimensions(baseCuboid));
 
         // [x,y,z (default)]
         const mPanelSpecs = [
@@ -244,7 +246,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 { modes: ['min', 'center', 'center'] },
                 rotate(
                     [0, Math.PI / 2, 0],
-                    cylinder({ radius: meshRadius, height: radius + (meshRadius / 2), segments: meshSegments })
+                    cylinder({ radius: meshRadius, height: radius * 2, segments: meshSegments })
                 )
             )))
         }
@@ -268,25 +270,59 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
         let reinforcedTube = baseShape;
 
-        const hasInset = edgeInsets.every(insetVal => insetVal !== 0)
+        const hasInset = edgeInsets.some(insetVal => insetVal > 0)
         if (hasInset) {
             edgeInsets.forEach((insetWidth, idx) => {
+                if (insetWidth === 0) {
+                    return
+                }
                 const isTop = idx === 0;
                 const insetHeight = insetWidth * Math.sqrt(3);
-                const insetSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] });
-                const insetRing = extrudeRotate({ segments }, translate([radius, 0, 0], insetSection));
+                const sectionAlignOpts = isTop
+                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                const ringAlignOpts = isTop
+                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+
+                const triangleSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] })
+                const insetSection = align(
+                    sectionAlignOpts,
+                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                );
+                let insetRing = align(
+                    ringAlignOpts,
+                    extrudeRotate({ segments }, translate([radius - thickness - insetWidth, 0, 0], insetSection))
+                );
 
                 reinforcedTube = union(reinforcedTube, insetRing)
             })
         }
 
-        const hasOffset = edgeOffsets.every(offsetVal => offsetVal !== 0)
+        const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
         if (hasOffset) {
             edgeOffsets.forEach((offsetWidth, idx) => {
+                if (offsetWidth === 0) {
+                    return
+                }
                 const isTop = idx === 0;
                 const offsetHeight = offsetWidth * Math.sqrt(3);
-                const offsetSection = triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] });
-                const offsetRing = extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection));
+                const sectionAlignOpts = isTop
+                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                const ringAlignOpts = isTop
+                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+
+                const triangleSection = mirror({ normal: [1, 0, 0] }, triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] }));
+                const offsetSection = align(
+                    sectionAlignOpts,
+                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                );
+                let offsetRing = align(
+                    ringAlignOpts,
+                    extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection))
+                );
 
                 reinforcedTube = union(reinforcedTube, offsetRing)
             })
@@ -348,7 +384,7 @@ module.exports = { init: superPrimitivesInit };
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Jun 26 2025 08:38:41 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jul 01 2025 20:27:27 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

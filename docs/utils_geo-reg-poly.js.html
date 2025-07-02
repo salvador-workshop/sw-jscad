@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: core/parts.js</title>
+    <title>JSDoc: Source: utils/geo-reg-poly.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: core/parts.js</h1>
+    <h1 class="page-title">Source: utils/geo-reg-poly.js</h1>
 
     
 
@@ -29,29 +29,75 @@
             <pre class="prettyprint source linenums"><code>"use strict"
 
 /**
- * ...
- * @namespace core.parts
+ * Functions related to regular polygons
+ * @memberof utils.geometry
+ * @namespace regPoly
  */
 
-const parts = ({ lib, swLib }) => {
-    const newPart = ({
-        partName,
-        partColour,
-        geom
-    }) => {
-        return {
-            partName,
-            partColour,
-            partGeom: geom,
-            partCtrlPts: null,
-        }
-    };
+const geoRegPoly = ({ lib, swLib }) => {
     return {
-        newPart
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        sideLengthFromApothem: (apothem, numSides) => {
+            return apothem * 2 * Math.tan(Math.PI / numSides);
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        sideLengthFromCircumRadius: (circumradius, numSides) => {
+            return circumradius * 2 * Math.sin(Math.PI / numSides);
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        apothemFromCircumradius: (circumradius, numSides) => {
+            return circumradius * Math.cos(Math.PI / numSides)
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        apothemFromSideLength: (sideLength, numSides) => {
+            return sideLength / 2 * Math.tan(Math.PI / numSides)
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        circumradiusFromApothem: (apothem, numSides) => {
+            return apothem / Math.cos(Math.PI / numSides);
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        circumradiusFromSideLength: (sideLength, numSides) => {
+            return sideLength / 2 * Math.sin(Math.PI / numSides)
+        },
+        /**
+         * ...
+         * @memberof utils.geometry.regPoly
+         * @returns ...
+         */
+        interiorAngle: (numSides) => {
+            return 2 * Math.PI / numSides;
+        },
     }
 }
 
-module.exports = { init: parts };
+module.exports = {
+    init: geoRegPoly,
+};
 </code></pre>
         </article>
     </section>
