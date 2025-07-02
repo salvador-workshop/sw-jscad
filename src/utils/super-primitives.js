@@ -5,7 +5,6 @@
  * @namespace utils.superPrimitives
  */
 
-
 //-----------
 // TO-DO
 //---------------------
@@ -13,54 +12,101 @@
 //---------------------
 
 const superPrimitivesInit = ({ lib, swLib }) => {
-    const { cuboid, cylinder } = lib.primitives
+    const { cuboid, cylinder, triangle } = lib.primitives
     const { expand } = lib.expansions
-    const { translate, rotate, align } = lib.transforms
+    const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox } = lib.measurements
+    const { measureBoundingBox, measureDimensions } = lib.measurements
+    const { extrudeRotate } = lib.extrusions
+
     const { TAU } = lib.maths.constants
 
-    const { geometry, maths } = swLib.utils
+    const { maths } = swLib.core
+    const { geometry } = swLib.utils
+
+    const getPunchPoints = (pattern, length, width, radius) => {
+        let punchPoints = geometry.getTriangularPtsInArea(length, width, radius)
+        if (pattern === 'square') {
+            punchPoints = geometry.getSquarePtsInArea(length, width, radius)
+        }
+        return punchPoints
+    }
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
      * @param {*} opts 
-     * @param {[]} opts.size
+     * @param {number[]} opts.size
      * @param {Number} opts.radius - radius
      * @param {Number} opts.segments - # of segments in mesh holes
      * @param {Number} opts.edgeMargin - distance between edges and mesh holes
      * @param {String} opts.pattern - 'tri' (default) or 'square'
+     * @param {String} opts.patternMode - 'contain' (default) or 'fill'
      * @returns ...
      */
-    const meshPanel = ({ size, radius, segments, edgeMargin, pattern = 'tri' }) => {
+    const meshPanel = ({
+        size,
+        radius,
+        segments = 16,
+        edgeMargin,
+        pattern = 'tri',
+        patternMode = 'contain',
+    }) => {
         const punchSpecs = {
             radius: radius,
             height: size[2] * 2,
             segments,
         }
-        const panelSpecs = {
+
+        const meshSpecs = {
             radius: radius + (size[2] / 2),
-            edgeMargin: edgeMargin || radius * 2,
+            edgeMargin: edgeMargin || radius + size[2],
         }
-        panelSpecs.length = size[0] - (panelSpecs.edgeMargin * 2)
-        panelSpecs.width = size[1] - (panelSpecs.edgeMargin * 2)
-        panelSpecs.height = size[2]
+        meshSpecs.length = size[0] - (meshSpecs.edgeMargin * 2)
+        meshSpecs.width = size[1] - (meshSpecs.edgeMargin * 2)
+        meshSpecs.height = size[2]
 
+        let outputPanel = null
         const basePlate = cuboid({ size });
-
+        const parts = [basePlate]
         const punch = cylinder(punchSpecs);
 
-        let punchPoints = geometry.getTriangularPtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
-        if (pattern === 'square') {
-            punchPoints = geometry.getSquarePtsInArea(panelSpecs.length, panelSpecs.width, panelSpecs.radius)
+        if (patternMode === 'contain') {
+            // pattern is neatly contained in the bounding rectangle
+            const punchPoints = getPunchPoints(pattern, meshSpecs.length, meshSpecs.width, meshSpecs.radius)
+            punchPoints.forEach(punchPt => {
+                parts.push(translate([punchPt.x, punchPt.y, 0], punch))
+            });
+
+            outputPanel = subtract(...parts)
+        }
+        else if (patternMode === 'fill') {
+            // pattern extends outside the bounding rectangle, and gets cut off
+            const punchPoints = getPunchPoints(
+                pattern,
+                size[0] + (meshSpecs.radius * 2),
+                size[1] + (meshSpecs.radius * 2),
+                meshSpecs.radius
+            )
+            punchPoints.forEach(punchPt => {
+                parts.push(translate([punchPt.x, punchPt.y, 0], punch))
+            });
+
+            const punchedPanel = subtract(...parts)
+            const panelEdge = subtract(
+                basePlate,
+                cuboid({
+                    size: [
+                        size[0] - (meshSpecs.edgeMargin * 2),
+                        size[1] - (meshSpecs.edgeMargin * 2),
+                        size[2] * 1.5,
+                    ]
+                })
+            );
+
+            outputPanel = union(punchedPanel, panelEdge)
         }
 
-        const parts = [basePlate]
-        punchPoints.forEach(punchPt => {
-            parts.push(translate([punchPt.x, punchPt.y, 0], punch))
-        });
-
-        return subtract(...parts)
+        return outputPanel
     }
 
     /**
@@ -68,15 +114,25 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} param0 
      * @returns ...
      */
-    const meshCuboid = ({ size, meshPanelThickness, radius, segments, edgeMargin, pattern = 'tri', openTop = false }) => {
+    const meshCuboid = ({
+        size,
+        meshPanelThickness,
+        radius,
+        segments = 16,
+        edgeMargin,
+        pattern = 'tri',
+        openTop = false,
+    }) => {
         const specs = {
-            meshPanelThickness: meshPanelThickness || maths.inchesToMM(3 / 32),
+            meshPanelThickness: meshPanelThickness || maths.inchesToMm(3 / 32),
             edgeMargin: edgeMargin || radius * 2,
         }
         specs.marginOffset = specs.edgeMargin * 2;
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
+        console.log(baseCuboidBb);
+        console.log(measureDimensions(baseCuboid));
 
         // [x,y,z (default)]
         const mPanelSpecs = [
@@ -122,7 +178,18 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} opts 
      * @returns ...
      */
-    const meshCylinder = ({ radius, height, segments = 16, thickness = 2, edgeMargin, meshRadius, meshMinWidth, meshSegments = 16 }) => {
+    const meshCylinder = ({
+        radius,
+        height,
+        segments = 16,
+        thickness = 2,
+        edgeMargin,
+        edgeInsets = [0, 0],
+        edgeOffsets = [0, 0],
+        meshRadius,
+        meshMinWidth,
+        meshSegments = 16,
+    }) => {
         const specs = {
             edgeMargin: edgeMargin || meshMinWidth
         }
@@ -151,7 +218,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 { modes: ['min', 'center', 'center'] },
                 rotate(
                     [0, Math.PI / 2, 0],
-                    cylinder({ radius: meshRadius, height: radius + (meshRadius / 2), segments: meshSegments })
+                    cylinder({ radius: meshRadius, height: radius * 2, segments: meshSegments })
                 )
             )))
         }
@@ -173,7 +240,67 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             union(...punches)
         )
 
-        let punchedTube = subtract(baseShape, completePunch)
+        let reinforcedTube = baseShape;
+
+        const hasInset = edgeInsets.some(insetVal => insetVal > 0)
+        if (hasInset) {
+            edgeInsets.forEach((insetWidth, idx) => {
+                if (insetWidth === 0) {
+                    return
+                }
+                const isTop = idx === 0;
+                const insetHeight = insetWidth * Math.sqrt(3);
+                const sectionAlignOpts = isTop
+                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                const ringAlignOpts = isTop
+                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+
+                const triangleSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] })
+                const insetSection = align(
+                    sectionAlignOpts,
+                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                );
+                let insetRing = align(
+                    ringAlignOpts,
+                    extrudeRotate({ segments }, translate([radius - thickness - insetWidth, 0, 0], insetSection))
+                );
+
+                reinforcedTube = union(reinforcedTube, insetRing)
+            })
+        }
+
+        const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
+        if (hasOffset) {
+            edgeOffsets.forEach((offsetWidth, idx) => {
+                if (offsetWidth === 0) {
+                    return
+                }
+                const isTop = idx === 0;
+                const offsetHeight = offsetWidth * Math.sqrt(3);
+                const sectionAlignOpts = isTop
+                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                const ringAlignOpts = isTop
+                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+
+                const triangleSection = mirror({ normal: [1, 0, 0] }, triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] }));
+                const offsetSection = align(
+                    sectionAlignOpts,
+                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                );
+                let offsetRing = align(
+                    ringAlignOpts,
+                    extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection))
+                );
+
+                reinforcedTube = union(reinforcedTube, offsetRing)
+            })
+        }
+
+        let punchedTube = subtract(reinforcedTube, completePunch)
         for (let idx = 0; idx < numPunchDiscs - 1; idx++) {
             const zOffset = discHeightInterval * idx;
             let discRotation = [0, 0, 0]
@@ -195,7 +322,10 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {*} param0 
      * @returns ...
      */
-    const frameCuboid = ({ size, frameWidth }) => {
+    const frameCuboid = ({
+        size,
+        frameWidth,
+    }) => {
         const outerCuboid = cuboid({ size });
 
         return outerCuboid;

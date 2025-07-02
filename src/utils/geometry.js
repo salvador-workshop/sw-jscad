@@ -1,5 +1,10 @@
 "use strict"
 
+const geoCuboid = require('./geo-cuboid');
+const geoRectangle = require('./geo-rectangle');
+const geoRegPoly = require('./geo-cuboid');
+const geoTriangle = require('./geo-triangle');
+
 /**
  * ...
  * @namespace utils.geometry
@@ -7,7 +12,7 @@
 
 /**
  * Finds the central point (avg.) between the given points
- * @param {[]} points
+ * @param {number[]} points
  * @memberof utils.geometry.points
  * @returns central point (avg.) between the given points
  */
@@ -39,7 +44,7 @@ const ptCentroid = (points, mode = '3d') => {
 }
 
 const geometryUtils = ({ lib, swLib }) => {
-    const { maths } = swLib.utils;
+    const { maths } = swLib.core;
 
     return {
         /**
@@ -138,69 +143,10 @@ const geometryUtils = ({ lib, swLib }) => {
         points: {
             centroid: ptCentroid,
         },
-        /**
-         * Functions related to regular polygons
-         * @memberof utils.geometry
-         * @namespace regPoly
-         */
-        regPoly: {
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            sideLengthFromApothem: (apothem, numSides) => {
-                return apothem * 2 * Math.tan(Math.PI / numSides);
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            sideLengthFromCircumRadius: (circumradius, numSides) => {
-                return circumradius * 2 * Math.sin(Math.PI / numSides);
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            apothemFromCircumradius: (circumradius, numSides) => {
-                return circumradius * Math.cos(Math.PI / numSides)
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            apothemFromSideLength: (sideLength, numSides) => {
-                return sideLength / 2 * Math.tan(Math.PI / numSides)
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            circumradiusFromApothem: (apothem, numSides) => {
-                return apothem / Math.cos(Math.PI / numSides);
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            circumradiusFromSideLength: (sideLength, numSides) => {
-                return sideLength / 2 * Math.sin(Math.PI / numSides)
-            },
-            /**
-             * ...
-             * @memberof utils.geometry.regPoly
-             * @returns ...
-             */
-            interiorAngle: (numSides) => {
-                return 2 * Math.PI / numSides;
-            },
-        }
+        cuboid: geoCuboid.init({ lib, swLib }),
+        rectangle: geoRectangle.init({ lib, swLib }),
+        regPoly: geoRegPoly.init({ lib, swLib }),
+        triangle: geoTriangle.init({ lib, swLib }),
     }
 }
 

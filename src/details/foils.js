@@ -56,7 +56,6 @@ const foilBuilder = ({ lib }) => {
         for (let index = 1; index < opts.numLobes; index++) {
             rotationAngles.push(centralAngle * index);
         }
-        // console.log(rotationAngles);
 
         const rotatedLobes = rotationAngles.map(angle => {
             return rotate([0, 0, angle], alignedLobeCircle);
@@ -107,9 +106,7 @@ const foilBuilder = ({ lib }) => {
         let cutLobe = subtract(alignedLobeCircle, cutBlock);
 
         const profileBbox = measureBoundingBox(geomProfile);
-        console.log(profileBbox);
         const profileSize = [profileBbox[1][0] - profileBbox[0][0], profileBbox[1][1] - profileBbox[0][1]];
-        console.log(profileSize);
         const negProfile = subtract(rectangle({ size: [profileSize[0] + 1, profileSize[1] + 1] }), geomProfile);
         const negProfileCut = subtract(negProfile, translate([(profileSize[0] + 2) / 2, 0, 0], rectangle({ size: [profileSize[0] + 2, profileSize[1] + 2] })));
         const negProfileAdj = translate([profileSize[0] / 2, 0, 0], negProfileCut);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: core/position.js</title>
+    <title>JSDoc: Source: utils/geo-rectangle.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: core/position.js</h1>
+    <h1 class="page-title">Source: utils/geo-rectangle.js</h1>
 
     
 
@@ -29,45 +29,33 @@
             <pre class="prettyprint source linenums"><code>"use strict"
 
 /**
- * ...
- * @namespace core.position
+ * Rectangle calculations
+ * @memberof utils.geometry
+ * @namespace rectangle
  */
 
-const positionUtils = ({ lib }) => {
-    /**
-     * Measures key info, and presents it in a readable manner, like `{ size: { x: 99, y: 99, z: 99 }, min: { ... }, max: { ... } }`
-     * @memberof core.position
-     * @instance
-     * @returns ...
-     */
-    const measure = (inputGeom) => {
-        const {
-            measureDimensions,
-            measureBoundingBox,
-        } = lib.measurements
+const geoRectangle = ({ lib, swLib }) => {
 
-        return {
-            boundingBox: measureBoundingBox(inputGeom),
-            dimensions: measureDimensions(inputGeom),
-        }
-    };
+    const getControlPoints = (length, width) => {
+        return null;
+    }
+
+    const centre = (length, width) => {
+        return null;
+    }
+
+    const diagonalLength = (length, width) => {
+        return null;
+    }
 
     return {
-        measure,
-        /**
-         * Gets the keypoints for a given object
-         * @memberof core.position
-         * @instance
-         * @returns ...
-         */
-        getKeypoints: (inputGeom) => {
-            // keypoints: box corners, midpoints of edges, midpoints of box faces
-            return null;
-        }
+        getControlPoints,
+        centre,
+        diagonalLength,
     }
 }
 
-module.exports = { init: positionUtils };
+module.exports = { init: geoRectangle };
 </code></pre>
         </article>
     </section>
