@@ -18,15 +18,13 @@ const textUtils = ({ lib }) => {
     const { measureDimensions, measureBoundingBox } = lib.measurements;
 
     /**
-     * Creates a simple 3D line of text
+     * Creates a simple 2D line of text
      * @memberof core.text
      * @instance
      * @param {*} param0 
      * @returns ...
      */
-    const flatText = (opts) => {
-        if (opts.message === undefined || opts.message.length === 0) return []
-
+    const basicText = (opts) => {
         const lineRadius = opts.charLineWidth / 2
         const lineCorner = circle({ radius: lineRadius })
 
@@ -36,12 +34,31 @@ const textUtils = ({ lib }) => {
             const corners = segmentPoints.map((point) => translate(point, lineCorner))
             lineSegments.push(hullChain(corners))
         })
-        const message2D = union(lineSegments)
+        return union(lineSegments)
+    }
+
+    /**
+     * Creates a simple 3D line of text
+     * @memberof core.text
+     * @instance
+     * @param {*} param0 
+     * @returns ...
+     */
+    const flatText = (opts) => {
+        if (opts.message === undefined || opts.message.length === 0) return []
+
+        const message2D = basicText({
+            message: opts.message,
+            fontSize: opts.fontSize,
+            charLineWidth: opts.charLineWidth
+        })
         const message3D = extrudeLinear({ height: opts.extrudeHeight || DEFAULT_EXTRUDE_HEIGHT }, message2D)
+
         return align({ modes: ['center', 'center', 'center'] }, message3D)
     }
 
     return {
+        basicText,
         flatText,
         /**
          * Creates a rectangular panel with engraved text
