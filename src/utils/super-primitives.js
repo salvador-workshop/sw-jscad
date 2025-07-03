@@ -12,7 +12,7 @@
 //---------------------
 
 const superPrimitivesInit = ({ lib, swLib }) => {
-    const { cuboid, cylinder, triangle } = lib.primitives
+    const { cuboid, cylinder, triangle, rectangle } = lib.primitives
     const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
@@ -30,6 +30,67 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             punchPoints = geometry.getSquarePtsInArea(length, width, radius)
         }
         return punchPoints
+    }
+
+    /**
+     * Generates an edge flange profile
+     * @param {string} type - "inset" or "offset"
+     * @param {number} width 
+     * @param {number} thickness 
+     * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
+     */
+    const edgeFlangeProfile = (type = 'inset', width, thickness, flipOpts = []) => {
+        let triangleAlignOpts = {}
+        let triangleMirrorOpts = null
+        let bearingSurfaceAlignOpts = {}
+        let mirrorOpts = null
+
+        const height = geometry.triangle.solve30DegRtTriangle({ short: width }).long;
+
+        if (type === 'inset') {
+            triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
+            bearingSurfaceAlignOpts = { modes: ['max', 'max', 'center'], relativeTo: [0, 0, 0] }
+
+            if (flipOpts.includes('vertical')) {
+                triangleAlignOpts.modes = ['max', 'max', 'center']
+                bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+                triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+            }
+        } else if (type === 'offset') {
+            triangleAlignOpts = { modes: ['min', 'min', 'center'], relativeTo: [0, 0, 0] }
+            bearingSurfaceAlignOpts = { modes: ['min', 'max', 'center'], relativeTo: [0, 0, 0] }
+            mirrorOpts = { normal: [1, 0, 0] }
+
+            if (flipOpts.includes('vertical')) {
+                triangleAlignOpts.modes = ['max', 'max', 'center']
+                bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+                triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+            }
+        } else {
+            return null;
+        }
+
+        let triangleProfile = triangle({ type: 'SAS', values: [width, TAU / 4, height] });
+        if (triangleMirrorOpts != null) {
+            triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
+        }
+
+        const triangleSection = align(
+            triangleAlignOpts,
+            triangleProfile
+        )
+
+        const bearingSurface = align(
+            bearingSurfaceAlignOpts,
+            rectangle({ size: [width, thickness] })
+        )
+
+        let finalShape = union(bearingSurface, triangleSection);
+        if (mirrorOpts != null) {
+            finalShape = mirror(mirrorOpts, finalShape)
+        }
+
+        return align({ modes: ['center', 'center', 'center'] }, finalShape)
     }
 
     /**
@@ -249,19 +310,24 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                const insetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
-                const sectionAlignOpts = isTop
-                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
-                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
-                const ringAlignOpts = isTop
-                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
-                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+                // const insetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
+                // const sectionAlignOpts = isTop
+                //     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                //     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                // const ringAlignOpts = isTop
+                //     ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                //     : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
 
-                const triangleSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] })
-                const insetSection = align(
-                    sectionAlignOpts,
-                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
-                );
+                // const triangleSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] })
+                // const insetSection = align(
+                //     sectionAlignOpts,
+                //     isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                // );
+                const flipOpts = []
+                if (!isTop) {
+                    flipOpts.push('vertical')
+                }
+                const insetSection = edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
                 let insetRing = align(
                     ringAlignOpts,
                     extrudeRotate({ segments }, translate([radius - thickness - insetWidth, 0, 0], insetSection))
@@ -278,19 +344,24 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                const offsetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
-                const sectionAlignOpts = isTop
-                    ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
-                    : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
-                const ringAlignOpts = isTop
-                    ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
-                    : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+                // const offsetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
+                // const sectionAlignOpts = isTop
+                //     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                //     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                // const ringAlignOpts = isTop
+                //     ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
+                //     : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
 
-                const triangleSection = mirror({ normal: [1, 0, 0] }, triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] }));
-                const offsetSection = align(
-                    sectionAlignOpts,
-                    isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
-                );
+                // const triangleSection = mirror({ normal: [1, 0, 0] }, triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] }));
+                // const offsetSection = align(
+                //     sectionAlignOpts,
+                //     isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
+                // );
+                const flipOpts = []
+                if (!isTop) {
+                    flipOpts.push('vertical')
+                }
+                const offsetSection = edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
                 let offsetRing = align(
                     ringAlignOpts,
                     extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection))
@@ -332,6 +403,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     }
 
     return {
+        edgeFlangeProfile,
         frameCuboid,
         meshPanel,
         meshCuboid,

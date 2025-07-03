@@ -96,6 +96,7 @@ const geoTriangle = ({ lib, swLib }) => {
         incentre,
         incircleRadius,
         eulerLine,
+        solve30DegRtTriangle,
     }
 }
 
