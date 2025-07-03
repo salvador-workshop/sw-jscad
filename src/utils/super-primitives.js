@@ -269,6 +269,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
+        const baseCuboidCoords = geometry.cuboid.getCuboidCoords(baseCuboid)
+        const baseCuboidCtrlPoints = geometry.cuboid.getCuboidCtrlPoints(baseCuboid)
 
         // [x,y,z (default)]
         const mPanelSpecs = [
@@ -301,24 +303,58 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 edgeOffsets
             }));
 
+            const hasInset = edgeInsets.some(insetVal => insetVal > 0)
+            const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
+            console.log(`meshCuboid() - hasInset: ${hasInset}`)
+            console.log(`meshCuboid() - hasOffset: ${hasOffset}`)
+
+            let maxInset = 0;
+            if (hasInset) {
+                maxInset = Math.max(...edgeInsets)
+            }
+            let maxOffset = 0;
+            if (hasOffset) {
+                maxOffset = Math.max(...edgeOffsets)
+            }
+
             let flipNormal = [0, 0, 0]
+            let aligmentModeA = ['center', 'center', 'min']
+            let aligmentModeB = ['center', 'center', 'max']
+            let relPointA = baseCuboidCtrlPoints.f6
+            let relPointB = baseCuboidCtrlPoints.f5
+
+            // [left, front, bottom]
+            // [right, back, top]
             if (idx === 0) {
                 flipNormal = [1, 0, 0]
+                aligmentModeA = ['min', 'center', 'center']
+                aligmentModeB = ['max', 'center', 'center']
+                relPointA = baseCuboidCtrlPoints.f2
+                relPointA[0] = relPointA[0] - maxOffset
+                relPointB = baseCuboidCtrlPoints.f1
+                relPointB[0] = relPointB[0] + maxOffset
             } else if (idx === 1) {
                 flipNormal = [0, 1, 0]
-            } else {
-                flipNormal = [0, 0, 1]
+                aligmentModeA = ['center', 'min', 'center']
+                aligmentModeB = ['center', 'max', 'center']
+                relPointA = baseCuboidCtrlPoints.f4
+                relPointA[1] = relPointA[1] - maxOffset
+                relPointB = baseCuboidCtrlPoints.f3
+                relPointB[1] = relPointB[1] + maxOffset
             }
 
             const flippedPanel = mirror({ normal: flipNormal }, rotatedPanel)
 
+            // [left, front, bottom]
             const skipBottom = openBottom && idx == 2;
             if (!skipBottom) {
-                parts.push(align({ modes: ['min', 'min', 'min'], relativeTo: baseCuboidBb[0] }, rotatedPanel))
+                parts.push(align({ modes: aligmentModeA, relativeTo: relPointA }, rotatedPanel))
             }
+
+            // [right, back, top]
             const skipTop = openTop && idx == 2;
             if (!skipTop) {
-                parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, flippedPanel))
+                parts.push(align({ modes: aligmentModeB, relativeTo: relPointB }, flippedPanel))
             }
         });
 
