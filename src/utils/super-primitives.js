@@ -17,7 +17,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
     const { measureBoundingBox, measureDimensions } = lib.measurements
-    const { extrudeRotate } = lib.extrusions
+    const { extrudeRotate, extrudeLinear } = lib.extrusions
 
     const { TAU } = lib.maths.constants
 
@@ -181,8 +181,11 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         radius,
         segments = 16,
         edgeMargin,
+        edgeInsets = [0, 0],
+        edgeOffsets = [0, 0],
         pattern = 'tri',
         openTop = false,
+        openBottom = false,
     }) => {
         const specs = {
             meshPanelThickness: meshPanelThickness || maths.inchesToMm(3 / 32),
@@ -191,9 +194,9 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         specs.marginOffset = specs.edgeMargin * 2;
 
         const baseCuboid = cuboid({ size })
+        const baseCuboidCoords = geometry.cuboid.getCuboidCoords(baseCuboid)
+        const baseCuboidCtrlPoints = geometry.cuboid.getCuboidCtrlPoints(baseCuboid)
         const baseCuboidBb = measureBoundingBox(baseCuboid);
-        console.log(baseCuboidBb);
-        console.log(measureDimensions(baseCuboid));
 
         // [x,y,z (default)]
         const mPanelSpecs = [
@@ -224,14 +227,118 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 pattern,
             }));
 
-            parts.push(align({ modes: ['min', 'min', 'min'], relativeTo: baseCuboidBb[0] }, rotatedPanel))
+            const skipBottom = openBottom && idx == 2;
+            if (!skipBottom) {
+                parts.push(align({ modes: ['min', 'min', 'min'], relativeTo: baseCuboidBb[0] }, rotatedPanel))
+            }
             const skipTop = openTop && idx == 2;
             if (!skipTop) {
                 parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, rotatedPanel))
             }
         });
 
-        return union(...parts)
+        let mainShape = align({ modes: ['center', 'center', 'center'] }, union(...parts))
+
+        const hasInset = edgeInsets.some(insetVal => insetVal > 0)
+        const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
+
+        if (hasInset) {
+            edgeInsets.forEach((insetWidth, idx) => {
+                if (insetWidth === 0) {
+                    return
+                }
+                const isTop = idx === 0;
+                let sectionAlignOpts = {}
+                let flangeAlignOpts = {}
+                const flipOpts = []
+                if (isTop) {
+                    sectionAlignOpts = { modes: ['min', 'min', 'max'], relativeTo: [0, 0, size[2]], }
+                    flangeAlignOpts = { modes: ['center', 'center', 'max'], relativeTo: [0, 0, size[2]], }
+                    flipOpts.push('vertical')
+                } else {
+                    sectionAlignOpts = { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], }
+                    flangeAlignOpts = { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], }
+                }
+                const insetSection = align(
+                    sectionAlignOpts,
+                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                )
+                const insetFlanges = [
+                    align(
+                        { modes: ['min', 'center', 'center'], relativeTo: [baseCuboidCoords.right, 0, 0] },
+                        rotate([TAU / 4, 0, TAU / 2], extrudeLinear({ height: 10 }, insetSection))
+                    ),
+                    align(
+                        { modes: ['center', 'min', 'center'], relativeTo: [0, baseCuboidCoords.back, 0] },
+                        rotate([TAU / 4, 0, TAU * 0.75], extrudeLinear({ height: 10 }, insetSection))
+                    ),
+                    align(
+                        { modes: ['max', 'center', 'center'], relativeTo: [baseCuboidCoords.left, 0, 0] },
+                        rotate([TAU / 4, 0, 0], extrudeLinear({ height: 10 }, insetSection))
+                    ),
+                    align(
+                        { modes: ['center', 'max', 'center'], relativeTo: [0, baseCuboidCoords.front, 0] },
+                        rotate([TAU / 4, 0, TAU / 4], extrudeLinear({ height: 10 }, insetSection))
+                    ),
+                ]
+                const insetReinforcement = align(
+                    flangeAlignOpts,
+                    union(...insetFlanges)
+                )
+
+                mainShape = union(insetReinforcement, mainShape)
+            })
+        }
+
+        if (hasOffset) {
+            edgeOffsets.forEach((offsetWidth, idx) => {
+                if (offsetWidth === 0) {
+                    return
+                }
+                const isTop = idx === 0;
+                let sectionAlignOpts = {};
+                let flangeAlignOpts = {};
+                const flipOpts = []
+                if (isTop) {
+                    sectionAlignOpts = { modes: ['min', 'min', 'max'], relativeTo: [0, 0, size[2]], }
+                    flangeAlignOpts = { modes: ['center', 'center', 'max'], relativeTo: [0, 0, size[2]], }
+                    flipOpts.push('vertical')
+                } else {
+                    sectionAlignOpts = { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                    flangeAlignOpts = { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
+                }
+                const offsetSection = align(
+                    sectionAlignOpts,
+                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                )
+                const offsetFlanges = [
+                    align(
+                        { modes: ['max', 'center', 'center'], relativeTo: [baseCuboidCoords.right, 0, 0] },
+                        rotate([TAU / 4, 0, TAU / 2], extrudeLinear({ height: 10 }, offsetSection))
+                    ),
+                    align(
+                        { modes: ['center', 'max', 'center'], relativeTo: [0, baseCuboidCoords.back, 0] },
+                        rotate([TAU / 4, 0, TAU * 0.75], extrudeLinear({ height: 10 }, offsetSection))
+                    ),
+                    align(
+                        { modes: ['min', 'center', 'center'], relativeTo: [baseCuboidCoords.left, 0, 0] },
+                        rotate([TAU / 4, 0, 0], extrudeLinear({ height: 10 }, offsetSection))
+                    ),
+                    align(
+                        { modes: ['center', 'min', 'center'], relativeTo: [0, baseCuboidCoords.front, 0] },
+                        rotate([TAU / 4, 0, TAU / 4], extrudeLinear({ height: 10 }, offsetSection))
+                    ),
+                ]
+                const offsetReinforcement = align(
+                    flangeAlignOpts,
+                    union(...offsetFlanges)
+                )
+
+                mainShape = union(offsetReinforcement, mainShape)
+            })
+        }
+
+        return mainShape;
     }
 
     /**
@@ -304,6 +411,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         let reinforcedTube = baseShape;
 
         const hasInset = edgeInsets.some(insetVal => insetVal > 0)
+        const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
+
         if (hasInset) {
             edgeInsets.forEach((insetWidth, idx) => {
                 if (insetWidth === 0) {
@@ -334,7 +443,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             })
         }
 
-        const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
         if (hasOffset) {
             edgeOffsets.forEach((offsetWidth, idx) => {
                 if (offsetWidth === 0) {
