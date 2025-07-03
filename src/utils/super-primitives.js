@@ -249,7 +249,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                const insetHeight = insetWidth * Math.sqrt(3);
+                const insetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
                 const sectionAlignOpts = isTop
                     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
                     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
@@ -278,7 +278,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                const offsetHeight = offsetWidth * Math.sqrt(3);
+                const offsetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
                 const sectionAlignOpts = isTop
                     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
                     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
