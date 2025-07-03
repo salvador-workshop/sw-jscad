@@ -279,7 +279,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             },
             {
                 size: [size[0], size[2], specs.meshPanelThickness],
-                rotation: [TAU / 4, 0, 0],
+                rotation: [TAU / -4, 0, 0],
                 scaleFactors: [1, size[1] / specs.meshPanelThickness * 3, 1],
             },
             {
@@ -301,13 +301,24 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 edgeOffsets
             }));
 
+            let flipNormal = [0, 0, 0]
+            if (idx === 0) {
+                flipNormal = [1, 0, 0]
+            } else if (idx === 1) {
+                flipNormal = [0, 1, 0]
+            } else {
+                flipNormal = [0, 0, 1]
+            }
+
+            const flippedPanel = mirror({ normal: flipNormal }, rotatedPanel)
+
             const skipBottom = openBottom && idx == 2;
             if (!skipBottom) {
                 parts.push(align({ modes: ['min', 'min', 'min'], relativeTo: baseCuboidBb[0] }, rotatedPanel))
             }
             const skipTop = openTop && idx == 2;
             if (!skipTop) {
-                parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, rotatedPanel))
+                parts.push(align({ modes: ['max', 'max', 'max'], relativeTo: baseCuboidBb[1] }, flippedPanel))
             }
         });
 
