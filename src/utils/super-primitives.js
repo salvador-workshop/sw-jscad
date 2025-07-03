@@ -273,13 +273,13 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         // [x,y,z (default)]
         const mPanelSpecs = [
             {
-                size: [size[2], size[1], specs.meshPanelThickness],
-                rotation: [0, Math.PI / 2, 0],
+                size: [size[1], size[2], specs.meshPanelThickness],
+                rotation: [TAU / 4, 0, TAU / 4],
                 scaleFactors: [size[0] / specs.meshPanelThickness * 3, 1, 1],
             },
             {
                 size: [size[0], size[2], specs.meshPanelThickness],
-                rotation: [Math.PI / 2, 0, 0],
+                rotation: [TAU / 4, 0, 0],
                 scaleFactors: [1, size[1] / specs.meshPanelThickness * 3, 1],
             },
             {
