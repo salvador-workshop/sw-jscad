@@ -310,25 +310,22 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                // const insetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
-                // const sectionAlignOpts = isTop
-                //     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
-                //     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
-                // const ringAlignOpts = isTop
-                //     ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
-                //     : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
-
-                // const triangleSection = triangle({ type: 'SAS', values: [insetWidth, TAU / 4, insetHeight] })
-                // const insetSection = align(
-                //     sectionAlignOpts,
-                //     isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
-                // );
+                let sectionAlignOpts = {}
+                let ringAlignOpts = {}
                 const flipOpts = []
-                if (!isTop) {
+                if (isTop) {
+                    sectionAlignOpts = { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    ringAlignOpts = { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
                     flipOpts.push('vertical')
+                } else {
+                    sectionAlignOpts = { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], }
+                    ringAlignOpts = { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], }
                 }
-                const insetSection = edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
-                let insetRing = align(
+                const insetSection = align(
+                    sectionAlignOpts,
+                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                )
+                const insetRing = align(
                     ringAlignOpts,
                     extrudeRotate({ segments }, translate([radius - thickness - insetWidth, 0, 0], insetSection))
                 );
@@ -344,25 +341,22 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                     return
                 }
                 const isTop = idx === 0;
-                // const offsetHeight = geometry.triangle.solve30DegRtTriangle({ short: insetWidth }).long;
-                // const sectionAlignOpts = isTop
-                //     ? { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
-                //     : { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
-                // const ringAlignOpts = isTop
-                //     ? { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
-                //     : { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
-
-                // const triangleSection = mirror({ normal: [1, 0, 0] }, triangle({ type: 'SAS', values: [offsetWidth, TAU / 4, offsetHeight] }));
-                // const offsetSection = align(
-                //     sectionAlignOpts,
-                //     isTop ? mirror({ normal: [0, 1, 0] }, triangleSection) : triangleSection,
-                // );
+                let sectionAlignOpts = {};
+                let ringAlignOpts = {};
                 const flipOpts = []
-                if (!isTop) {
+                if (isTop) {
+                    sectionAlignOpts = { modes: ['min', 'min', 'max'], relativeTo: [0, 0, height], }
+                    ringAlignOpts = { modes: ['center', 'center', 'max'], relativeTo: [0, 0, height], }
                     flipOpts.push('vertical')
+                } else {
+                    sectionAlignOpts = { modes: ['min', 'min', 'min'], relativeTo: [0, 0, 0], };
+                    ringAlignOpts = { modes: ['center', 'center', 'min'], relativeTo: [0, 0, 0], };
                 }
-                const offsetSection = edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
-                let offsetRing = align(
+                const offsetSection = align(
+                    sectionAlignOpts,
+                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                )
+                const offsetRing = align(
                     ringAlignOpts,
                     extrudeRotate({ segments }, translate([radius, 0, 0], offsetSection))
                 );
