@@ -7,7 +7,7 @@
 
 const init = ({ lib, swLib }) => {
     const utils = {
-        transform: require('./transform').init({ lib }),
+        transform: require('./transform').init({ lib, swLib }),
     }
 
     // Dependent on lib and core modules
