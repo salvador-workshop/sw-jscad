@@ -5,12 +5,28 @@
  * @namespace utils.transform
  */
 
-const transformUtils = ({ lib }) => {
+const transformUtils = ({ lib, swLib }) => {
     const { subtract } = lib.booleans
     const { measureDimensions } = lib.measurements;
     const { cuboid } = lib.primitives
     const { align, mirror, rotate } = lib.transforms
     const { colorize } = lib.colors
+
+    /**
+     * ...
+     * @param {object} opts 
+     * @param {boolean} opts.reverse 
+     * @param {object[]} geoms 
+     */
+    const stack = ({ reverse = false }, geoms) => {
+        let stackHeight = 0
+        const geomList = reverse ? geoms.reverse() : geoms
+        return geomList.map(geom => {
+            const alignedGeom = align({ modes: ['center', 'center', 'min'], relativeTo: [0, 0, stackHeight] }, geom)
+            stackHeight = stackHeight + measureDimensions(geom)[2]
+            return alignedGeom
+        })
+    }
 
     return {
         /**
@@ -87,7 +103,8 @@ const transformUtils = ({ lib }) => {
             cutAssembly = subtract(cutAssembly, cutBox2);
 
             return cutAssembly
-        }
+        },
+        stack
     }
 }
 

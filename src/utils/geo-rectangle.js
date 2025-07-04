@@ -13,15 +13,10 @@ const geoRectangle = ({ lib, swLib }) => {
         measureCenter
     } = lib.measurements;
 
-    const getRectangleCoords = (rectGeom) => {
-        const bBox = measureBoundingBox(rectGeom);
+    const { position } = swLib.core
 
-        return {
-            right: bBox[1][0], // (+X)
-            left: bBox[0][0], // (-X)
-            back: bBox[1][1], // (+Y)
-            front: bBox[0][1], // (-Y)
-        }
+    const getRectangleCoords = (rectGeom) => {
+        return position.getGeomCoords(rectGeom)
     }
 
     const getRectangleCorners = (rectGeom) => {

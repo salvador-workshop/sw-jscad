@@ -13,17 +13,10 @@ const geoCuboid = ({ lib, swLib }) => {
         measureCenter
     } = lib.measurements;
 
-    const getCuboidCoords = (cuboidGeom) => {
-        const bBox = measureBoundingBox(cuboidGeom);
+    const { position } = swLib.core
 
-        return {
-            right: bBox[1][0], // (+X)
-            left: bBox[0][0], // (-X)
-            back: bBox[1][1], // (+Y)
-            front: bBox[0][1], // (-Y)
-            top: bBox[1][2], // (+Z)
-            bottom: bBox[0][2], // (-Z)
-        }
+    const getCuboidCoords = (cuboidGeom) => {
+        return position.getGeomCoords(cuboidGeom)
     }
 
     const getCuboidCorners = (cuboidGeom) => {
