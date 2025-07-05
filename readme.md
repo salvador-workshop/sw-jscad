@@ -6,8 +6,6 @@ Online viewer: [sw-jscad-viewer.netlify.app/](https://sw-jscad-viewer.netlify.ap
 API Docs: [salvador-workshop.github.io/sw-jscad/](https://salvador-workshop.github.io/sw-jscad/)  
 NPM package: [npmjs.com/package/sw-jscad](https://www.npmjs.com/package/sw-jscad)  
 
-![sw-jscad demo - gallery (light)](./static/img/gallery-3.jpg "sw-jscad demo - gallery (light)")
-
 ![sw-jscad demo - arch-foils](./static/img/collage-arch-foils.jpg "sw-jscad demo - arch-foils")
 
 ![sw-jscad demo - walls-roof](./static/img/collage-walls-roof.jpg "sw-jscad demo - walls-roof")
