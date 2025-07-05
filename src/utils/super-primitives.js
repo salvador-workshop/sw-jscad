@@ -265,7 +265,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             meshPanelThickness: meshPanelThickness || maths.inchesToMm(3 / 32),
             edgeMargin: edgeMargin || radius * 2,
         }
-        specs.marginOffset = specs.edgeMargin * 2;
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
@@ -297,7 +296,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 size: mPanelSpec.size,
                 radius,
                 segments,
-                marginOffset: specs.marginOffset,
+                edgeMargin: specs.edgeMargin,
                 pattern,
                 edgeInsets,
                 edgeOffsets
