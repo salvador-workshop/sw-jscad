@@ -14,6 +14,109 @@ const profileBuilder = ({ lib }) => {
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate } = lib.transforms
 
+  /**
+  * Edge profile: Circular portrusion in bottom half
+  * @memberof details.profiles.edge
+  * @instance
+  * @param {Object} opts 
+  * @param {number} opts.totalThickness - total thickness of edge
+  * @param {number} opts.topThickness - thickness of top (left intact by ornaments)
+  * @param {number} opts.smallOffset - small offset between portrusion and main edge
+  */
+  const circPortrusion = (opts) => {
+    const ornamentThickness = opts.totalThickness - opts.topThickness;
+    const smallOffset = opts.smallOffset || ornamentThickness / 8;
+    const circRadius = ornamentThickness - (smallOffset * 3);
+    const profileWidth = smallOffset * 3 + circRadius;
+
+    const baseRect = rectangle({ size: [profileWidth, opts.totalThickness] });
+    const margin = rectangle({ size: [EDGE_PROFILE_MARGIN, opts.totalThickness] });
+    const alignedMargin = align({ modes: ['max', 'center', 'none'], relativeTo: [profileWidth / -2, 0, 0] }, margin)
+
+    const cutaway = translate([0, opts.topThickness / -2], rectangle({ size: [profileWidth, ornamentThickness] }));
+    const cutShape = subtract(baseRect, cutaway);
+    const baseShape = union(cutShape, alignedMargin);
+
+    const portCircle = circle({ radius: circRadius, center: [profileWidth / -2 + smallOffset, opts.totalThickness / 2 - opts.topThickness - smallOffset] });
+    const portArc = intersect(baseRect, portCircle);
+    const smallCorner1 = rectangle({
+      size: [smallOffset, smallOffset * 2], center: [
+        profileWidth / -2 + (smallOffset / 2),
+        opts.totalThickness / -2 + (smallOffset * 2),
+      ]
+    });
+    const smallCorner2 = square({
+      size: smallOffset * 2, center: [
+        profileWidth / 2 - (smallOffset * 2),
+        opts.totalThickness / 2 - opts.topThickness,
+      ]
+    });
+    const ornament = union(portArc, smallCorner1, smallCorner2)
+
+    return align({ modes: ['center', 'center', 'none'] }, union(baseShape, ornament));
+  }
+
+  /**
+   * Generates an edge flange profile
+   * @param {string} type - "inset" or "offset"
+   * @param {number} width 
+   * @param {number} thickness 
+   * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
+   */
+  const edgeFlangeProfile = (type = 'inset', width, thickness, flipOpts = []) => {
+    let triangleAlignOpts = {}
+    let triangleMirrorOpts = null
+    let bearingSurfaceAlignOpts = {}
+    let mirrorOpts = null
+
+    const height = geometry.triangle.solve30DegRtTriangle({ short: width }).long;
+
+    if (type === 'inset') {
+      triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
+      bearingSurfaceAlignOpts = { modes: ['max', 'max', 'center'], relativeTo: [0, 0, 0] }
+
+      if (flipOpts.includes('vertical')) {
+        triangleAlignOpts.modes = ['max', 'max', 'center']
+        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+      }
+    } else if (type === 'offset') {
+      triangleAlignOpts = { modes: ['min', 'min', 'center'], relativeTo: [0, 0, 0] }
+      bearingSurfaceAlignOpts = { modes: ['min', 'max', 'center'], relativeTo: [0, 0, 0] }
+      mirrorOpts = { normal: [1, 0, 0] }
+
+      if (flipOpts.includes('vertical')) {
+        triangleAlignOpts.modes = ['max', 'max', 'center']
+        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+      }
+    } else {
+      return null;
+    }
+
+    let triangleProfile = triangle({ type: 'SAS', values: [width, TAU / 4, height] });
+    if (triangleMirrorOpts != null) {
+      triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
+    }
+
+    const triangleSection = align(
+      triangleAlignOpts,
+      triangleProfile
+    )
+
+    const bearingSurface = align(
+      bearingSurfaceAlignOpts,
+      rectangle({ size: [width, thickness] })
+    )
+
+    let finalShape = union(bearingSurface, triangleSection);
+    if (mirrorOpts != null) {
+      finalShape = mirror(mirrorOpts, finalShape)
+    }
+
+    return align({ modes: ['center', 'center', 'center'] }, finalShape)
+  }
+
   return {
     /**
      * Square with circular notches at corners.
@@ -132,47 +235,8 @@ const profileBuilder = ({ lib }) => {
 
         return align({ modes: ['center', 'center', 'none'] }, subtract(baseShape, cutaway));
       },
-      /**
-       * Edge profile: Circular portrusion in bottom half
-       * @memberof details.profiles.edge
-       * @instance
-       * @param {Object} opts 
-       * @param {number} opts.totalThickness - total thickness of edge
-       * @param {number} opts.topThickness - thickness of top (left intact by ornaments)
-       * @param {number} opts.smallOffset - small offset between portrusion and main edge
-       */
-      circPortrusion: (opts) => {
-        const ornamentThickness = opts.totalThickness - opts.topThickness;
-        const smallOffset = opts.smallOffset || ornamentThickness / 8;
-        const circRadius = ornamentThickness - (smallOffset * 3);
-        const profileWidth = smallOffset * 3 + circRadius;
-
-        const baseRect = rectangle({ size: [profileWidth, opts.totalThickness] });
-        const margin = rectangle({ size: [EDGE_PROFILE_MARGIN, opts.totalThickness] });
-        const alignedMargin = align({ modes: ['max', 'center', 'none'], relativeTo: [profileWidth / -2, 0, 0] }, margin)
-
-        const cutaway = translate([0, opts.topThickness / -2], rectangle({ size: [profileWidth, ornamentThickness] }));
-        const cutShape = subtract(baseRect, cutaway);
-        const baseShape = union(cutShape, alignedMargin);
-
-        const portCircle = circle({ radius: circRadius, center: [profileWidth / -2 + smallOffset, opts.totalThickness / 2 - opts.topThickness - smallOffset] });
-        const portArc = intersect(baseRect, portCircle);
-        const smallCorner1 = rectangle({
-          size: [smallOffset, smallOffset * 2], center: [
-            profileWidth / -2 + (smallOffset / 2),
-            opts.totalThickness / -2 + (smallOffset * 2),
-          ]
-        });
-        const smallCorner2 = square({
-          size: smallOffset * 2, center: [
-            profileWidth / 2 - (smallOffset * 2),
-            opts.totalThickness / 2 - opts.topThickness,
-          ]
-        });
-        const ornament = union(portArc, smallCorner1, smallCorner2)
-
-        return align({ modes: ['center', 'center', 'none'] }, union(baseShape, ornament));
-      },
+      circPortrusion,
+      edgeFlangeProfile,
     }
   }
 }
