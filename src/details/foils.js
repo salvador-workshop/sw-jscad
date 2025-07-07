@@ -5,7 +5,7 @@
  * @namespace details.foils
  */
 
-const foilBuilder = ({ lib }) => {
+const foilBuilder = ({ lib, swLib }) => {
     const { union, subtract, scission } = lib.booleans
     const { rotate, align, translate, mirror } = lib.transforms
     const { circle, cuboid, rectangle } = lib.primitives
