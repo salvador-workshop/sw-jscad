@@ -100,7 +100,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     insetSectionAlignOpts,
-                    profiles.edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    profiles.edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetReinforcement = align(
                     insetFlangeAlignOpts,
@@ -131,7 +131,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     offsetSectionAlignOpts,
-                    profiles.edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    profiles.edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetReinforcement = align(
                     offsetFlangeAlignOpts,
@@ -394,7 +394,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     sectionAlignOpts,
-                    profiles.edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    profiles.edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetRing = align(
                     ringAlignOpts,
@@ -424,7 +424,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     sectionAlignOpts,
-                    profiles.edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    profiles.edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetRing = align(
                     ringAlignOpts,

@@ -101,7 +101,7 @@ const profileBuilder = ({ lib }) => {
    * @param {number} thickness 
    * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
    */
-  const edgeFlangeProfile = (type = 'inset', width, thickness, flipOpts = []) => {
+  const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
     let triangleAlignOpts = {}
     let triangleMirrorOpts = null
     let bearingSurfaceAlignOpts = {}
@@ -239,7 +239,7 @@ const profileBuilder = ({ lib }) => {
       circNotch,
       circPortrusion,
     },
-    edgeFlangeProfile,
+    edgeFlange,
   }
 }
 
