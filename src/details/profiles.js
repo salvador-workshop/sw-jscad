@@ -1,18 +1,17 @@
 "use strict"
 
 /**
- * Builds cross-section profiles in gothic style.
- * Output profiles are centred at (0, 0, 0).
- * Edge profiles have a 1mm margin between all details and the flat (host) side.
+ * Builds various 2D profiles
  * @namespace details.profiles
  */
 
 const EDGE_PROFILE_MARGIN = 1;
 
 const profileBuilder = ({ lib, swLib }) => {
-  const { square, circle, rectangle } = lib.primitives
+  const { square, circle, rectangle, triangle } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate } = lib.transforms
+  const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
 
@@ -169,43 +168,40 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const triangles = {
     equilateral: ({ base, height }) => {
-      return null;
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    right45: ({ base, height }) => {
-      return null;
+    right45: ({ hypot, base }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    right30: ({ base, height }) => {
-      return null;
+    right30: ({ hypot, base, height }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    rightGolden: ({ base, height }) => {
-      return null;
+    rightGolden: ({ hypot, base, height }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    rightSilver: ({ base, height }) => {
-      return null;
+    rightSilver: ({ hypot, base, height }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    rightBronze: ({ base, height }) => {
-      return null;
+    rightBronze: ({ hypot, base, height }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
-    rightCopper: ({ base, height }) => {
-      return null;
+    rightCopper: ({ hypot, base, height }) => {
+      return triangle({ type: 'SAS', values: [base, TAU / 4, height] });
     },
   }
 
   const rectangles = {
-    right30: ({ base, height }) => {
-      return null;
-    },
     golden: ({ length, width }) => {
-      return null;
+      return rectangle({ size: [length, width] });
     },
     silver: ({ length, width }) => {
-      return null;
+      return rectangle({ size: [length, width] });
     },
     bronze: ({ length, width }) => {
-      return null;
+      return rectangle({ size: [length, width] });
     },
     copper: ({ length, width }) => {
-      return null;
+      return rectangle({ size: [length, width] });
     },
   }
 
