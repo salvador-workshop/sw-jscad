@@ -155,55 +155,60 @@ const profileBuilder = ({ lib, swLib }) => {
     // }
   }
 
+  const createEllipse = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    return ellipse({ radius: validSize });
+  }
+
   const ellipses = {
     golden: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.PHI,
-        width || length / constants.PHI
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.PHI })
     },
     sixtyThirty: ({ length, width }) => {
-      const validSize = [
-        length || width * 2,
-        width || length / 2
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: 2 })
     },
     silver: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.SILVER_RATIO,
-        width || length / constants.SILVER_RATIO
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.SILVER_RATIO })
     },
     bronze: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.BRONZE_RATIO,
-        width || length / constants.BRONZE_RATIO
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.BRONZE_RATIO })
     },
     copper: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.COPPER_RATIO,
-        width || length / constants.COPPER_RATIO
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.COPPER_RATIO })
     },
     superGolden: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.SUPERGOLDEN_RATIO,
-        width || length / constants.SUPERGOLDEN_RATIO
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
     },
     plastic: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.PLASTIC_RATIO,
-        width || length / constants.PLASTIC_RATIO
-      ]
-      return ellipse({ radius: validSize });
+      return createEllipse({ length, width, ratio: constants.PLASTIC_RATIO })
+    },
+  }
+
+  const straightBeam = ({ length, thickness, offsetWidth }) => {
+    return null
+  }
+  const cBeam = ({ length, thickness, offsetWidth }) => {
+    return null
+  }
+
+  const reinforcement = {
+    straight: straightBeam,
+    corner: ({ length, thickness, offsetWidth }) => {
+      return null
+    },
+    cBeam,
+    uBeam: cBeam,
+    tBeam: ({ length, thickness, offsetWidth }) => {
+      return null
+    },
+    doubleTBeam: ({ length, thickness, offsetWidth }) => {
+      return null
+    },
+    hexBeam: ({ length, thickness, offsetWidth }) => {
+      return null
     },
   }
 
@@ -439,6 +444,7 @@ const profileBuilder = ({ lib, swLib }) => {
     rectangle: rectangles,
     curves,
     ellipse: ellipses,
+    reinforcement,
   }
 }
 
