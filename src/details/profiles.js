@@ -17,6 +17,83 @@ const profileBuilder = ({ lib, swLib }) => {
   const { geometry } = swLib.utils
   const { constants } = swLib.core
 
+  const triangles = {
+    equilateral: ({ base }) => {
+      return triangle({ type: 'SSS', values: [base, base, base] })
+    },
+    right45: ({ base }) => {
+      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
+      return triangle(triOpts);
+    },
+    right30: ({ base, height }) => {
+      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: height, shortAngle: TAU / 6 })
+      return triangle(triOpts);
+    },
+    rightGolden: ({ base, height }) => {
+      const validOpts = {
+        short: base || height / constants.PHI,
+        long: height || base * constants.PHI
+      }
+      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+      return triangle(triOpts);
+    },
+    rightSilver: ({ base, height }) => {
+      const validOpts = {
+        short: base || height / constants.SILVER_RATIO,
+        long: height || base * constants.SILVER_RATIO
+      }
+      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+      return triangle(triOpts);
+    },
+    rightBronze: ({ base, height }) => {
+      const validOpts = {
+        short: base || height / constants.BRONZE_RATIO,
+        long: height || base * constants.BRONZE_RATIO
+      }
+      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+      return triangle(triOpts);
+    },
+    rightCopper: ({ base, height }) => {
+      const validOpts = {
+        short: base || height / constants.COPPER_RATIO,
+        long: height || base * constants.COPPER_RATIO
+      }
+      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+      return triangle(triOpts);
+    },
+  }
+
+  const rectangles = {
+    golden: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.PHI,
+        width || length / constants.PHI
+      ]
+      return rectangle({ size: validSize });
+    },
+    silver: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.SILVER_RATIO,
+        width || length / constants.SILVER_RATIO
+      ]
+      return rectangle({ size: validSize });
+    },
+    bronze: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.BRONZE_RATIO,
+        width || length / constants.BRONZE_RATIO
+      ]
+      return rectangle({ size: validSize });
+    },
+    copper: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.COPPER_RATIO,
+        width || length / constants.COPPER_RATIO
+      ]
+      return rectangle({ size: validSize });
+    },
+  }
+
   /**
    * Edge profile: Circular notch in bottom half
    * @memberof details.profiles.edge
@@ -110,7 +187,7 @@ const profileBuilder = ({ lib, swLib }) => {
     let bearingSurfaceAlignOpts = {}
     let mirrorOpts = null
 
-    const height = geometry.triangle.solve30DegRtTriangle({ short: width }).long;
+    const height = width * 2;
 
     if (type === 'inset') {
       triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
@@ -135,7 +212,7 @@ const profileBuilder = ({ lib, swLib }) => {
       return null;
     }
 
-    let triangleProfile = triangle({ type: 'SAS', values: [width, TAU / 4, height] });
+    let triangleProfile = triangle.right30({ base: width, height });
     if (triangleMirrorOpts != null) {
       triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
     }
@@ -166,87 +243,6 @@ const profileBuilder = ({ lib, swLib }) => {
   const edge = {
     circNotch,
     circPortrusion,
-  }
-
-  const triangles = {
-    equilateral: ({ base }) => {
-      return triangle({ type: 'SSS', values: [base, base, base] })
-    },
-    right45: ({ base }) => {
-      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
-      return triangle(triOpts);
-    },
-    right30: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / 2,
-        long: height || base * 2
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts, shortAngle: TAU / 6 })
-      return triangle(triOpts);
-    },
-    rightGolden: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.PHI,
-        long: height || base * constants.PHI
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
-    },
-    rightSilver: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.SILVER_RATIO,
-        long: height || base * constants.SILVER_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
-    },
-    rightBronze: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.BRONZE_RATIO,
-        long: height || base * constants.BRONZE_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
-    },
-    rightCopper: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.COPPER_RATIO,
-        long: height || base * constants.COPPER_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
-    },
-  }
-
-  const rectangles = {
-    golden: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.PHI,
-        width || length / constants.PHI
-      ]
-      return rectangle({ size: [validSize] });
-    },
-    silver: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.SILVER_RATIO,
-        width || length / constants.SILVER_RATIO
-      ]
-      return rectangle({ size: [validSize] });
-    },
-    bronze: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.BRONZE_RATIO,
-        width || length / constants.BRONZE_RATIO
-      ]
-      return rectangle({ size: [validSize] });
-    },
-    copper: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.COPPER_RATIO,
-        width || length / constants.COPPER_RATIO
-      ]
-      return rectangle({ size: [validSize] });
-    },
   }
 
   return {
