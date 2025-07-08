@@ -50,9 +50,9 @@ const geoTriangle = ({ lib, swLib }) => {
      * @param {number} opts.short 
      * @param {number} opts.longAngle 
      * @param {number} opts.shortAngle 
-     * @returns If valid, returns triangle creation strategy (AAS, ASA, SAS, etc) and values. If invalid, returns `null`
+     * @returns If valid, returns triangle creation strategy (AAS, ASA, SAS, etc) and values for `jscad.primitives.triangle()`. If invalid, returns `null`
      */
-    const rightTriangleDataPoints = ({
+    const rightTriangleOpts = ({
         hypot,
         long,
         short,
@@ -76,6 +76,7 @@ const geoTriangle = ({ lib, swLib }) => {
         const validAngles = Object.entries(angles).filter(([angleName, angleVal]) => {
             return isValueValid(angleVal)
         })
+
         if (validSides.length == 0 && validAngles.length == 0) {
             return null
         }
@@ -84,7 +85,6 @@ const geoTriangle = ({ lib, swLib }) => {
         const angleKeys = Object.keys(validAngles);
 
         if (validSides.length == 3) {
-            // might have to do some light calcs here to satisfy the library's precision demands
             outType = 'SSS'
             outValues = [short, hypot, long]
         } else if (sideKeys.includes('long') && sideKeys.includes('short')) {
@@ -96,6 +96,9 @@ const geoTriangle = ({ lib, swLib }) => {
         } else if (sideKeys.includes('short') && angleKeys.includes('longAngle')) {
             outType = 'AAS'
             outValues = [TAU / 4, longAngle, short]
+        } else if (sideKeys.includes('hypot') && angleKeys.includes('longAngle') && angleKeys.includes('shortAngle')) {
+            outType = 'ASA'
+            outValues = [longAngle, hypot, shortAngle]
         }
 
         return {
@@ -104,12 +107,10 @@ const geoTriangle = ({ lib, swLib }) => {
         }
     }
 
-    const solveRightTriangle = ({
+    const solve30DegRtTriangle = ({
         hypot,
         long,
         short,
-        longAngle,
-        shortAngle,
     }) => {
         const invalidHypot = typeof hypot != 'number' || hypot < 0
         const invalidShort = typeof short != 'number' || short < 0
@@ -126,8 +127,6 @@ const geoTriangle = ({ lib, swLib }) => {
         let outHypot = 0;
         let outLong = 0;
         let outShort = 0;
-        let outLongAngle = 0;
-        let outShortAngle = 0;
 
         switch (firstValidIdx) {
             case 0:
@@ -151,17 +150,7 @@ const geoTriangle = ({ lib, swLib }) => {
             hypot: outHypot,
             long: outLong,
             short: outShort,
-            longAngle: outLongAngle,
-            shortAngle: outShortAngle,
         }
-    }
-
-    const solve45DegRtTriangle = ({ hypot, base }) => {
-        return solveRightTriangle({ hypot, long: base, short: base })
-    }
-
-    const solve30DegRtTriangle = ({ hypot, long, short }) => {
-        return solveRightTriangle({ hypot, long, short })
     }
 
     return {
@@ -173,9 +162,8 @@ const geoTriangle = ({ lib, swLib }) => {
         incentre,
         incircleRadius,
         eulerLine,
-        solveRightTriangle,
-        solve45DegRtTriangle,
         solve30DegRtTriangle,
+        rightTriangleOpts,
     }
 }
 
