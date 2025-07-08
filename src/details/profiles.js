@@ -123,9 +123,10 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const getBezierPts = (bezierCurve, segments) => {
     const points = [];
-    //const segments = 9; // this will generate 10 equally spaced points
-    const increment = bezier.length(100, bezierCurve) / segments;
-    for (let i = 0; i <= segments; i++) {
+    const segmentsInput = segments - 1
+    const totalLength = bezier.length(100, bezierCurve)
+    const increment = totalLength / segmentsInput;
+    for (let i = 0; i <= segmentsInput; i++) {
       const t = bezier.arcLengthToT({ distance: i * increment }, bezierCurve);
       const point = bezier.valueAt(t, bezierCurve);
       points.push(point);
@@ -140,8 +141,13 @@ const profileBuilder = ({ lib, swLib }) => {
           length || width * constants.PHI,
           width || length / constants.PHI
         ]
-        const bez = bezier.create([[validSize.length, 0], [0, validSize.width]])
-        const bezPts = getBezierPts(bez, 12)
+        const bez = bezier.create([
+          [0, 0],
+          [0, validSize[1]],
+          [validSize[0], validSize[1]]
+        ])
+        const segments = 12
+        const bezPts = getBezierPts(bez, segments)
         return path2.fromPoints({}, bezPts)
       },
     },
@@ -151,8 +157,13 @@ const profileBuilder = ({ lib, swLib }) => {
           length || width * constants.PHI,
           width || length / constants.PHI
         ]
-        const bez = bezier.create([[validSize.length, 0], [0, validSize.width]])
-        const bezPts = getBezierPts(bez, 12)
+        const bez = bezier.create([
+          [0, 0],
+          [0, validSize[1]],
+          [validSize[0], validSize[1]]
+        ])
+        const segments = 12
+        const bezPts = getBezierPts(bez, segments)
         return path2.fromPoints({}, bezPts)
       },
     }
