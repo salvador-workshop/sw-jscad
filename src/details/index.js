@@ -2,6 +2,7 @@
 
 /**
  * Details
+ * TODO - rename to "Models"
  * @namespace details
  */
 

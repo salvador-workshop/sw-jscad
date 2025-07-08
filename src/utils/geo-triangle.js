@@ -59,9 +59,6 @@ const geoTriangle = ({ lib, swLib }) => {
         longAngle,
         shortAngle,
     }) => {
-        // follows JSCAD defaults
-        let outType = 'SSS'
-        let outValues = [1, 1, 1]
 
         const isValueValid = (val) => {
             return typeof val == 'number' && val >= 0
@@ -81,8 +78,12 @@ const geoTriangle = ({ lib, swLib }) => {
             return null
         }
 
-        const sideKeys = Object.keys(validSides);
-        const angleKeys = Object.keys(validAngles);
+        const sideKeys = validSides.map(vSide => vSide[0]);
+        const angleKeys = validAngles.map(vSide => vSide[0]);
+
+        // follows JSCAD defaults
+        let outType = 'SSS'
+        let outValues = [1, 1, 1]
 
         if (validSides.length == 3) {
             outType = 'SSS'

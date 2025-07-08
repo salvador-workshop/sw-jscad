@@ -22,7 +22,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
     const { maths } = swLib.core
     const { geometry } = swLib.utils
-    const { profiles } = swLib.details
 
     const getPunchPoints = (pattern, length, width, radius) => {
         let punchPoints = geometry.getTriangularPtsInArea(length, width, radius)
@@ -32,7 +31,66 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         return punchPoints
     }
 
+    /**
+       * Generates an edge flange profile
+       * @param {string} type - "inset" or "offset"
+       * @param {number} width 
+       * @param {number} thickness 
+       * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
+       */
+    const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
+        let triangleAlignOpts = {}
+        let triangleMirrorOpts = null
+        let bearingSurfaceAlignOpts = {}
+        let mirrorOpts = null
 
+        const height = width * 2;
+
+        if (type === 'inset') {
+            triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
+            bearingSurfaceAlignOpts = { modes: ['max', 'max', 'center'], relativeTo: [0, 0, 0] }
+
+            if (flipOpts.includes('vertical')) {
+                triangleAlignOpts.modes = ['max', 'max', 'center']
+                bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+                triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+            }
+        } else if (type === 'offset') {
+            triangleAlignOpts = { modes: ['min', 'min', 'center'], relativeTo: [0, 0, 0] }
+            bearingSurfaceAlignOpts = { modes: ['min', 'max', 'center'], relativeTo: [0, 0, 0] }
+            mirrorOpts = { normal: [1, 0, 0] }
+
+            if (flipOpts.includes('vertical')) {
+                triangleAlignOpts.modes = ['max', 'max', 'center']
+                bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
+                triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
+            }
+        } else {
+            return null;
+        }
+
+        let triangleProfile = triangle.right30({ base: width, height });
+        if (triangleMirrorOpts != null) {
+            triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
+        }
+
+        const triangleSection = align(
+            triangleAlignOpts,
+            triangleProfile
+        )
+
+        const bearingSurface = align(
+            bearingSurfaceAlignOpts,
+            rectangle({ size: [width, thickness] })
+        )
+
+        let finalShape = union(bearingSurface, triangleSection);
+        if (mirrorOpts != null) {
+            finalShape = mirror(mirrorOpts, finalShape)
+        }
+
+        return align({ modes: ['center', 'center', 'center'] }, finalShape)
+    }
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
@@ -100,7 +158,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     insetSectionAlignOpts,
-                    profiles.edgeFlange('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetReinforcement = align(
                     insetFlangeAlignOpts,
@@ -131,7 +189,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     offsetSectionAlignOpts,
-                    profiles.edgeFlange('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetReinforcement = align(
                     offsetFlangeAlignOpts,
@@ -394,7 +452,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     sectionAlignOpts,
-                    profiles.edgeFlange('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetRing = align(
                     ringAlignOpts,
@@ -424,7 +482,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     sectionAlignOpts,
-                    profiles.edgeFlange('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetRing = align(
                     ringAlignOpts,

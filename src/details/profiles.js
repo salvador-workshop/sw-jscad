@@ -26,7 +26,11 @@ const profileBuilder = ({ lib, swLib }) => {
       return triangle(triOpts);
     },
     right30: ({ base, height }) => {
-      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: height, shortAngle: TAU / 6 })
+      const validOpts = {
+        short: base || height / 2,
+        long: height || base * 2
+      }
+      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
       return triangle(triOpts);
     },
     rightGolden: ({ base, height }) => {
@@ -89,6 +93,20 @@ const profileBuilder = ({ lib, swLib }) => {
       const validSize = [
         length || width * constants.COPPER_RATIO,
         width || length / constants.COPPER_RATIO
+      ]
+      return rectangle({ size: validSize });
+    },
+    superGolden: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.SUPERGOLDEN_RATIO,
+        width || length / constants.SUPERGOLDEN_RATIO
+      ]
+      return rectangle({ size: validSize });
+    },
+    plastic: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.PLASTIC_RATIO,
+        width || length / constants.PLASTIC_RATIO
       ]
       return rectangle({ size: validSize });
     },
@@ -322,8 +340,8 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     edge,
     edgeFlange,
-    triangles,
-    rectangles,
+    triangle: triangles,
+    rectangle: rectangles,
   }
 }
 
