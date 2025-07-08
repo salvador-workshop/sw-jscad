@@ -9,10 +9,12 @@
 
 const EDGE_PROFILE_MARGIN = 1;
 
-const profileBuilder = ({ lib }) => {
+const profileBuilder = ({ lib, swLib }) => {
   const { square, circle, rectangle } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate } = lib.transforms
+
+  const { geometry } = swLib.utils
 
   /**
    * Edge profile: Circular notch in bottom half
@@ -155,6 +157,58 @@ const profileBuilder = ({ lib }) => {
     return align({ modes: ['center', 'center', 'center'] }, finalShape)
   }
 
+  /**
+   * Edge profiles
+   * @memberof details.profiles
+   * @namespace edge
+   */
+  const edge = {
+    circNotch,
+    circPortrusion,
+  }
+
+  const triangles = {
+    equilateral: ({ base, height }) => {
+      return null;
+    },
+    right45: ({ base, height }) => {
+      return null;
+    },
+    right30: ({ base, height }) => {
+      return null;
+    },
+    rightGolden: ({ base, height }) => {
+      return null;
+    },
+    rightSilver: ({ base, height }) => {
+      return null;
+    },
+    rightBronze: ({ base, height }) => {
+      return null;
+    },
+    rightCopper: ({ base, height }) => {
+      return null;
+    },
+  }
+
+  const rectangles = {
+    right30: ({ base, height }) => {
+      return null;
+    },
+    golden: ({ length, width }) => {
+      return null;
+    },
+    silver: ({ length, width }) => {
+      return null;
+    },
+    bronze: ({ length, width }) => {
+      return null;
+    },
+    copper: ({ length, width }) => {
+      return null;
+    },
+  }
+
   return {
     /**
      * Square with circular notches at corners.
@@ -230,16 +284,10 @@ const profileBuilder = ({ lib }) => {
 
       return intersect(baseSquare, angledSquare);
     },
-    /**
-    * Edge profiles
-    * @memberof details.profiles
-    * @namespace edge
-    */
-    edge: {
-      circNotch,
-      circPortrusion,
-    },
+    edge,
     edgeFlange,
+    triangles,
+    rectangles,
   }
 }
 

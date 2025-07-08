@@ -41,6 +41,42 @@ const geoTriangle = ({ lib, swLib }) => {
         return null;
     }
 
+    const solve45DegRtTriangle = ({
+        hypot,
+        base,
+    }) => {
+        const invalidHypot = typeof hypot != 'number' || hypot < 0
+        const invalidBase = typeof base != 'number' || base < 0
+
+        if (invalidHypot && invalidBase) {
+            // we need at least one valid value
+            return null;
+        }
+
+        const sides = [hypot, base, base];
+        const firstValidIdx = sides.findIndex(sideVal => !!sideVal)
+
+        let outHypot = 0;
+        let outBase = 0;
+
+        switch (firstValidIdx) {
+            case 0:
+                outHypot = hypot;
+                outBase = hypot / Math.sqrt(2);
+                break;
+            case 1:
+            case 2:
+                outHypot = base * Math.sqrt(2);
+                outBase = base;
+                break;
+        }
+
+        return {
+            hypot: outHypot,
+            base: outBase,
+        }
+    }
+
     const solve30DegRtTriangle = ({
         hypot,
         long,
@@ -96,6 +132,7 @@ const geoTriangle = ({ lib, swLib }) => {
         incentre,
         incircleRadius,
         eulerLine,
+        solve45DegRtTriangle,
         solve30DegRtTriangle,
     }
 }
