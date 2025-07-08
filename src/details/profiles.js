@@ -8,10 +8,12 @@
 const EDGE_PROFILE_MARGIN = 1;
 
 const profileBuilder = ({ lib, swLib }) => {
-  const { square, circle, rectangle, triangle } = lib.primitives
+  const { square, circle, rectangle, triangle, ellipse } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
-  const { rotate, align, translate } = lib.transforms
-  // const { degToRad } = lib.utils
+  const { rotate, align, translate, scale } = lib.transforms
+  const { bezier } = lib.curves
+  const { path2 } = lib.geometries
+
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
@@ -75,6 +77,13 @@ const profileBuilder = ({ lib, swLib }) => {
       ]
       return rectangle({ size: validSize });
     },
+    sixtyThirty: ({ length, width }) => {
+      const validSize = [
+        length || width * 2,
+        width || length / 2
+      ]
+      return rectangle({ size: validSize });
+    },
     silver: ({ length, width }) => {
       const validSize = [
         length || width * constants.SILVER_RATIO,
@@ -109,6 +118,95 @@ const profileBuilder = ({ lib, swLib }) => {
         width || length / constants.PLASTIC_RATIO
       ]
       return rectangle({ size: validSize });
+    },
+  }
+
+  const getBezierPts = (bezierCurve, segments) => {
+    const points = [];
+    //const segments = 9; // this will generate 10 equally spaced points
+    const increment = bezier.length(100, bezierCurve) / segments;
+    for (let i = 0; i <= segments; i++) {
+      const t = bezier.arcLengthToT({ distance: i * increment }, bezierCurve);
+      const point = bezier.valueAt(t, bezierCurve);
+      points.push(point);
+    }
+    return points;
+  }
+
+  const curves = {
+    rightCorner: {
+      golden: ({ length, width }) => {
+        const validSize = [
+          length || width * constants.PHI,
+          width || length / constants.PHI
+        ]
+        const bez = bezier.create([[validSize.length, 0], [0, validSize.width]])
+        const bezPts = getBezierPts(bez, 12)
+        return path2.fromPoints({}, bezPts)
+      },
+    },
+    smoothTriangle: {
+      golden: ({ length, width }) => {
+        const validSize = [
+          length || width * constants.PHI,
+          width || length / constants.PHI
+        ]
+        const bez = bezier.create([[validSize.length, 0], [0, validSize.width]])
+        const bezPts = getBezierPts(bez, 12)
+        return path2.fromPoints({}, bezPts)
+      },
+    }
+  }
+
+  const ellipses = {
+    golden: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.PHI,
+        width || length / constants.PHI
+      ]
+      return ellipse({ radius: validSize });
+    },
+    sixtyThirty: ({ length, width }) => {
+      const validSize = [
+        length || width * 2,
+        width || length / 2
+      ]
+      return ellipse({ radius: validSize });
+    },
+    silver: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.SILVER_RATIO,
+        width || length / constants.SILVER_RATIO
+      ]
+      return ellipse({ radius: validSize });
+    },
+    bronze: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.BRONZE_RATIO,
+        width || length / constants.BRONZE_RATIO
+      ]
+      return ellipse({ radius: validSize });
+    },
+    copper: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.COPPER_RATIO,
+        width || length / constants.COPPER_RATIO
+      ]
+      return ellipse({ radius: validSize });
+    },
+    superGolden: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.SUPERGOLDEN_RATIO,
+        width || length / constants.SUPERGOLDEN_RATIO
+      ]
+      return ellipse({ radius: validSize });
+    },
+    plastic: ({ length, width }) => {
+      const validSize = [
+        length || width * constants.PLASTIC_RATIO,
+        width || length / constants.PLASTIC_RATIO
+      ]
+      return ellipse({ radius: validSize });
     },
   }
 
@@ -342,6 +440,8 @@ const profileBuilder = ({ lib, swLib }) => {
     edgeFlange,
     triangle: triangles,
     rectangle: rectangles,
+    curves,
+    ellipse: ellipses,
   }
 }
 
