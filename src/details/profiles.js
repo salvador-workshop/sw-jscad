@@ -193,8 +193,10 @@ const profileBuilder = ({ lib, swLib }) => {
     },
   }
 
-  const straightBeam = ({ length, thickness, offsetWidths, doubleFlanged = false }) => {
+  const straightBeam = ({ length, thickness, insetWidth, offsetWidth, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
+    const offsetWidths = [insetWidth, offsetWidth]
+
     const offsetShapes = offsetWidths.map(offWidth => {
       return union(
         align(
@@ -209,12 +211,13 @@ const profileBuilder = ({ lib, swLib }) => {
     })
 
     const adjOffsetShapes = offsetShapes.map((offShape, idx) => {
-      // default idx == 0
+      // default idx == 0 (inset)
       let adjOffShape = align(
         { modes: ['max', 'min', 'center'], relativeTo: [thickness / -2, length / -2, 0] },
         offShape
       )
       if (idx == 1) {
+        // offset
         adjOffShape = align(
           { modes: ['min', 'min', 'center'], relativeTo: [thickness / 2, length / -2, 0] },
           mirror({ normal: [1, 0, 0], origin: [thickness / 2, 0, 0] }, offShape)
@@ -223,7 +226,7 @@ const profileBuilder = ({ lib, swLib }) => {
       return adjOffShape;
     })
 
-    return mirror({ normal: [0, 1, 0]}, union(baseShape, ...adjOffsetShapes))
+    return mirror({ normal: [0, 1, 0] }, union(baseShape, ...adjOffsetShapes))
   }
 
   const cBeam = ({ length, depth, thickness, offsetWidths }) => {
