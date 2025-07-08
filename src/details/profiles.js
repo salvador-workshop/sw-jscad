@@ -16,7 +16,7 @@ const profileBuilder = ({ lib, swLib }) => {
     ellipse,
   } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
-  const { rotate, align, translate, scale } = lib.transforms
+  const { rotate, align, translate, scale, mirror } = lib.transforms
   const { bezier } = lib.curves
   const { path2 } = lib.geometries
 
@@ -198,11 +198,11 @@ const profileBuilder = ({ lib, swLib }) => {
     const offsetShapes = offsetWidths.map(offWidth => {
       return union(
         align(
-          { modes: ['min', 'min', 'center'] },
+          { modes: ['min', 'max', 'center'] },
           rectangle({ size: [offWidth, thickness] }),
         ),
         align(
-          { modes: ['min', 'max', 'center'] },
+          { modes: ['min', 'min', 'center'] },
           triangles.right30({ base: offWidth }),
         ),
       )
@@ -210,14 +210,20 @@ const profileBuilder = ({ lib, swLib }) => {
 
     const adjOffsetShapes = offsetShapes.map((offShape, idx) => {
       // default idx == 0
-      let adjOffShape = translate([30, 0, 0], offShape)
+      let adjOffShape = align(
+        { modes: ['max', 'min', 'center'], relativeTo: [thickness / -2, length / -2, 0] },
+        offShape
+      )
       if (idx == 1) {
-        adjOffShape = translate([-30, 0, 0], offShape)
+        adjOffShape = align(
+          { modes: ['min', 'min', 'center'], relativeTo: [thickness / 2, length / -2, 0] },
+          mirror({ normal: [1, 0, 0], origin: [thickness / 2, 0, 0] }, offShape)
+        )
       }
       return adjOffShape;
     })
 
-    return union(baseShape, ...adjOffsetShapes)
+    return mirror({ normal: [0, 1, 0]}, union(baseShape, ...adjOffsetShapes))
   }
 
   const cBeam = ({ length, depth, thickness, offsetWidths }) => {
@@ -235,6 +241,12 @@ const profileBuilder = ({ lib, swLib }) => {
       return null
     },
     doubleTBeam: ({ length, depth, thickness, offsetWidths }) => {
+      return null
+    },
+    crossBeam: ({ radius, thickness, offsetWidths }) => {
+      return null
+    },
+    hexHalfBeam: ({ radius, thickness, offsetWidths }) => {
       return null
     },
     hexBeam: ({ radius, thickness, offsetWidths }) => {
