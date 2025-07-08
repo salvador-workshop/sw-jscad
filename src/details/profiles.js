@@ -19,6 +19,15 @@ const profileBuilder = ({ lib, swLib }) => {
   const { geometry } = swLib.utils
   const { constants } = swLib.core
 
+  const createRtTriangle = ({ base, height, ratio }) => {
+    const validOpts = {
+      short: base || height / ratio,
+      long: height || base * ratio
+    }
+    const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+    return triangle(triOpts);
+  }
+
   const triangles = {
     equilateral: ({ base }) => {
       return triangle({ type: 'SSS', values: [base, base, base] })
@@ -28,96 +37,51 @@ const profileBuilder = ({ lib, swLib }) => {
       return triangle(triOpts);
     },
     right30: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / 2,
-        long: height || base * 2
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
+      return createRtTriangle({ base, height, ratio: 2 });
     },
     rightGolden: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.PHI,
-        long: height || base * constants.PHI
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
+      return createRtTriangle({ base, height, ratio: constants.PHI });
     },
     rightSilver: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.SILVER_RATIO,
-        long: height || base * constants.SILVER_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
+      return createRtTriangle({ base, height, ratio: constants.SILVER_RATIO });
     },
     rightBronze: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.BRONZE_RATIO,
-        long: height || base * constants.BRONZE_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
+      return createRtTriangle({ base, height, ratio: constants.BRONZE_RATIO });
     },
     rightCopper: ({ base, height }) => {
-      const validOpts = {
-        short: base || height / constants.COPPER_RATIO,
-        long: height || base * constants.COPPER_RATIO
-      }
-      const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
-      return triangle(triOpts);
+      return createRtTriangle({ base, height, ratio: constants.COPPER_RATIO });
     },
+  }
+
+  const createRect = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    return rectangle({ size: validSize });
   }
 
   const rectangles = {
     golden: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.PHI,
-        width || length / constants.PHI
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.PHI });
     },
     sixtyThirty: ({ length, width }) => {
-      const validSize = [
-        length || width * 2,
-        width || length / 2
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: 2 });
     },
     silver: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.SILVER_RATIO,
-        width || length / constants.SILVER_RATIO
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.SILVER_RATIO });
     },
     bronze: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.BRONZE_RATIO,
-        width || length / constants.BRONZE_RATIO
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.BRONZE_RATIO });
     },
     copper: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.COPPER_RATIO,
-        width || length / constants.COPPER_RATIO
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.COPPER_RATIO });
     },
     superGolden: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.SUPERGOLDEN_RATIO,
-        width || length / constants.SUPERGOLDEN_RATIO
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.SUPERGOLDEN_RATIO });
     },
     plastic: ({ length, width }) => {
-      const validSize = [
-        length || width * constants.PLASTIC_RATIO,
-        width || length / constants.PLASTIC_RATIO
-      ]
-      return rectangle({ size: validSize });
+      return createRect({ length, width, ratio: constants.PLASTIC_RATIO });
     },
   }
 
@@ -134,39 +98,61 @@ const profileBuilder = ({ lib, swLib }) => {
     return points;
   }
 
+  const createRtCornerCurve = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    const bez = bezier.create([
+      [0, 0],
+      [0, validSize[1]],
+      [validSize[0], validSize[1]]
+    ])
+    const segments = 12
+    const bezPts = getBezierPts(bez, segments)
+    return path2.fromPoints({}, bezPts)
+  }
+
   const curves = {
     rightCorner: {
       golden: ({ length, width }) => {
-        const validSize = [
-          length || width * constants.PHI,
-          width || length / constants.PHI
-        ]
-        const bez = bezier.create([
-          [0, 0],
-          [0, validSize[1]],
-          [validSize[0], validSize[1]]
-        ])
-        const segments = 12
-        const bezPts = getBezierPts(bez, segments)
-        return path2.fromPoints({}, bezPts)
+        return createRtCornerCurve({ length, width, ratio: constants.PHI })
+      },
+      sixtyThirty: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: 2 })
+      },
+      silver: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.SILVER_RATIO })
+      },
+      bronze: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.BRONZE_RATIO })
+      },
+      copper: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.COPPER_RATIO })
+      },
+      superGolden: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
+      },
+      plastic: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.PLASTIC_RATIO })
       },
     },
-    smoothTriangle: {
-      golden: ({ length, width }) => {
-        const validSize = [
-          length || width * constants.PHI,
-          width || length / constants.PHI
-        ]
-        const bez = bezier.create([
-          [0, 0],
-          [0, validSize[1]],
-          [validSize[0], validSize[1]]
-        ])
-        const segments = 12
-        const bezPts = getBezierPts(bez, segments)
-        return path2.fromPoints({}, bezPts)
-      },
-    }
+    // smoothTriangle: {
+    //   golden: ({ length, width }) => {
+    //     const validSize = [
+    //       length || width * constants.PHI,
+    //       width || length / constants.PHI
+    //     ]
+    //     const bez = bezier.create([
+    //       [0, 0],
+    //       [0, validSize[1]],
+    //       [validSize[0], validSize[1]]
+    //     ])
+    //     const segments = 12
+    //     const bezPts = getBezierPts(bez, segments)
+    //     return path2.fromPoints({}, bezPts)
+    //   },
+    // }
   }
 
   const ellipses = {
