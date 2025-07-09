@@ -24,7 +24,7 @@ const profileBuilder = ({ lib, swLib }) => {
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
-  const { constants } = swLib.core
+  const { constants, position } = swLib.core
 
   const createRtTriangle = ({ base, height, ratio }) => {
     const validOpts = {
@@ -196,6 +196,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
+    const baseShapeCoords = position.getGeomCoords(baseShape)
     const offsetWidths = [insetWidth, offsetWidth]
     const fThickness = flangeThickness || thickness
 
@@ -221,13 +222,13 @@ const profileBuilder = ({ lib, swLib }) => {
       }
       // default idx == 0 (inset)
       let adjOffShape = align(
-        { modes: ['max', 'min', 'center'], relativeTo: [thickness / -2, length / -2, 0] },
+        { modes: ['max', 'min', 'center'], relativeTo: [baseShapeCoords.left, baseShapeCoords.front, 0] },
         offShape
       )
       if (idx == 1) {
         // offset
         adjOffShape = align(
-          { modes: ['min', 'min', 'center'], relativeTo: [thickness / 2, length / -2, 0] },
+          { modes: ['min', 'min', 'center'], relativeTo: [baseShapeCoords.right, baseShapeCoords.front, 0] },
           mirror({ normal: [1, 0, 0], origin: [thickness / 2, 0, 0] }, offShape)
         )
       }
@@ -269,10 +270,14 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
     const beams = []
+    const beam = align(
+      { modes: ['min', 'min', 'center'], relativeTo: [-insetWidth - (thickness / 2), 0, 0] },
+      straightBeam({ length: radius / 2, thickness, insetWidth, offsetWidth })
+    )
     for (let idx = 0; idx < segments; idx++) {
-      const beam = straightBeam({ length: radius / 2, thickness, insetWidth, offsetWidth })
-      const adjBeam = translate([thickness * 2 * idx, 0, 0], beam)
-      beams.push(adjBeam)
+      const angle = idx / segments * TAU
+      const rotatedBeam = rotate([0, 0, angle], beam)
+      beams.push(rotatedBeam)
     }
 
     return union(...beams)
