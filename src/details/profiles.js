@@ -16,15 +16,18 @@ const profileBuilder = ({ lib, swLib }) => {
     ellipse,
   } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
-  const { rotate, align, translate, scale, mirror } = lib.transforms
+  const { rotate, align, translate, mirror } = lib.transforms
   const { bezier } = lib.curves
   const { path2 } = lib.geometries
-  const { measureCenter } = lib.measurements
 
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
   const { constants, position } = swLib.core
+
+
+  //-------------
+  //  TRIANGLES
 
   const createRtTriangle = ({ base, height, ratio }) => {
     const validOpts = {
@@ -60,6 +63,10 @@ const profileBuilder = ({ lib, swLib }) => {
     },
   }
 
+
+  //--------------
+  //  RECTANGLES
+
   const createRect = ({ length, width, ratio }) => {
     const validSize = [
       length || width * ratio,
@@ -91,6 +98,10 @@ const profileBuilder = ({ lib, swLib }) => {
       return createRect({ length, width, ratio: constants.PLASTIC_RATIO });
     },
   }
+
+
+  //----------
+  //  CURVES
 
   const getBezierPts = (bezierCurve, segments) => {
     const points = [];
@@ -162,6 +173,10 @@ const profileBuilder = ({ lib, swLib }) => {
     // }
   }
 
+
+  //-----------
+  //  ELLIPSE
+
   const createEllipse = ({ length, width, ratio }) => {
     const validSize = [
       length || width * ratio,
@@ -193,6 +208,10 @@ const profileBuilder = ({ lib, swLib }) => {
       return createEllipse({ length, width, ratio: constants.PLASTIC_RATIO })
     },
   }
+
+
+  //-----------------
+  //  REINFORCEMENT
 
   const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
@@ -340,6 +359,53 @@ const profileBuilder = ({ lib, swLib }) => {
       return polyBeam({ radius, segments: 6, thickness, insetWidth, offsetWidth })
     },
   }
+
+
+  //---------------
+  //  CONNECTIONS
+
+  const connections = {
+    pegboard: ({ spacing, radius, margin, cornerRadius, tolerance }) => {
+      const male = null
+      const female = null
+
+      return {
+        male,
+        female,
+      }
+    },
+    polygon: ({ radius, segments, margin, cornerRadius, tolerance }) => {
+      const male = null
+      const female = null
+
+      return {
+        male,
+        female,
+      }
+    },
+    tab: ({ depth, angle, tolerance }) => {
+      const male = null
+      const female = null
+
+      return {
+        male,
+        female,
+      }
+    },
+    dovetail: ({ depth, angle, tolerance }) => {
+      const male = null
+      const female = null
+
+      return {
+        male,
+        female,
+      }
+    },
+  }
+
+
+  //--------
+  //  EDGE
 
   /**
    * Edge profile: Circular notch in bottom half
@@ -492,6 +558,10 @@ const profileBuilder = ({ lib, swLib }) => {
     circPortrusion,
   }
 
+
+  //----------
+  //  OUTPUT
+
   return {
     /**
      * Square with circular notches at corners.
@@ -574,6 +644,7 @@ const profileBuilder = ({ lib, swLib }) => {
     curves,
     ellipse: ellipses,
     reinforcement,
+    connections,
   }
 }
 
