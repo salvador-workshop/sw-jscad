@@ -2,14 +2,15 @@
 
 /**
  * Details
+ * TODO - rename to "Models"
  * @namespace details
  */
 
-const init = ({ lib }) => {
+const init = ({ lib, swLib }) => {
     const details = {
-        foils: require('./foils').init({ lib }),
-        moulds: require('./moulds').init({ lib }),
-        profiles: require('./profiles').init({ lib }),
+        foils: require('./foils').init({ lib, swLib }),
+        moulds: require('./moulds').init({ lib, swLib }),
+        profiles: require('./profiles').init({ lib, swLib }),
     }
 
     return details;

@@ -18,7 +18,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const { subtract, union } = lib.booleans
     const { measureBoundingBox, measureDimensions } = lib.measurements
     const { extrudeRotate, extrudeLinear } = lib.extrusions
-
     const { TAU } = lib.maths.constants
 
     const { maths } = swLib.core
@@ -33,19 +32,19 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     }
 
     /**
-     * Generates an edge flange profile
-     * @param {string} type - "inset" or "offset"
-     * @param {number} width 
-     * @param {number} thickness 
-     * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
-     */
-    const edgeFlangeProfile = (type = 'inset', width, thickness, flipOpts = []) => {
+       * Generates an edge flange profile
+       * @param {string} type - "inset" or "offset"
+       * @param {number} width 
+       * @param {number} thickness 
+       * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
+       */
+    const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
         let triangleAlignOpts = {}
         let triangleMirrorOpts = null
         let bearingSurfaceAlignOpts = {}
         let mirrorOpts = null
 
-        const height = geometry.triangle.solve30DegRtTriangle({ short: width }).long;
+        const height = width * 2;
 
         if (type === 'inset') {
             triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
@@ -70,7 +69,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             return null;
         }
 
-        let triangleProfile = triangle({ type: 'SAS', values: [width, TAU / 4, height] });
+        let triangleProfile = triangle.right30({ base: width, height });
         if (triangleMirrorOpts != null) {
             triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
         }
@@ -159,7 +158,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     insetSectionAlignOpts,
-                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetReinforcement = align(
                     insetFlangeAlignOpts,
@@ -190,7 +189,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     offsetSectionAlignOpts,
-                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetReinforcement = align(
                     offsetFlangeAlignOpts,
@@ -453,7 +452,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     sectionAlignOpts,
-                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetRing = align(
                     ringAlignOpts,
@@ -483,7 +482,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     sectionAlignOpts,
-                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetRing = align(
                     ringAlignOpts,
@@ -526,7 +525,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     }
 
     return {
-        edgeFlangeProfile,
         frameCuboid,
         meshPanel,
         meshCuboid,

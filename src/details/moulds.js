@@ -7,7 +7,7 @@
  * @namespace details.moulds
  */
 
-const mouldBuilder = ({ lib }) => {
+const mouldBuilder = ({ lib, swLib }) => {
   const { measureBoundingBox } = lib.measurements
   const { extrudeLinear, extrudeRotate } = lib.extrusions
   const { union, intersect } = lib.booleans

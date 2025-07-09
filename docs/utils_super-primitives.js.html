@@ -67,7 +67,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
      * @param {number} thickness 
      * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
      */
-    const edgeFlangeProfile = (type = 'inset', width, thickness, flipOpts = []) => {
+    const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
         let triangleAlignOpts = {}
         let triangleMirrorOpts = null
         let bearingSurfaceAlignOpts = {}
@@ -187,7 +187,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     insetSectionAlignOpts,
-                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetReinforcement = align(
                     insetFlangeAlignOpts,
@@ -218,7 +218,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     offsetSectionAlignOpts,
-                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetReinforcement = align(
                     offsetFlangeAlignOpts,
@@ -482,7 +482,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const insetSection = align(
                     sectionAlignOpts,
-                    edgeFlangeProfile('inset', insetWidth, 0.5, flipOpts)
+                    edgeFlange('inset', insetWidth, 0.5, flipOpts)
                 )
                 const insetRing = align(
                     ringAlignOpts,
@@ -512,7 +512,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
                 }
                 const offsetSection = align(
                     sectionAlignOpts,
-                    edgeFlangeProfile('offset', offsetWidth, 0.5, flipOpts)
+                    edgeFlange('offset', offsetWidth, 0.5, flipOpts)
                 )
                 const offsetRing = align(
                     ringAlignOpts,
@@ -555,7 +555,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     }
 
     return {
-        edgeFlangeProfile,
+        edgeFlange,
         frameCuboid,
         meshPanel,
         meshCuboid,
