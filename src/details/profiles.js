@@ -1,5 +1,7 @@
 "use strict"
 
+const standards = require("sw-jscad-std-specs/src/core/standards");
+
 /**
  * Builds various 2D profiles
  * @namespace details.profiles
@@ -8,26 +10,23 @@
 const EDGE_PROFILE_MARGIN = 1;
 
 const profileBuilder = ({ lib, swLib }) => {
-  const {
-    square,
-    circle,
-    rectangle,
-    triangle,
-    ellipse,
-  } = lib.primitives
+  const { square, circle, rectangle, triangle, ellipse } = lib.primitives
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate, mirror } = lib.transforms
   const { bezier } = lib.curves
   const { path2 } = lib.geometries
+  const { hull } = lib.hulls
+  const { degToRad } = lib.utils
 
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
-  const { constants, position } = swLib.core
+  const { constants, position, maths, standards } = swLib.core
 
 
   //-------------
   //  TRIANGLES
+  //-------------
 
   const createRtTriangle = ({ base, height, ratio }) => {
     const validOpts = {
@@ -66,6 +65,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //--------------
   //  RECTANGLES
+  //--------------
 
   const createRect = ({ length, width, ratio }) => {
     const validSize = [
@@ -102,6 +102,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //----------
   //  CURVES
+  //----------
 
   const getBezierPts = (bezierCurve, segments) => {
     const points = [];
@@ -176,6 +177,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //-----------
   //  ELLIPSE
+  //-----------
 
   const createEllipse = ({ length, width, ratio }) => {
     const validSize = [
@@ -212,6 +214,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //-----------------
   //  REINFORCEMENT
+  //-----------------
 
   const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
@@ -363,38 +366,166 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //---------------
   //  CONNECTIONS
+  //---------------
+
+  const connectionDefaults = {
+    tolerance: maths.inchesToMm(1 / 128),
+    fit: maths.inchesToMm(1 / 128),
+    dovetailAngle: degToRad(8),
+    dovetailMargin: standards.swDefaults.PANEL_THICKNESS_XS,
+    tabAngle: degToRad(8),
+    tabMargin: standards.swDefaults.PANEL_THICKNESS_XS,
+  }
 
   const connections = {
-    pegboard: ({ spacing, radius, margin, cornerRadius, tolerance }) => {
-      const male = null
-      const female = null
+    pegboard: ({
+      spacing,
+      radius,
+      margin,
+      cornerRadius,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const diametre = radius * 2
+      const totalGap = fit / 4 + (tolerance / 4)
+      const specs = {
+        ...connectionDefaults,
+        diametre,
+        fitDowelRadius: -totalGap + radius,
+        fitHoleRadius: totalGap + radius,
+        margin: margin || radius,
+        cornerRadius: cornerRadius || radius,
+      }
+      specs.totalWidth = specs.margin * 2 + (radius * 2 + spacing)
+      const halfWidth = specs.totalWidth / 2
+      specs.cornerPoints = [
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+      ]
+      const halfUnit = spacing / 2
+      specs.dowelPoints = [
+        [halfUnit, halfUnit, 0],
+        [halfUnit, halfUnit, 0],
+        [halfUnit, halfUnit, 0],
+        [halfUnit, halfUnit, 0],
+      ]
+
+      const corners = specs.cornerPoints.map(cPt => {
+        return translate(cPt, circle({ radius: specs.cornerRadius }))
+      })
+      const dowels = specs.dowelPoints.map(dPt => {
+        return translate(dPt, circle({ radius: specs.fitDowelRadius }))
+      })
+      const dowelDies = specs.dowelPoints.map(dPt => {
+        return translate(dPt, circle({ radius: specs.fitHoleRadius }))
+      })
+
+      const basePlate = hull(corners)
+      const dowelAssembly = union(dowels)
+
+      const male = dowelAssembly
+      const female = subtract(basePlate, dowelDies)
 
       return {
         male,
         female,
       }
     },
-    polygon: ({ radius, segments, margin, cornerRadius, tolerance }) => {
-      const male = null
-      const female = null
+    polygon: ({
+      radius,
+      segments,
+      margin,
+      cornerRadius,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const diametre = radius * 2
+      const totalGap = fit / 4 + (tolerance / 4)
+      const specs = {
+        ...connectionDefaults,
+        diametre,
+        fitDowelRadius: -totalGap + radius,
+        fitHoleRadius: totalGap + radius,
+        margin: margin || radius,
+        cornerRadius: cornerRadius || radius,
+      }
+      specs.totalWidth = specs.margin * 2 + specs.diametre
+      const halfWidth = specs.totalWidth / 2
+      specs.cornerPoints = [
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+      ]
+
+      const dowel = circle({ radius: specs.fitDowelRadius, segments })
+      const dowelDie = circle({ radius: specs.fitHoleRadius, segments })
+
+      const corners = specs.cornerPoints.map(cPt => {
+        return translate(cPt, circle({ radius: specs.cornerRadius }))
+      })
+      const basePlate = hull(corners)
+
+      const male = dowel
+      const female = subtract(basePlate, dowelDie)
 
       return {
         male,
         female,
       }
     },
-    tab: ({ depth, angle, tolerance }) => {
-      const male = null
-      const female = null
+    tab: ({
+      width,
+      depth,
+      margin = connectionDefaults.tabMargin,
+      angle = connectionDefaults.tabAngle,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const specs = {
+        ...connectionDefaults,
+        totalWidth: margin * 2 + width,
+        totalTabDepth: margin + depth,
+      }
+
+      const male = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [5, 0, 0] },
+        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      )
+      const female = align(
+        { modes: ['max', 'center', 'center'], relativeTo: [-5, 0, 0] },
+        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      )
 
       return {
         male,
         female,
       }
     },
-    dovetail: ({ depth, angle, tolerance }) => {
-      const male = null
-      const female = null
+    dovetail: ({
+      width,
+      depth,
+      margin = connectionDefaults.dovetailMargin,
+      angle = connectionDefaults.dovetailAngle,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const specs = {
+        ...connectionDefaults,
+        totalWidth: margin * 2 + width,
+        totalTabDepth: margin + depth,
+      }
+
+      const male = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [5, 0, 0] },
+        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      )
+      const female = align(
+        { modes: ['max', 'center', 'center'], relativeTo: [-5, 0, 0] },
+        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      )
 
       return {
         male,
@@ -406,6 +537,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //--------
   //  EDGE
+  //--------
 
   /**
    * Edge profile: Circular notch in bottom half
@@ -561,6 +693,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   //----------
   //  OUTPUT
+  //----------
 
   return {
     /**
