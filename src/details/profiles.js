@@ -229,31 +229,73 @@ const profileBuilder = ({ lib, swLib }) => {
     return mirror({ normal: [0, 1, 0] }, union(baseShape, ...adjOffsetShapes))
   }
 
-  const cBeam = ({ length, depth, thickness, offsetWidths }) => {
-    return null
+  const cBeam = ({ length, depth, thickness, insetWidth, offsetWidth }) => {
+    const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
+    const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+    const beam3 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+
+    const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
+    const adjBeam2 = translate([0, 0, 0], beam2)
+    const adjBeam3 = translate([thickness * 2, 0, 0], beam3)
+
+    return union(adjBeam1, adjBeam2, adjBeam3)
+  }
+
+  const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
+    const beams = []
+    for (let idx = 0; idx < segments; idx++) {
+      const beam = straightBeam({ length: radius / 2, thickness, insetWidth, offsetWidth })
+      const adjBeam = translate([thickness * 2 * idx, 0, 0], beam)
+      beams.push(adjBeam)
+    }
+
+    return union(...beams)
   }
 
   const reinforcement = {
     straight: straightBeam,
-    corner: ({ length, depth, thickness, offsetWidths }) => {
-      return null
+    corner: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
+      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+
+      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
+      const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
+
+      return union(adjBeam1, adjBeam2)
     },
     cBeam,
     uBeam: cBeam,
-    tBeam: ({ length, depth, thickness, offsetWidths }) => {
-      return null
+    tBeam: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
+      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+
+      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
+      const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
+
+      return union(adjBeam1, adjBeam2)
     },
-    doubleTBeam: ({ length, depth, thickness, offsetWidths }) => {
-      return null
+    doubleTBeam: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
+      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+      const beam3 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+
+      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
+      const adjBeam2 = translate([0, 0, 0], beam2)
+      const adjBeam3 = translate([thickness * 2, 0, 0], beam3)
+
+      return union(adjBeam1, adjBeam2, adjBeam3)
     },
-    crossBeam: ({ radius, thickness, offsetWidths }) => {
-      return null
+    triBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 3, thickness, insetWidth, offsetWidth })
     },
-    hexHalfBeam: ({ radius, thickness, offsetWidths }) => {
-      return null
+    crossBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 4, thickness, insetWidth, offsetWidth })
     },
-    hexBeam: ({ radius, thickness, offsetWidths }) => {
-      return null
+    pentaBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 5, thickness, insetWidth, offsetWidth })
+    },
+    hexBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 6, thickness, insetWidth, offsetWidth })
     },
   }
 
