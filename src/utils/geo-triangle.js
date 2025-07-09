@@ -94,9 +94,15 @@ const geoTriangle = ({ lib, swLib }) => {
         } else if (sideKeys.includes('long') && angleKeys.includes('shortAngle')) {
             outType = 'AAS'
             outValues = [TAU / 4, shortAngle, long]
+        } else if (sideKeys.includes('long') && angleKeys.includes('longAngle')) {
+            outType = 'ASA'
+            outValues = [TAU / 4, long, longAngle]
         } else if (sideKeys.includes('short') && angleKeys.includes('longAngle')) {
             outType = 'AAS'
             outValues = [TAU / 4, longAngle, short]
+        } else if (sideKeys.includes('short') && angleKeys.includes('shortAngle')) {
+            outType = 'ASA'
+            outValues = [TAU / 4, short, shortAngle]
         } else if (sideKeys.includes('hypot') && angleKeys.includes('longAngle') && angleKeys.includes('shortAngle')) {
             outType = 'ASA'
             outValues = [longAngle, hypot, shortAngle]

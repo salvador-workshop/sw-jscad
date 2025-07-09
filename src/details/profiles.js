@@ -378,6 +378,29 @@ const profileBuilder = ({ lib, swLib }) => {
     tabMargin: 1,
   }
 
+  const createConnTrapezoid = ({ depth, width, angle, reverse = false }) => {
+    const baseRect = rectangle({ size: [depth, width] })
+    const baseRectCoords = position.getGeomCoords(baseRect)
+    const triOpts = geometry.triangle.rightTriangleOpts({ long: depth, longAngle: angle })
+    const triangleEnds = [
+      align(
+        { modes: ['center', 'max', 'center'], relativeTo: [0, baseRectCoords.back, 0] },
+        mirror({ normal: [0, 1, 0] }, triangle(triOpts))
+      ),
+      align(
+        { modes: ['center', 'min', 'center'], relativeTo: [0, baseRectCoords.front, 0] },
+        triangle(triOpts)
+      ),
+    ]
+
+    const outShape = subtract(baseRect, triangleEnds)
+
+    if (reverse) {
+      return mirror({ normal: [1, 0, 0] }, outShape)
+    }
+    return outShape
+  }
+
   const connections = {
     pegboard: ({
       spacing,
@@ -431,6 +454,7 @@ const profileBuilder = ({ lib, swLib }) => {
       return {
         male,
         female,
+        size: [specs.totalWidth, specs.totalWidth],
       }
     },
     polygon: ({
@@ -473,8 +497,15 @@ const profileBuilder = ({ lib, swLib }) => {
       return {
         male,
         female,
+        size: [specs.totalWidth, specs.totalWidth],
       }
     },
+    /**
+     * Tab and Dovetail profiles are designed to fit right against the male edge.
+     * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @param {*} opts 
+     * @returns ...
+     */
     tab: ({
       width,
       depth,
@@ -489,20 +520,30 @@ const profileBuilder = ({ lib, swLib }) => {
         totalTabDepth: margin + depth,
       }
 
+      const baseRect = rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      const baseRectCoords = position.getGeomCoords(baseRect)
+
       const male = align(
-        { modes: ['min', 'center', 'center'], relativeTo: [5, 0, 0] },
-        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+        { modes: ['max', 'center', 'center'], relativeTo: [baseRectCoords.right, 0, 0] },
+        createConnTrapezoid({ depth, width, angle })
       )
       const female = align(
-        { modes: ['max', 'center', 'center'], relativeTo: [-5, 0, 0] },
-        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+        { modes: ['min', 'center', 'center'], relativeTo: [baseRectCoords.left, 0, 0] },
+        subtract(baseRect, male)
       )
 
       return {
         male,
         female,
+        size: [specs.totalTabDepth, specs.totalWidth],
       }
     },
+    /**
+     * Tab and Dovetail profiles are designed to fit right against the male edge.
+     * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @param {*} opts 
+     * @returns ...
+     */
     dovetail: ({
       width,
       depth,
@@ -517,18 +558,22 @@ const profileBuilder = ({ lib, swLib }) => {
         totalTabDepth: margin + depth,
       }
 
+      const baseRect = rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      const baseRectCoords = position.getGeomCoords(baseRect)
+
       const male = align(
-        { modes: ['min', 'center', 'center'], relativeTo: [5, 0, 0] },
-        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+        { modes: ['max', 'center', 'center'], relativeTo: [baseRectCoords.right, 0, 0] },
+        createConnTrapezoid({ depth, width, angle, reverse: true })
       )
       const female = align(
-        { modes: ['max', 'center', 'center'], relativeTo: [-5, 0, 0] },
-        rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+        { modes: ['min', 'center', 'center'], relativeTo: [baseRectCoords.left, 0, 0] },
+        subtract(baseRect, male)
       )
 
       return {
         male,
         female,
+        size: [specs.totalTabDepth, specs.totalWidth],
       }
     },
   }
