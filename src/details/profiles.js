@@ -371,10 +371,11 @@ const profileBuilder = ({ lib, swLib }) => {
   const connectionDefaults = {
     tolerance: maths.inchesToMm(1 / 128),
     fit: maths.inchesToMm(1 / 128),
+    cornerRadius: maths.inchesToMm(1 / 4),
     dovetailAngle: degToRad(8),
-    dovetailMargin: standards.swDefaults.PANEL_THICKNESS_XS,
+    dovetailMargin: 1,
     tabAngle: degToRad(8),
-    tabMargin: standards.swDefaults.PANEL_THICKNESS_XS,
+    tabMargin: 1,
   }
 
   const connections = {
@@ -382,7 +383,7 @@ const profileBuilder = ({ lib, swLib }) => {
       spacing,
       radius,
       margin,
-      cornerRadius,
+      cornerRadius = connectionDefaults.cornerRadius,
       fit = connectionDefaults.fit,
       tolerance = connectionDefaults.tolerance
     }) => {
@@ -394,26 +395,25 @@ const profileBuilder = ({ lib, swLib }) => {
         fitDowelRadius: -totalGap + radius,
         fitHoleRadius: totalGap + radius,
         margin: margin || radius,
-        cornerRadius: cornerRadius || radius,
       }
       specs.totalWidth = specs.margin * 2 + (radius * 2 + spacing)
       const halfWidth = specs.totalWidth / 2
       specs.cornerPoints = [
         [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, -halfWidth + cornerRadius, 0],
+        [halfWidth - cornerRadius, -halfWidth + cornerRadius, 0],
       ]
       const halfUnit = spacing / 2
       specs.dowelPoints = [
         [halfUnit, halfUnit, 0],
-        [halfUnit, halfUnit, 0],
-        [halfUnit, halfUnit, 0],
-        [halfUnit, halfUnit, 0],
+        [-halfUnit, halfUnit, 0],
+        [-halfUnit, -halfUnit, 0],
+        [halfUnit, -halfUnit, 0],
       ]
 
       const corners = specs.cornerPoints.map(cPt => {
-        return translate(cPt, circle({ radius: specs.cornerRadius }))
+        return translate(cPt, circle({ radius: cornerRadius }))
       })
       const dowels = specs.dowelPoints.map(dPt => {
         return translate(dPt, circle({ radius: specs.fitDowelRadius }))
@@ -437,7 +437,7 @@ const profileBuilder = ({ lib, swLib }) => {
       radius,
       segments,
       margin,
-      cornerRadius,
+      cornerRadius = connectionDefaults.cornerRadius,
       fit = connectionDefaults.fit,
       tolerance = connectionDefaults.tolerance
     }) => {
@@ -449,22 +449,21 @@ const profileBuilder = ({ lib, swLib }) => {
         fitDowelRadius: -totalGap + radius,
         fitHoleRadius: totalGap + radius,
         margin: margin || radius,
-        cornerRadius: cornerRadius || radius,
       }
       specs.totalWidth = specs.margin * 2 + specs.diametre
       const halfWidth = specs.totalWidth / 2
       specs.cornerPoints = [
         [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
-        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, -halfWidth + cornerRadius, 0],
+        [halfWidth - cornerRadius, -halfWidth + cornerRadius, 0],
       ]
 
       const dowel = circle({ radius: specs.fitDowelRadius, segments })
       const dowelDie = circle({ radius: specs.fitHoleRadius, segments })
 
       const corners = specs.cornerPoints.map(cPt => {
-        return translate(cPt, circle({ radius: specs.cornerRadius }))
+        return translate(cPt, circle({ radius: cornerRadius }))
       })
       const basePlate = hull(corners)
 
