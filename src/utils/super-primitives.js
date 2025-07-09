@@ -69,7 +69,7 @@ const superPrimitivesInit = ({ lib, swLib }) => {
             return null;
         }
 
-        let triangleProfile = triangle.right30({ base: width, height });
+        let triangleProfile = triangle({ type: 'SAS', values: [width, TAU / 4, height] });
         if (triangleMirrorOpts != null) {
             triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
         }
@@ -134,13 +134,10 @@ const superPrimitivesInit = ({ lib, swLib }) => {
         let baseShape = basePlate
 
         const hasInset = edgeInsets.some(insetVal => insetVal > 0)
-        console.log(`hasInset: ${hasInset}`)
         const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
-        console.log(`hasOffset: ${hasOffset}`)
 
         if (hasInset) {
             edgeInsets.forEach((insetWidth, idx) => {
-                console.log(insetWidth, idx)
                 if (insetWidth === 0) {
                     return
                 }
@@ -171,7 +168,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
         if (hasOffset) {
             edgeOffsets.forEach((offsetWidth, idx) => {
-                console.log(offsetWidth, idx)
                 if (offsetWidth === 0) {
                     return
                 }
@@ -303,8 +299,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
             const hasInset = edgeInsets.some(insetVal => insetVal > 0)
             const hasOffset = edgeOffsets.some(offsetVal => offsetVal > 0)
-            console.log(`meshCuboid() - hasInset: ${hasInset}`)
-            console.log(`meshCuboid() - hasOffset: ${hasOffset}`)
 
             let maxInset = 0;
             if (hasInset) {

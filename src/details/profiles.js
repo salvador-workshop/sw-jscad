@@ -664,67 +664,6 @@ const profileBuilder = ({ lib, swLib }) => {
   }
 
   /**
-   * Generates an edge flange profile
-   * @param {string} type - "inset" or "offset"
-   * @param {number} width 
-   * @param {number} thickness 
-   * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
-   */
-  const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
-    let triangleAlignOpts = {}
-    let triangleMirrorOpts = null
-    let bearingSurfaceAlignOpts = {}
-    let mirrorOpts = null
-
-    const height = width * 2;
-
-    if (type === 'inset') {
-      triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
-      bearingSurfaceAlignOpts = { modes: ['max', 'max', 'center'], relativeTo: [0, 0, 0] }
-
-      if (flipOpts.includes('vertical')) {
-        triangleAlignOpts.modes = ['max', 'max', 'center']
-        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
-        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
-      }
-    } else if (type === 'offset') {
-      triangleAlignOpts = { modes: ['min', 'min', 'center'], relativeTo: [0, 0, 0] }
-      bearingSurfaceAlignOpts = { modes: ['min', 'max', 'center'], relativeTo: [0, 0, 0] }
-      mirrorOpts = { normal: [1, 0, 0] }
-
-      if (flipOpts.includes('vertical')) {
-        triangleAlignOpts.modes = ['max', 'max', 'center']
-        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
-        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
-      }
-    } else {
-      return null;
-    }
-
-    let triangleProfile = triangle.right30({ base: width, height });
-    if (triangleMirrorOpts != null) {
-      triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
-    }
-
-    const triangleSection = align(
-      triangleAlignOpts,
-      triangleProfile
-    )
-
-    const bearingSurface = align(
-      bearingSurfaceAlignOpts,
-      rectangle({ size: [width, thickness] })
-    )
-
-    let finalShape = union(bearingSurface, triangleSection);
-    if (mirrorOpts != null) {
-      finalShape = mirror(mirrorOpts, finalShape)
-    }
-
-    return align({ modes: ['center', 'center', 'center'] }, finalShape)
-  }
-
-  /**
    * Edge profiles
    * @memberof details.profiles
    * @namespace edge
@@ -815,7 +754,6 @@ const profileBuilder = ({ lib, swLib }) => {
       return intersect(baseSquare, angledSquare);
     },
     edge,
-    edgeFlange,
     triangle: triangles,
     rectangle: rectangles,
     curves,
