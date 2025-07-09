@@ -19,6 +19,7 @@ const profileBuilder = ({ lib, swLib }) => {
   const { rotate, align, translate, scale, mirror } = lib.transforms
   const { bezier } = lib.curves
   const { path2 } = lib.geometries
+  const { measureCenter } = lib.measurements
 
   const { TAU } = lib.maths.constants
 
@@ -240,19 +241,30 @@ const profileBuilder = ({ lib, swLib }) => {
       }
     })
 
-    return mirror({ normal: [0, 1, 0] }, finalShape)
+    const mirrored = mirror({ normal: [0, 1, 0] }, finalShape)
+
+    if (doubleFlanged) {
+      return union(finalShape, mirrored)
+    }
+
+    return mirrored
   }
 
   const cBeam = ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
-    const beam1 = straightBeam({ length, thickness, flangeThickness })
-    const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
-    const beam3 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+      [0, 0, TAU / -4],
+      straightBeam({ length, thickness, flangeThickness })
+    ))
+    const beam2 = align(
+      { modes: ['center', 'min', 'center'], relativeTo: [(length + thickness) / -2, 0, 0] },
+      straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    )
+    const beam3 = align(
+      { modes: ['center', 'min', 'center'], relativeTo: [(length + thickness) / 2, 0, 0] },
+      straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    )
 
-    const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
-    const adjBeam2 = translate([0, 0, 0], beam2)
-    const adjBeam3 = translate([thickness * 2, 0, 0], beam3)
-
-    return union(adjBeam1, adjBeam2, adjBeam3)
+    return union(beam1, beam2, beam3)
   }
 
   const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
@@ -268,36 +280,47 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const reinforcement = {
     straight: straightBeam,
-    corner: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, offsetWidth })
-      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    corner: ({ length, depth, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0 }) => {
+      const beam1 = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [insetWidth, 0, (thickness + offsetWidth) / 2] },
+        rotate([0, 0, TAU / -4], straightBeam({ length, thickness, flangeThickness, insetWidth, offsetWidth }))
+      )
+      const beam2 = align({ modes: ['min', 'min', 'center'], relativeTo: [-insetWidth + thickness, 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
 
-      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
-      const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
-
-      return union(adjBeam1, adjBeam2)
+      return union(beam1, beam2)
     },
     cBeam,
     uBeam: cBeam,
     tBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
-      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+        [0, 0, TAU / -4],
+        straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      ))
+      const beam2 = align(
+        { modes: ['center', 'min', 'center'] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
 
-      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
-      const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
-
-      return union(adjBeam1, adjBeam2)
+      return union(beam1, beam2)
     },
     doubleTBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
-      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
-      const beam3 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      const beamPoints = [length / 3 - (length / 2), length * 2 / 3 - (length / 2)]
+      const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+        [0, 0, TAU / -4],
+        straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      ))
+      const beam2 = align(
+        { modes: ['center', 'min', 'center'], relativeTo: [beamPoints[0], 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
+      const beam3 = align(
+        { modes: ['center', 'min', 'center'], relativeTo: [beamPoints[1], 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
 
-      const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
-      const adjBeam2 = translate([0, 0, 0], beam2)
-      const adjBeam3 = translate([thickness * 2, 0, 0], beam3)
-
-      return union(adjBeam1, adjBeam2, adjBeam3)
+      return union(beam1, beam2, beam3)
     },
     triBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 3, thickness, insetWidth, offsetWidth })
