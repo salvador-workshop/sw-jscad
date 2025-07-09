@@ -193,15 +193,19 @@ const profileBuilder = ({ lib, swLib }) => {
     },
   }
 
-  const straightBeam = ({ length, thickness, insetWidth, offsetWidth, doubleFlanged = false }) => {
+  const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
     const offsetWidths = [insetWidth, offsetWidth]
+    const fThickness = flangeThickness || thickness
 
     const offsetShapes = offsetWidths.map(offWidth => {
+      if (offWidth == 0) {
+        return null
+      }
       return union(
         align(
           { modes: ['min', 'max', 'center'] },
-          rectangle({ size: [offWidth, thickness] }),
+          rectangle({ size: [offWidth, fThickness] }),
         ),
         align(
           { modes: ['min', 'min', 'center'] },
@@ -211,6 +215,9 @@ const profileBuilder = ({ lib, swLib }) => {
     })
 
     const adjOffsetShapes = offsetShapes.map((offShape, idx) => {
+      if (offShape == null) {
+        return null
+      }
       // default idx == 0 (inset)
       let adjOffShape = align(
         { modes: ['max', 'min', 'center'], relativeTo: [thickness / -2, length / -2, 0] },
@@ -226,13 +233,20 @@ const profileBuilder = ({ lib, swLib }) => {
       return adjOffShape;
     })
 
-    return mirror({ normal: [0, 1, 0] }, union(baseShape, ...adjOffsetShapes))
+    let finalShape = baseShape
+    adjOffsetShapes.forEach((oShape, idx) => {
+      if (oShape) {
+        finalShape = union(finalShape, oShape)
+      }
+    })
+
+    return mirror({ normal: [0, 1, 0] }, finalShape)
   }
 
-  const cBeam = ({ length, depth, thickness, insetWidth, offsetWidth }) => {
-    const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
-    const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
-    const beam3 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+  const cBeam = ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+    const beam1 = straightBeam({ length, thickness, flangeThickness })
+    const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    const beam3 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
 
     const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
     const adjBeam2 = translate([0, 0, 0], beam2)
@@ -254,9 +268,9 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const reinforcement = {
     straight: straightBeam,
-    corner: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
-      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+    corner: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, offsetWidth })
+      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
 
       const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
       const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
@@ -265,19 +279,19 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     cBeam,
     uBeam: cBeam,
-    tBeam: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
-      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+    tBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
 
       const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
       const adjBeam2 = translate([thickness * 2, 0, 0], beam2)
 
       return union(adjBeam1, adjBeam2)
     },
-    doubleTBeam: ({ length, depth, thickness, insetWidth, offsetWidth }) => {
-      const beam1 = straightBeam({ length, thickness, insetWidth, offsetWidth })
-      const beam2 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
-      const beam3 = straightBeam({ length: depth, thickness, insetWidth, offsetWidth })
+    doubleTBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+      const beam1 = straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      const beam2 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      const beam3 = straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
 
       const adjBeam1 = translate([thickness * -2, 0, 0], beam1)
       const adjBeam2 = translate([0, 0, 0], beam2)
