@@ -244,8 +244,9 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                 frameWidth * 2 + size[1],
             ],
             // TODO - calculate long axis instead of defaulting to 'x'
-            longAxis: cornerOpts.longAxis || position.findLongAxis(size) || 'x'
+            longAxis: cornerOpts.longAxis || position.findLongAxis(size)
         }
+        console.log(specs)
 
         const inRectBase = rectangle({ size })
         const inRectBaseCoords = position.getGeomCoords(inRectBase)
@@ -264,28 +265,37 @@ const rectangularFrameInit = ({ lib, swLib }) => {
         console.log(inCornerStyle, outCornerStyle)
 
         if (direction != 'out' && inCornerStyle) {
+            const inStyleType = cornerStyleTypes.find(cStyleType => inCornerStyle.id.startsWith(cStyleType))
             const inCornerPieces = Object.entries(inRectBaseCorners).map(([cName, cPt]) => {
                 const inCornerPiece = inCornerStyle.func(cornerOpts)
+                let inPieceRotation = [0, 0, 0]
+                let inPieceAlign = ['center', 'center', 'center']
+
+                if (['rect', 'ellipse'].includes(inStyleType) && specs.longAxis == 'y') {
+                    inPieceRotation = [0, 0, TAU / 4]
+                }
+
+
                 if (cName == 'c4') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], inCornerPiece)
+                        { modes: inPieceAlign, relativeTo: cPt },
+                        rotate(inPieceRotation, inCornerPiece)
                     )
                 } else if (cName == 'c3') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], inCornerPiece)
+                        { modes: inPieceAlign, relativeTo: cPt },
+                        rotate(inPieceRotation, inCornerPiece)
                     )
                 } else if (cName == 'c2') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], inCornerPiece)
+                        { modes: inPieceAlign, relativeTo: cPt },
+                        rotate(inPieceRotation, inCornerPiece)
                     )
                 } else {
                     // defaults to c1
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], inCornerPiece)
+                        { modes: inPieceAlign, relativeTo: cPt },
+                        rotate(inPieceRotation, inCornerPiece)
                     )
                 }
             })
@@ -293,28 +303,36 @@ const rectangularFrameInit = ({ lib, swLib }) => {
         }
 
         if (direction != 'in' && outCornerStyle) {
+            const outStyleType = cornerStyleTypes.find(cStyleType => outCornerStyle.id.startsWith(cStyleType))
             const outCornerPieces = Object.entries(outRectBaseCorners).map(([cName, cPt]) => {
                 const outCornerPiece = outCornerStyle.func(outCornerOpts)
+                let outPieceRotation = [0, 0, 0]
+                let outPieceAlign = ['center', 'center', 'center']
+
+                if (['rect', 'ellipse'].includes(outStyleType) && specs.longAxis == 'y') {
+                    outPieceRotation = [0, 0, TAU / 4]
+                }
+
                 if (cName == 'c4') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], outCornerPiece)
+                        { modes: outPieceAlign, relativeTo: cPt },
+                        rotate(outPieceRotation, outCornerPiece)
                     )
                 } else if (cName == 'c3') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], outCornerPiece)
+                        { modes: outPieceAlign, relativeTo: cPt },
+                        rotate(outPieceRotation, outCornerPiece)
                     )
                 } else if (cName == 'c2') {
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], outCornerPiece)
+                        { modes: outPieceAlign, relativeTo: cPt },
+                        rotate(outPieceRotation, outCornerPiece)
                     )
                 } else {
                     // defaults to c1
                     return align(
-                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
-                        rotate([0, 0, 0], outCornerPiece)
+                        { modes: outPieceAlign, relativeTo: cPt },
+                        rotate(outPieceRotation, outCornerPiece)
                     )
                 }
             })

@@ -39,13 +39,25 @@ const positionUtils = ({ lib }) => {
 
     /**
      * ...
-     * @param {number[]} size 
-     * @returns axis with longest value ("x", "y", "z"). Returns `null` if all values are equal, or invalid
+     * @param {number[]} size - [x, y, z]
+     * @returns axis with longest value (either "x", "y", or "z") or `null` if invalid
      */
     const findLongAxis = (size) => {
-        const is2d = size.length < 3
+        console.log('findLongAxis', size)
+        const is2d = size.length == 2 && size.every(sizeNum => typeof sizeNum === 'number' && sizeNum > 0)
+        const is3d = size.length == 3 && size.every(sizeNum => typeof sizeNum === 'number' && sizeNum > 0)
+        console.log(is2d, is3d)
 
-        return null
+        if (!is2d && !is3d) {
+            return null
+        }
+
+        const maxDim = Math.max(...size)
+        const maxDimIdx = size.indexOf(maxDim)
+        const axes = ['x', 'y', 'z']
+        console.log(maxDim, maxDimIdx, axes[maxDimIdx])
+
+        return axes[maxDimIdx]
     }
 
     return {
