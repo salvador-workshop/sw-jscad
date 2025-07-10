@@ -13,12 +13,13 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     const { geometry, profiles } = swLib.utils
 
     // Defining corner styles and available tag options
-    const cStyleDefault = { inv: false, inset: false, offset: false }
-    const cStRound = { inv: true, offset: true }
-    const cStRect = { inv: true, inset: true, offset: true }
-    const cStEllipse = { ...cStRect }
-
     const cornerStyleTypes = ['round', 'tri', 'rect', 'ellipse', 'cornerBez']
+
+    const cStyleDefault = { inv: false, inset: true, offset: false }
+    const cStRound = { inv: true, offset: true }
+    const cStRect = { inv: true, offset: true }
+    const cStEllipse = { ...cStRect }
+    const cStCornerBez = { inv: true }
 
     const cRoundStyles = {
         round: {
@@ -64,130 +65,128 @@ const superPrimsRectInit = ({ lib, swLib }) => {
         },
     }
 
+    const cStDefRect = {
+        ...cStyleDefault,
+        ...cStRect,
+    }
     const cRectStyles = {
         rectGolden: {
             id: 'rectGolden',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.golden
         },
         rectSixtyThirty: {
             id: 'rectSixtyThirty',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.sixtyThirty
         },
         rectSilver: {
             id: 'rectSilver',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.silver
         },
         rectBronze: {
             id: 'rectBronze',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.bronze
         },
         rectCopper: {
             id: 'rectCopper',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.copper
         },
         rectSuperGolden: {
             id: 'rectSuperGolden',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.superGolden
         },
         rectPlastic: {
             id: 'rectPlastic',
-            ...cStyleDefault,
-            ...cStRect,
+            ...cStDefRect,
             func: profiles.rectangle.plastic
         },
     }
 
+    const cStDefEllipse = {
+        ...cStyleDefault,
+        ...cStEllipse
+    }
     const cEllipseStyles = {
         ellipseGolden: {
             id: 'ellipseGolden',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.golden
         },
         ellipseSixtyThirty: {
             id: 'ellipseSixtyThirty',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.sixtyThirty
         },
         ellipseSilver: {
             id: 'ellipseSilver',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.silver
         },
         ellipseBronze: {
             id: 'ellipseBronze',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.bronze
         },
         ellipseCopper: {
             id: 'ellipseCopper',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.copper
         },
         ellipseSuperGolden: {
             id: 'ellipseSuperGolden',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.superGolden
         },
         ellipsePlastic: {
             id: 'ellipsePlastic',
-            ...cStyleDefault,
-            ...cStEllipse,
+            ...cStDefEllipse,
             func: profiles.ellipse.plastic
         },
     }
 
+    const cStDefCornBez = {
+        ...cStyleDefault,
+        ...cStCornerBez,
+    }
     const cCornerBezStyles = {
         cornerBezGolden: {
             id: 'cornerBezGolden',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.golden
         },
         cornerBezSixtyThirty: {
             id: 'cornerBezSixtyThirty',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.sixtyThirty
         },
         cornerBezSilver: {
             id: 'cornerBezSilver',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.silver
         },
         cornerBezBronze: {
             id: 'cornerBezBronze',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.bronze
         },
         cornerBezCopper: {
             id: 'cornerBezCopper',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.copper
         },
         cornerBezSuperGolden: {
             id: 'cornerBezSuperGolden',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.superGolden
         },
         cornerBezPlastic: {
             id: 'cornerBezPlastic',
-            ...cStyleDefault,
+            ...cStDefCornBez,
             func: profiles.curves.rightCorner.plastic
         },
     }
@@ -210,8 +209,6 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     }
     rectangularFrameDefOpts.outCornerOpts = rectangularFrameDefOpts.cornerOpts
 
-
-
     /**
      * Frame rect
      * @memberof utils.superPrimitives
@@ -222,6 +219,8 @@ const superPrimsRectInit = ({ lib, swLib }) => {
      * @param {object} opts.cornerOpts - options for interior side
      * @param {string} opts.cornerOpts.style - profile type, like "tri45deg", "rectSixtyThirty", "ellipseGolden", "cornerBezSilver"
      * @param {number} opts.cornerOpts.size
+     * @param {number} opts.cornerOpts.length
+     * @param {number} opts.cornerOpts.width
      * @param {number} opts.cornerOpts.radius
      * @param {string} opts.cornerOpts.longAxis
      * @param {string} opts.cornerOpts.opt - Option for each corner. Choose between "inv", "inset", "offset"
@@ -235,50 +234,91 @@ const superPrimsRectInit = ({ lib, swLib }) => {
         cornerOpts = rectangularFrameDefOpts.cornerOpts,
         outCornerOpts = rectangularFrameDefOpts.outCornerOpts,
     }) => {
+        console.log('rectangularFrame', size, direction)
+        console.log(frameWidth, cornerOpts, outCornerOpts)
+
         const specs = {
             totalSize: [
                 frameWidth * 2 + size[0],
                 frameWidth * 2 + size[1],
             ],
-            // TODO - calculate long axis
-            longAxis: cornerOpts.longAxis || 'x'
+            // TODO - calculate long axis instead of defaulting to 'x'
+            longAxis: cornerOpts.longAxis || position.findLongAxis(size) || 'x'
         }
 
-        const inRect = rectangle({ size })
-        const inRectCoords = position.getGeomCoords(inRect)
-        const inRectCtrlPts = geometry.rectangle.getRectangleCtrlPoints(inRect)
-        const inRectCorners = geometry.rectangle.getRectangleCorners(inRect)
+        const inRectBase = rectangle({ size })
+        const inRectBaseCoords = position.getGeomCoords(inRectBase)
+        const inRectBaseCtrlPts = geometry.rectangle.getRectangleCtrlPoints(inRectBase)
+        const inRectBaseCorners = geometry.rectangle.getRectangleCorners(inRectBase)
+        const inCornerStyle = cornerStyles[cornerOpts.style]
 
-        const outRect = rectangle({ size: specs.totalSize })
-        const outRectCoords = position.getGeomCoords(outRect)
-        const outRectCtrlPts = geometry.rectangle.getRectangleCtrlPoints(outRect)
-        const outRectCorners = geometry.rectangle.getRectangleCorners(outRect)
+        const outRectBase = rectangle({ size: specs.totalSize })
+        const outRectBaseCoords = position.getGeomCoords(outRectBase)
+        const outRectBaseCtrlPts = geometry.rectangle.getRectangleCtrlPoints(outRectBase)
+        const outRectBaseCorners = geometry.rectangle.getRectangleCorners(outRectBase)
+        const outCornerStyle = cornerStyles[outCornerOpts.style]
 
-        const inCornerPieces = Object.entries(inRectCorners).map(([cName, cPt]) => {
-            if (cName == 'c1') {
-                return {}
-            } else if (cName == 'c2') {
-                return {}
-            } else if (cName == 'c3') {
-                return {}
-            } else {
-                // defaults to c1
-                return {}
-            }
-        })
+        let inRect = inRectBase
+        let outRect = outRectBase
+        console.log(inCornerStyle, outCornerStyle)
 
-        const outCornerPieces = Object.entries(outRectCorners).map(([cName, cPt]) => {
-            if (cName == 'c1') {
-                return {}
-            } else if (cName == 'c2') {
-                return {}
-            } else if (cName == 'c3') {
-                return {}
-            } else {
-                // defaults to c1
-                return {}
-            }
-        })
+        if (direction != 'out' && inCornerStyle) {
+            const inCornerPieces = Object.entries(inRectBaseCorners).map(([cName, cPt]) => {
+                const inCornerPiece = inCornerStyle.func(cornerOpts)
+                if (cName == 'c4') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], inCornerPiece)
+                    )
+                } else if (cName == 'c3') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], inCornerPiece)
+                    )
+                } else if (cName == 'c2') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], inCornerPiece)
+                    )
+                } else {
+                    // defaults to c1
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], inCornerPiece)
+                    )
+                }
+            })
+            inRect = union(inRectBase, ...inCornerPieces)
+        }
+
+        if (direction != 'in' && outCornerStyle) {
+            const outCornerPieces = Object.entries(outRectBaseCorners).map(([cName, cPt]) => {
+                const outCornerPiece = outCornerStyle.func(cornerOpts)
+                if (cName == 'c4') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], outCornerPiece)
+                    )
+                } else if (cName == 'c3') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], outCornerPiece)
+                    )
+                } else if (cName == 'c2') {
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], outCornerPiece)
+                    )
+                } else {
+                    // defaults to c1
+                    return align(
+                        { modes: ['center', 'center', 'center'], relativeTo: cPt },
+                        rotate([0, 0, 0], outCornerPiece)
+                    )
+                }
+            })
+            outRect = union(outRectBase, ...outCornerPieces)
+        }
 
         return subtract(outRect, inRect);
     }

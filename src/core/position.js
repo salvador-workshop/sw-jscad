@@ -37,9 +37,21 @@ const positionUtils = ({ lib }) => {
         }
     }
 
+    /**
+     * ...
+     * @param {number[]} size 
+     * @returns axis with longest value ("x", "y", "z"). Returns `null` if all values are equal, or invalid
+     */
+    const findLongAxis = (size) => {
+        const is2d = size.length < 3
+
+        return null
+    }
+
     return {
         measure,
         getGeomCoords,
+        findLongAxis,
         /**
          * Gets the keypoints for a given object
          * @memberof core.position
