@@ -246,26 +246,38 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                 baseNotch = rectangle({ size: [cornerPieceDims[0] - 0.01, cornerPieceDims[1] - 0.01] })
             }
             // console.log(styleType)
-//             console.log(cornerPiece, baseNotch)
+            //             console.log(cornerPiece, baseNotch)
             // console.log(cornerPieceDims, measureDimensions(baseNotch))
 
             Object.entries(outRectCorners).forEach(([cName, cPt]) => {
-                let inPieceRotation = [0, 0, 0]
+                let inPieceRotation = null
                 let inPieceAlign = ['center', 'center', 'center']
                 let inPieceMirror = null
 
                 if (cornerOpts.longAxis == 'y') {
-                    inPieceRotation = [0, 0, TAU / 4]
+                    if (styleType == 'tri') {
+                        inPieceRotation = [0, 0, 0]
+                    } else {
+                        inPieceRotation = [0, 0, TAU / 4]
+                    }
+                } else {
+                    if (styleType == 'tri') {
+                        inPieceRotation = [0, 0, TAU / 4]
+                    } else {
+                        inPieceRotation = [0, 0, 0]
+                    }
                 }
 
                 if (cName == 'c4') {
                     // (-X, -Y)
                     inPieceAlign = ['min', 'min', 'center']
                     if (styleType == 'cornerBez') {
-                        inPieceRotation = cornerOpts.longAxis == 'y' ?
-                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]] :
-                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
+                        inPieceRotation = [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
                         inPieceMirror = cornerOpts.longAxis == 'y' ? null : [0, 1, 0]
+                    }
+                    if (styleType == 'tri') {
+                        inPieceRotation = [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? [0, 1, 0] : null
                     }
                 } else if (cName == 'c3') {
                     // (-X, +Y)
@@ -276,14 +288,22 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                             [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
                         inPieceMirror = cornerOpts.longAxis == 'y' ? [1, 0, 0] : null
                     }
+                    if (styleType == 'tri') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? null : [1, 0, 0]
+                    }
                 } else if (cName == 'c2') {
                     // (+X, +Y)
                     inPieceAlign = ['max', 'max', 'center']
                     if (styleType == 'cornerBez') {
-                        inPieceRotation = cornerOpts.longAxis == 'y' ?
-                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2] :
-                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
+                        inPieceRotation = [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
                         inPieceMirror = cornerOpts.longAxis == 'y' ? null : [0, 1, 0]
+                    }
+                    if (styleType == 'tri') {
+                        inPieceRotation = [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? [0, 1, 0] : null
                     }
                 } else {
                     // defaults to c1 (+X, -Y)
@@ -293,6 +313,12 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                             [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]] :
                             [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
                         inPieceMirror = cornerOpts.longAxis == 'y' ? [1, 0, 0] : null
+                    }
+                    if (styleType == 'tri') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? null : [1, 0, 0]
                     }
                 }
 
