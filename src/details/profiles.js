@@ -123,6 +123,7 @@ const profileBuilder = ({ lib, swLib }) => {
       length || width * ratio,
       width || length / ratio
     ]
+    const container = rectangle({ size: validSize })
     const bez = bezier.create([
       [0, 0],
       [0, validSize[1]],
@@ -130,8 +131,9 @@ const profileBuilder = ({ lib, swLib }) => {
     ])
     const segments = 12
     const bezPts = getBezierPts(bez, segments)
-    const bezPath = path2.fromPoints({}, [[0, validSize[1]], ...bezPts])
-    return geom2.fromPoints(path2.toPoints(bezPath))
+    const bezPath = path2.fromPoints({ closed: true }, [[0, validSize[1]], ...bezPts])
+    const bezGeom = align({ modes: ['center', 'center', 'center'] }, geom2.fromPoints(path2.toPoints(bezPath)))
+    return subtract(container, bezGeom)
   }
 
   const curves = {

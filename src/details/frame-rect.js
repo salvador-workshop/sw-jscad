@@ -234,54 +234,89 @@ const rectangularFrameInit = ({ lib, swLib }) => {
         const outRectCorners = geometry.rectangle.getRectangleCorners(outRect)
         const cornerStyle = cornerStyles[cornerOpts.style]
 
-        const inCornerPieces = []
+        const cornerPieces = []
         const notches = []
 
         if (cornerStyle) {
             const styleType = cornerStyleTypes.find(cStyleType => cornerStyle.id.startsWith(cStyleType))
             const cornerPiece = cornerStyle.func(cornerOpts)
             const cornerPieceDims = measureDimensions(cornerPiece)
-
-            const baseNotch = rectangle({ size: [cornerPieceDims[0] / 2, cornerPieceDims[1] / 2] })
+            let baseNotch = rectangle({ size: [cornerPieceDims[0] / 2, cornerPieceDims[1] / 2] })
+            if (['tri', 'cornerBez'].includes(styleType)) {
+                baseNotch = rectangle({ size: [cornerPieceDims[0] - 0.01, cornerPieceDims[1] - 0.01] })
+            }
+            // console.log(styleType)
+//             console.log(cornerPiece, baseNotch)
+            // console.log(cornerPieceDims, measureDimensions(baseNotch))
 
             Object.entries(outRectCorners).forEach(([cName, cPt]) => {
                 let inPieceRotation = [0, 0, 0]
                 let inPieceAlign = ['center', 'center', 'center']
+                let inPieceMirror = null
 
-                // adjust rotation by type
-                if (['rect', 'ellipse'].includes(styleType) && cornerOpts.longAxis == 'y') {
+                if (cornerOpts.longAxis == 'y') {
                     inPieceRotation = [0, 0, TAU / 4]
                 }
 
                 if (cName == 'c4') {
                     // (-X, -Y)
                     inPieceAlign = ['min', 'min', 'center']
+                    if (styleType == 'cornerBez') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? null : [0, 1, 0]
+                    }
                 } else if (cName == 'c3') {
                     // (-X, +Y)
                     inPieceAlign = ['min', 'max', 'center']
+                    if (styleType == 'cornerBez') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? [1, 0, 0] : null
+                    }
                 } else if (cName == 'c2') {
                     // (+X, +Y)
                     inPieceAlign = ['max', 'max', 'center']
+                    if (styleType == 'cornerBez') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? null : [0, 1, 0]
+                    }
                 } else {
                     // defaults to c1 (+X, -Y)
                     inPieceAlign = ['max', 'min', 'center']
+                    if (styleType == 'cornerBez') {
+                        inPieceRotation = cornerOpts.longAxis == 'y' ?
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2]] :
+                            [inPieceRotation[0], inPieceRotation[1], inPieceRotation[2] + TAU / 2]
+                        inPieceMirror = cornerOpts.longAxis == 'y' ? [1, 0, 0] : null
+                    }
                 }
 
+                const rotatedNotch = rotate(inPieceRotation, baseNotch)
                 const newNotch = align(
                     { modes: inPieceAlign, relativeTo: cPt },
-                    rotate(inPieceRotation, baseNotch)
+                    rotatedNotch
                 )
                 notches.push(newNotch)
 
-                const newInCornerPiece = align(
+                let rotatedCornerPiece = rotate(inPieceRotation, cornerPiece)
+                if (inPieceMirror) {
+                    rotatedCornerPiece = mirror({ normal: inPieceMirror }, rotatedCornerPiece)
+                }
+                const newCornerPiece = align(
                     { modes: inPieceAlign, relativeTo: cPt },
-                    rotate(inPieceRotation, cornerPiece)
+                    rotatedCornerPiece
                 )
-                inCornerPieces.push(newInCornerPiece)
+                cornerPieces.push(newCornerPiece)
             })
 
+            // console.log(notches, cornerPieces)
             outRect = subtract(outRect, ...notches)
-            outRect = union(outRect, ...inCornerPieces)
+            outRect = union(outRect, ...cornerPieces)
         }
         return outRect
     }
