@@ -16,15 +16,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     const rectangularPrims = require('./geometry').init({ lib, swLib });
 
     const { cuboid, cylinder, triangle, rectangle } = lib.primitives
-    const { expand } = lib.expansions
-    const { translate, rotate, align, mirror } = lib.transforms
-    const { subtract, union } = lib.booleans
-    const { measureBoundingBox, measureDimensions } = lib.measurements
-    const { extrudeRotate, extrudeLinear } = lib.extrusions
-    const { TAU } = lib.maths.constants
-
-    const { maths } = swLib.core
-    const { geometry } = swLib.utils
 
     /**
      * Frame cuboid
@@ -43,8 +34,8 @@ const superPrimitivesInit = ({ lib, swLib }) => {
 
     return {
         frameCuboid,
-        mesh: meshPrims,
-        rectangular: rectangularPrims,
+        ...meshPrims,
+        ...rectangularPrims,
     }
 }
 
