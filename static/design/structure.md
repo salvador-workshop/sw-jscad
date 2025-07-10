@@ -21,3 +21,4 @@ In initialization order:
 NOTES
 
 - _foils_ moved to `sw-jscad-families`
+- rect/cuboid coord funcs moved to `core.position` (`getRectangleCtrlPoints()`, etc)

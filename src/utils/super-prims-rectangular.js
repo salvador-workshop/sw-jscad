@@ -1,7 +1,7 @@
 "use strict"
 
 const superPrimsRectInit = ({ lib, swLib }) => {
-    const { cuboid, cylinder, triangle, rectangle } = lib.primitives
+    const { circle, cuboid, cylinder, triangle, rectangle } = lib.primitives
     const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
@@ -10,43 +10,194 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     const { TAU } = lib.maths.constants
 
     const { position } = swLib.core
-    const { geometry } = swLib.utils
+    const { geometry, profiles } = swLib.utils
 
     // Defining corner styles and available tag options
     const cStyleDefault = { inv: false, inset: false, offset: false }
-    const cStyleRoundDef = { inv: true, offset: true }
-    const cStyleRectDef = { inv: true, inset: true, offset: true }
-    const cStyleEllipseDef = { ...cStyleRectDef }
+    const cStRound = { inv: true, offset: true }
+    const cStRect = { inv: true, inset: true, offset: true }
+    const cStEllipse = { ...cStRect }
+
+    const cornerStyleTypes = ['round', 'tri', 'rect', 'ellipse', 'cornerBez']
+
+    const cRoundStyles = {
+        round: {
+            id: 'round',
+            ...cStyleDefault,
+            ...cStRound,
+            func: ({ radius }) => {
+                return circle({ radius })
+            }
+        },
+    }
+
+    const cTriStyles = {
+        tri45deg: {
+            id: 'tri45deg',
+            ...cStyleDefault,
+            func: profiles.triangle.right45
+        },
+        tri30deg: {
+            id: 'tri30deg',
+            ...cStyleDefault,
+            func: profiles.triangle.right30
+        },
+        triGolden: {
+            id: 'triGolden',
+            ...cStyleDefault,
+            func: profiles.triangle.rightGolden
+        },
+        triSilver: {
+            id: 'triSilver',
+            ...cStyleDefault,
+            func: profiles.triangle.rightSilver
+        },
+        triBronze: {
+            id: 'triBronze',
+            ...cStyleDefault,
+            func: profiles.triangle.rightBronze
+        },
+        triCopper: {
+            id: 'triCopper',
+            ...cStyleDefault,
+            func: profiles.triangle.rightCopper
+        },
+    }
+
+    const cRectStyles = {
+        rectGolden: {
+            id: 'rectGolden',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.golden
+        },
+        rectSixtyThirty: {
+            id: 'rectSixtyThirty',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.sixtyThirty
+        },
+        rectSilver: {
+            id: 'rectSilver',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.silver
+        },
+        rectBronze: {
+            id: 'rectBronze',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.bronze
+        },
+        rectCopper: {
+            id: 'rectCopper',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.copper
+        },
+        rectSuperGolden: {
+            id: 'rectSuperGolden',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.superGolden
+        },
+        rectPlastic: {
+            id: 'rectPlastic',
+            ...cStyleDefault,
+            ...cStRect,
+            func: profiles.rectangle.plastic
+        },
+    }
+
+    const cEllipseStyles = {
+        ellipseGolden: {
+            id: 'ellipseGolden',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.golden
+        },
+        ellipseSixtyThirty: {
+            id: 'ellipseSixtyThirty',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.sixtyThirty
+        },
+        ellipseSilver: {
+            id: 'ellipseSilver',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.silver
+        },
+        ellipseBronze: {
+            id: 'ellipseBronze',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.bronze
+        },
+        ellipseCopper: {
+            id: 'ellipseCopper',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.copper
+        },
+        ellipseSuperGolden: {
+            id: 'ellipseSuperGolden',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.superGolden
+        },
+        ellipsePlastic: {
+            id: 'ellipsePlastic',
+            ...cStyleDefault,
+            ...cStEllipse,
+            func: profiles.ellipse.plastic
+        },
+    }
+
+    const cCornerBezStyles = {
+        cornerBezGolden: {
+            id: 'cornerBezGolden',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.golden
+        },
+        cornerBezSixtyThirty: {
+            id: 'cornerBezSixtyThirty',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.sixtyThirty
+        },
+        cornerBezSilver: {
+            id: 'cornerBezSilver',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.silver
+        },
+        cornerBezBronze: {
+            id: 'cornerBezBronze',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.bronze
+        },
+        cornerBezCopper: {
+            id: 'cornerBezCopper',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.copper
+        },
+        cornerBezSuperGolden: {
+            id: 'cornerBezSuperGolden',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.superGolden
+        },
+        cornerBezPlastic: {
+            id: 'cornerBezPlastic',
+            ...cStyleDefault,
+            func: profiles.curves.rightCorner.plastic
+        },
+    }
 
     const cornerStyles = {
-        round: { id: 'round', ...cStyleDefault, ...cStyleRoundDef },
-        tri45deg: { id: 'tri45deg', ...cStyleDefault },
-        tri30deg: { id: 'tri30deg', ...cStyleDefault },
-        triGolden: { id: 'triGolden', ...cStyleDefault },
-        triSilver: { id: 'triSilver', ...cStyleDefault },
-        triBronze: { id: 'triBronze', ...cStyleDefault },
-        triCopper: { id: 'triCopper', ...cStyleDefault },
-        rectGolden: { id: 'rectGolden', ...cStyleDefault, ...cStyleRectDef },
-        rectSixtyThirty: { id: 'rectSixtyThirty', ...cStyleDefault, ...cStyleRectDef },
-        rectSilver: { id: 'rectSilver', ...cStyleDefault, ...cStyleRectDef },
-        rectBronze: { id: 'rectBronze', ...cStyleDefault, ...cStyleRectDef },
-        rectCopper: { id: 'rectCopper', ...cStyleDefault, ...cStyleRectDef },
-        rectSuperGolden: { id: 'rectSuperGolden', ...cStyleDefault, ...cStyleRectDef },
-        rectPlastic: { id: 'rectPlastic', ...cStyleDefault, ...cStyleRectDef },
-        ellipseGolden: { id: 'ellipseGolden', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipseSixtyThirty: { id: 'ellipseSixtyThirty', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipseSilver: { id: 'ellipseSilver', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipseBronze: { id: 'ellipseBronze', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipseCopper: { id: 'ellipseCopper', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipseSuperGolden: { id: 'ellipseSuperGolden', ...cStyleDefault, ...cStyleEllipseDef },
-        ellipsePlastic: { id: 'ellipsePlastic', ...cStyleDefault, ...cStyleEllipseDef },
-        cornerBezGolden: { id: 'cornerBezGolden', ...cStyleDefault },
-        cornerBezSixtyThirty: { id: 'cornerBezSixtyThirty', ...cStyleDefault },
-        cornerBezSilver: { id: 'cornerBezSilver', ...cStyleDefault },
-        cornerBezBronze: { id: 'cornerBezBronze', ...cStyleDefault },
-        cornerBezCopper: { id: 'cornerBezCopper', ...cStyleDefault },
-        cornerBezSuperGolden: { id: 'cornerBezSuperGolden', ...cStyleDefault },
-        cornerBezPlastic: { id: 'cornerBezPlastic', ...cStyleDefault },
+        ...cRoundStyles,
+        ...cTriStyles,
+        ...cRectStyles,
+        ...cEllipseStyles,
+        ...cCornerBezStyles,
     }
 
     const rectangularFrameDefOpts = {
@@ -59,6 +210,8 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     }
     rectangularFrameDefOpts.outCornerOpts = rectangularFrameDefOpts.cornerOpts
 
+
+
     /**
      * Frame rect
      * @memberof utils.superPrimitives
@@ -67,7 +220,7 @@ const superPrimsRectInit = ({ lib, swLib }) => {
      * @param {string} opts.direction - Where ornaments are applied. Choose between "in" (default), "out", or "both"
      * @param {number} opts.frameWidth - Width of frame around interior space
      * @param {object} opts.cornerOpts - options for interior side
-     * @param {string} opts.cornerOpts.style
+     * @param {string} opts.cornerOpts.style - profile type, like "tri45deg", "rectSixtyThirty", "ellipseGolden", "cornerBezSilver"
      * @param {number} opts.cornerOpts.size
      * @param {number} opts.cornerOpts.radius
      * @param {string} opts.cornerOpts.longAxis
@@ -91,13 +244,43 @@ const superPrimsRectInit = ({ lib, swLib }) => {
             longAxis: cornerOpts.longAxis || 'x'
         }
 
-        const outerRect = rectangle({ size: specs.totalSize })
-        const outerRectCoords = position.getGeomCoords(outerRect)
+        const inRect = rectangle({ size })
+        const inRectCoords = position.getGeomCoords(inRect)
+        const inRectCtrlPts = geometry.rectangle.getRectangleCtrlPoints(inRect)
+        const inRectCorners = geometry.rectangle.getRectangleCorners(inRect)
 
-        const innerRect = rectangle({ size })
-        const innerRectCoords = position.getGeomCoords(innerRect)
+        const outRect = rectangle({ size: specs.totalSize })
+        const outRectCoords = position.getGeomCoords(outRect)
+        const outRectCtrlPts = geometry.rectangle.getRectangleCtrlPoints(outRect)
+        const outRectCorners = geometry.rectangle.getRectangleCorners(outRect)
 
-        return subtract(outerRect, innerRect);
+        const inCornerPieces = Object.entries(inRectCorners).map(([cName, cPt]) => {
+            if (cName == 'c1') {
+                return {}
+            } else if (cName == 'c2') {
+                return {}
+            } else if (cName == 'c3') {
+                return {}
+            } else {
+                // defaults to c1
+                return {}
+            }
+        })
+
+        const outCornerPieces = Object.entries(outRectCorners).map(([cName, cPt]) => {
+            if (cName == 'c1') {
+                return {}
+            } else if (cName == 'c2') {
+                return {}
+            } else if (cName == 'c3') {
+                return {}
+            } else {
+                // defaults to c1
+                return {}
+            }
+        })
+
+        return subtract(outRect, inRect);
     }
 
     return {
