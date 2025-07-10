@@ -206,9 +206,85 @@ const rectangularFrameInit = ({ lib, swLib }) => {
         cornerOpts: {
             style: 'round',
             radius: 2.5,
-        }
+        },
+        cornerStyle: cRoundStyles.round,
     }
     rectangularFrameDefOpts.outCornerOpts = rectangularFrameDefOpts.cornerOpts
+
+    /**
+     * ...
+     * @param {object} opts 
+     * @param {number[]} opts.size
+     * @param {object} opts.cornerOpts - options for interior side
+     * @param {string} opts.cornerOpts.style - profile type, like "tri45deg", "rectSixtyThirty", "ellipseGolden", "cornerBezSilver"
+     * @param {number} opts.cornerOpts.size
+     * @param {number} opts.cornerOpts.length
+     * @param {number} opts.cornerOpts.width
+     * @param {number} opts.cornerOpts.radius
+     * @param {string} opts.cornerOpts.longAxis
+     * @param {string} opts.cornerOpts.opt - Option for each corner. Choose between "inv", "inset", "offset"
+     * @returns ...
+     */
+    const shapedRectangle = ({
+        size,
+        cornerOpts = rectangularFrameDefOpts.cornerOpts,
+    }) => {
+        let outRect = rectangle({ size })
+        const outRectCoords = position.getGeomCoords(outRect)
+        const outRectCorners = geometry.rectangle.getRectangleCorners(outRect)
+        const cornerStyle = cornerStyles[cornerOpts.style]
+
+        const inCornerPieces = []
+        const notches = []
+
+        if (cornerStyle) {
+            const styleType = cornerStyleTypes.find(cStyleType => cornerStyle.id.startsWith(cStyleType))
+            const cornerPiece = cornerStyle.func(cornerOpts)
+            const cornerPieceDims = measureDimensions(cornerPiece)
+
+            const baseNotch = rectangle({ size: [cornerPieceDims[0] / 2, cornerPieceDims[1] / 2] })
+
+            Object.entries(outRectCorners).forEach(([cName, cPt]) => {
+                let inPieceRotation = [0, 0, 0]
+                let inPieceAlign = ['center', 'center', 'center']
+
+                // adjust rotation by type
+                if (['rect', 'ellipse'].includes(styleType) && cornerOpts.longAxis == 'y') {
+                    inPieceRotation = [0, 0, TAU / 4]
+                }
+
+                if (cName == 'c4') {
+                    // (-X, -Y)
+                    inPieceAlign = ['min', 'min', 'center']
+                } else if (cName == 'c3') {
+                    // (-X, +Y)
+                    inPieceAlign = ['min', 'max', 'center']
+                } else if (cName == 'c2') {
+                    // (+X, +Y)
+                    inPieceAlign = ['max', 'max', 'center']
+                } else {
+                    // defaults to c1 (+X, -Y)
+                    inPieceAlign = ['max', 'min', 'center']
+                }
+
+                const newNotch = align(
+                    { modes: inPieceAlign, relativeTo: cPt },
+                    rotate(inPieceRotation, baseNotch)
+                )
+                notches.push(newNotch)
+
+                const newInCornerPiece = align(
+                    { modes: inPieceAlign, relativeTo: cPt },
+                    rotate(inPieceRotation, cornerPiece)
+                )
+                inCornerPieces.push(newInCornerPiece)
+            })
+
+            outRect = subtract(outRect, ...notches)
+            outRect = union(outRect, ...inCornerPieces)
+        }
+        return outRect
+    }
 
     /**
      * Frame rect
@@ -235,108 +311,38 @@ const rectangularFrameInit = ({ lib, swLib }) => {
         cornerOpts = rectangularFrameDefOpts.cornerOpts,
         outCornerOpts = rectangularFrameDefOpts.outCornerOpts,
     }) => {
-        console.log('rectangularFrame', size, direction)
-        console.log(frameWidth, cornerOpts, outCornerOpts)
-
         const specs = {
             totalSize: [
                 frameWidth * 2 + size[0],
                 frameWidth * 2 + size[1],
             ],
-            // TODO - calculate long axis instead of defaulting to 'x'
             longAxis: cornerOpts.longAxis || position.findLongAxis(size)
         }
-        console.log(specs)
+
+        const iCornOpts = { ...cornerOpts, longAxis: specs.longAxis }
+        const oCornOpts = { ...outCornerOpts, longAxis: specs.longAxis }
 
         const inRectBase = rectangle({ size })
-        const inRectBaseCoords = position.getGeomCoords(inRectBase)
-        const inRectBaseCtrlPts = geometry.rectangle.getRectangleCtrlPoints(inRectBase)
-        const inRectBaseCorners = geometry.rectangle.getRectangleCorners(inRectBase)
-        const inCornerStyle = cornerStyles[cornerOpts.style]
+        const inCornerStyle = cornerStyles[iCornOpts.style]
 
         const outRectBase = rectangle({ size: specs.totalSize })
-        const outRectBaseCoords = position.getGeomCoords(outRectBase)
-        const outRectBaseCtrlPts = geometry.rectangle.getRectangleCtrlPoints(outRectBase)
-        const outRectBaseCorners = geometry.rectangle.getRectangleCorners(outRectBase)
-        const outCornerStyle = cornerStyles[outCornerOpts.style]
+        const outCornerStyle = cornerStyles[oCornOpts.style]
 
         let inRect = inRectBase
         let outRect = outRectBase
-        console.log(inCornerStyle, outCornerStyle)
 
         if (direction != 'out' && inCornerStyle) {
-            const inStyleType = cornerStyleTypes.find(cStyleType => inCornerStyle.id.startsWith(cStyleType))
-            const inCornerPieces = Object.entries(inRectBaseCorners).map(([cName, cPt]) => {
-                const inCornerPiece = inCornerStyle.func(cornerOpts)
-                let inPieceRotation = [0, 0, 0]
-                let inPieceAlign = ['center', 'center', 'center']
-
-                if (['rect', 'ellipse'].includes(inStyleType) && specs.longAxis == 'y') {
-                    inPieceRotation = [0, 0, TAU / 4]
-                }
-
-
-                if (cName == 'c4') {
-                    return align(
-                        { modes: inPieceAlign, relativeTo: cPt },
-                        rotate(inPieceRotation, inCornerPiece)
-                    )
-                } else if (cName == 'c3') {
-                    return align(
-                        { modes: inPieceAlign, relativeTo: cPt },
-                        rotate(inPieceRotation, inCornerPiece)
-                    )
-                } else if (cName == 'c2') {
-                    return align(
-                        { modes: inPieceAlign, relativeTo: cPt },
-                        rotate(inPieceRotation, inCornerPiece)
-                    )
-                } else {
-                    // defaults to c1
-                    return align(
-                        { modes: inPieceAlign, relativeTo: cPt },
-                        rotate(inPieceRotation, inCornerPiece)
-                    )
-                }
+            inRect = shapedRectangle({
+                size,
+                cornerOpts: iCornOpts,
             })
-            inRect = union(inRectBase, ...inCornerPieces)
         }
 
         if (direction != 'in' && outCornerStyle) {
-            const outStyleType = cornerStyleTypes.find(cStyleType => outCornerStyle.id.startsWith(cStyleType))
-            const outCornerPieces = Object.entries(outRectBaseCorners).map(([cName, cPt]) => {
-                const outCornerPiece = outCornerStyle.func(outCornerOpts)
-                let outPieceRotation = [0, 0, 0]
-                let outPieceAlign = ['center', 'center', 'center']
-
-                if (['rect', 'ellipse'].includes(outStyleType) && specs.longAxis == 'y') {
-                    outPieceRotation = [0, 0, TAU / 4]
-                }
-
-                if (cName == 'c4') {
-                    return align(
-                        { modes: outPieceAlign, relativeTo: cPt },
-                        rotate(outPieceRotation, outCornerPiece)
-                    )
-                } else if (cName == 'c3') {
-                    return align(
-                        { modes: outPieceAlign, relativeTo: cPt },
-                        rotate(outPieceRotation, outCornerPiece)
-                    )
-                } else if (cName == 'c2') {
-                    return align(
-                        { modes: outPieceAlign, relativeTo: cPt },
-                        rotate(outPieceRotation, outCornerPiece)
-                    )
-                } else {
-                    // defaults to c1
-                    return align(
-                        { modes: outPieceAlign, relativeTo: cPt },
-                        rotate(outPieceRotation, outCornerPiece)
-                    )
-                }
+            outRect = shapedRectangle({
+                size: specs.totalSize,
+                cornerOpts: oCornOpts,
             })
-            outRect = union(outRectBase, ...outCornerPieces)
         }
 
         return subtract(outRect, inRect);
