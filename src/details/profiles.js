@@ -14,9 +14,10 @@ const profileBuilder = ({ lib, swLib }) => {
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate, mirror } = lib.transforms
   const { bezier } = lib.curves
-  const { path2 } = lib.geometries
   const { hull } = lib.hulls
   const { degToRad } = lib.utils
+  const { geom2, path2 } = lib.geometries
+  const { line } = lib.primitives
 
   const { TAU } = lib.maths.constants
 
@@ -129,7 +130,8 @@ const profileBuilder = ({ lib, swLib }) => {
     ])
     const segments = 12
     const bezPts = getBezierPts(bez, segments)
-    return path2.fromPoints({}, bezPts)
+    const bezPath = path2.fromPoints({}, [[0, validSize[1]], ...bezPts])
+    return geom2.fromPoints(path2.toPoints(bezPath))
   }
 
   const curves = {
