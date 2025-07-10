@@ -1,6 +1,6 @@
 "use strict"
 
-const superPrimsRectInit = ({ lib, swLib }) => {
+const rectangularFrameInit = ({ lib, swLib }) => {
     const { circle, cuboid, cylinder, triangle, rectangle } = lib.primitives
     const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
@@ -10,7 +10,8 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     const { TAU } = lib.maths.constants
 
     const { position } = swLib.core
-    const { geometry, profiles } = swLib.utils
+    const { geometry } = swLib.utils
+    const { profiles } = swLib.details
 
     // Defining corner styles and available tag options
     const cornerStyleTypes = ['round', 'tri', 'rect', 'ellipse', 'cornerBez']
@@ -293,7 +294,7 @@ const superPrimsRectInit = ({ lib, swLib }) => {
 
         if (direction != 'in' && outCornerStyle) {
             const outCornerPieces = Object.entries(outRectBaseCorners).map(([cName, cPt]) => {
-                const outCornerPiece = outCornerStyle.func(cornerOpts)
+                const outCornerPiece = outCornerStyle.func(outCornerOpts)
                 if (cName == 'c4') {
                     return align(
                         { modes: ['center', 'center', 'center'], relativeTo: cPt },
@@ -328,4 +329,4 @@ const superPrimsRectInit = ({ lib, swLib }) => {
     }
 }
 
-module.exports = { init: superPrimsRectInit };
+module.exports = { init: rectangularFrameInit };

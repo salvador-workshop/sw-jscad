@@ -13,7 +13,6 @@
 
 const superPrimitivesInit = ({ lib, swLib }) => {
     const meshPrims = require('./super-prims-mesh').init({ lib, swLib });
-    const rectangularPrims = require('./super-prims-rectangular').init({ lib, swLib });
 
     const { cuboid, cylinder, triangle, rectangle } = lib.primitives
 
@@ -35,7 +34,6 @@ const superPrimitivesInit = ({ lib, swLib }) => {
     return {
         frameCuboid,
         ...meshPrims,
-        ...rectangularPrims,
     }
 }
 
