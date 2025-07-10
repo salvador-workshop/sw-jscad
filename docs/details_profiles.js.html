@@ -42,9 +42,10 @@ const profileBuilder = ({ lib, swLib }) => {
   const { intersect, union, subtract } = lib.booleans
   const { rotate, align, translate, mirror } = lib.transforms
   const { bezier } = lib.curves
-  const { path2 } = lib.geometries
   const { hull } = lib.hulls
   const { degToRad } = lib.utils
+  const { geom2, path2 } = lib.geometries
+  const { line } = lib.primitives
 
   const { TAU } = lib.maths.constants
 
@@ -150,6 +151,7 @@ const profileBuilder = ({ lib, swLib }) => {
       length || width * ratio,
       width || length / ratio
     ]
+    const container = rectangle({ size: validSize })
     const bez = bezier.create([
       [0, 0],
       [0, validSize[1]],
@@ -157,7 +159,9 @@ const profileBuilder = ({ lib, swLib }) => {
     ])
     const segments = 12
     const bezPts = getBezierPts(bez, segments)
-    return path2.fromPoints({}, bezPts)
+    const bezPath = path2.fromPoints({ closed: true }, [[0, validSize[1]], ...bezPts])
+    const bezGeom = align({ modes: ['center', 'center', 'center'] }, geom2.fromPoints(path2.toPoints(bezPath)))
+    return subtract(container, bezGeom)
   }
 
   const curves = {
@@ -692,67 +696,6 @@ const profileBuilder = ({ lib, swLib }) => {
   }
 
   /**
-   * Generates an edge flange profile
-   * @param {string} type - "inset" or "offset"
-   * @param {number} width 
-   * @param {number} thickness 
-   * @param {string[]} flipOpts - array of options for flipping ("vertical" or "horizontal")
-   */
-  const edgeFlange = (type = 'inset', width, thickness, flipOpts = []) => {
-    let triangleAlignOpts = {}
-    let triangleMirrorOpts = null
-    let bearingSurfaceAlignOpts = {}
-    let mirrorOpts = null
-
-    const height = width * 2;
-
-    if (type === 'inset') {
-      triangleAlignOpts = { modes: ['max', 'min', 'center'], relativeTo: [0, 0, 0] }
-      bearingSurfaceAlignOpts = { modes: ['max', 'max', 'center'], relativeTo: [0, 0, 0] }
-
-      if (flipOpts.includes('vertical')) {
-        triangleAlignOpts.modes = ['max', 'max', 'center']
-        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
-        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
-      }
-    } else if (type === 'offset') {
-      triangleAlignOpts = { modes: ['min', 'min', 'center'], relativeTo: [0, 0, 0] }
-      bearingSurfaceAlignOpts = { modes: ['min', 'max', 'center'], relativeTo: [0, 0, 0] }
-      mirrorOpts = { normal: [1, 0, 0] }
-
-      if (flipOpts.includes('vertical')) {
-        triangleAlignOpts.modes = ['max', 'max', 'center']
-        bearingSurfaceAlignOpts.modes = ['max', 'min', 'center']
-        triangleMirrorOpts = { normal: [0, 1, 0], origin: [0, -height - thickness, 0] }
-      }
-    } else {
-      return null;
-    }
-
-    let triangleProfile = triangle.right30({ base: width, height });
-    if (triangleMirrorOpts != null) {
-      triangleProfile = mirror(triangleMirrorOpts, triangleProfile)
-    }
-
-    const triangleSection = align(
-      triangleAlignOpts,
-      triangleProfile
-    )
-
-    const bearingSurface = align(
-      bearingSurfaceAlignOpts,
-      rectangle({ size: [width, thickness] })
-    )
-
-    let finalShape = union(bearingSurface, triangleSection);
-    if (mirrorOpts != null) {
-      finalShape = mirror(mirrorOpts, finalShape)
-    }
-
-    return align({ modes: ['center', 'center', 'center'] }, finalShape)
-  }
-
-  /**
    * Edge profiles
    * @memberof details.profiles
    * @namespace edge
@@ -843,7 +786,6 @@ const profileBuilder = ({ lib, swLib }) => {
       return intersect(baseSquare, angledSquare);
     },
     edge,
-    edgeFlange,
     triangle: triangles,
     rectangle: rectangles,
     curves,
@@ -864,13 +806,13 @@ module.exports = { init: profileBuilder }
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.parts.html">core.parts</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.text.html">core.text</a></li><li><a href="details.html">details</a></li><li><a href="details.foils.html">details.foils</a></li><li><a href="details.moulds.html">details.moulds</a></li><li><a href="details.profiles.html">details.profiles</a></li><li><a href="details.profiles.edge.html">details.profiles.edge</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.geometry.html">utils.geometry</a></li><li><a href="utils.geometry.cuboid.html">utils.geometry.cuboid</a></li><li><a href="utils.geometry.points.html">utils.geometry.points</a></li><li><a href="utils.geometry.rectangle.html">utils.geometry.rectangle</a></li><li><a href="utils.geometry.regPoly.html">utils.geometry.regPoly</a></li><li><a href="utils.geometry.triangle.html">utils.geometry.triangle</a></li><li><a href="utils.superPrimitives.html">utils.superPrimitives</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.text.html">core.text</a></li><li><a href="details.html">details</a></li><li><a href="details.foils.html">details.foils</a></li><li><a href="details.moulds.html">details.moulds</a></li><li><a href="details.profiles.html">details.profiles</a></li><li><a href="details.profiles.edge.html">details.profiles.edge</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.geometry.html">utils.geometry</a></li><li><a href="utils.geometry.cuboid.html">utils.geometry.cuboid</a></li><li><a href="utils.geometry.points.html">utils.geometry.points</a></li><li><a href="utils.geometry.rectangle.html">utils.geometry.rectangle</a></li><li><a href="utils.geometry.regPoly.html">utils.geometry.regPoly</a></li><li><a href="utils.geometry.triangle.html">utils.geometry.triangle</a></li><li><a href="utils.superPrimitives.html">utils.superPrimitives</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul><h3>Global</h3><ul><li><a href="global.html#camelCase">camelCase</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jul 09 2025 11:02:43 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Jul 10 2025 19:51:08 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
