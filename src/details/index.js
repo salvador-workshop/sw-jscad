@@ -12,6 +12,7 @@ const init = ({ lib, swLib }) => {
         moulds: require('./moulds').init({ lib, swLib }),
         profiles: require('./profiles').init({ lib, swLib }),
     }
+    details.frameRect = require('./frame-rect').init({ lib, swLib: { ...swLib, details } })
 
     return details;
 }
