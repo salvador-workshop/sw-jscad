@@ -24,14 +24,14 @@ const geoCuboid = ({ lib, swLib }) => {
 
         const coords = getCuboidCoords(cuboidGeom);
         return {
-            c1: bBox[1], // (+X, +Y, +Z)
-            c2: [coords.right, coords.front, coords.top], // (+X, -Y, +Z)
-            c3: [coords.left, coords.front, coords.top], // (-X, -Y, +Z)
-            c4: [coords.left, coords.back, coords.top], // (-X, +Y, +Z)
-            c5: [coords.right, coords.back, coords.bottom], // (+X, +Y, -Z)
-            c6: [coords.right, coords.front, coords.bottom], // (+X, -Y, -Z)
-            c7: bBox[0], // (-X, -Y, -Z)
-            c8: [coords.left, coords.back, coords.bottom], // (-X, +Y, -Z)
+            c1: bBox[1],
+            c2: [coords.left, coords.back, coords.top],
+            c3: [coords.right, coords.front, coords.top],
+            c4: [coords.left, coords.front, coords.top],
+            c5: [coords.right, coords.back, coords.bottom],
+            c6: [coords.left, coords.back, coords.bottom],
+            c7: [coords.right, coords.front, coords.bottom],
+            c8: bBox[0],
         }
     }
 
@@ -49,17 +49,17 @@ const geoCuboid = ({ lib, swLib }) => {
 
         const edgeMidpoints = {
             e1: [coords.right, centre[1], coords.bottom], // midpoint of edge (Y axis, +Y, +Z)
-            e2: [centre[0], coords.front, coords.bottom], // midpoint of edge (X axis, -Y, +Z)
+            e2: [centre[0], coords.back, coords.bottom], // midpoint of edge (X axis, +Y, +Z)
             e3: [coords.left, centre[1], coords.bottom], // midpoint of edge (Y axis, -Y, -Z)
-            e4: [centre[0], coords.back, coords.bottom], // midpoint of edge (X axis, +Y, -Z)
+            e4: [centre[0], coords.front, coords.bottom], // midpoint of edge (X axis, -Y, -Z)
             e5: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, +Z)
             e6: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, +Z)
             e7: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, -X, -Z)
             e8: [centre[0], centre[1], centre[2]], // midpoint of edge (Z axis, +X, -Z)
             e9: [coords.right, centre[1], coords.top], // midpoint of edge (Y axis, +X, +Y)
-            e10: [centre[0], coords.front, coords.top], // midpoint of edge (X axis, +X, -Y)
+            e10: [centre[0], coords.back, coords.top], // midpoint of edge (X axis, +X, +Y)
             e11: [coords.left, centre[1], coords.top], // midpoint of edge (Y axis, -X, -Y)
-            e12: [centre[0], coords.back, coords.top], // midpoint of edge (X axis, -X, +Y)
+            e12: [centre[0], coords.front, coords.top], // midpoint of edge (X axis, -X, -Y)
         };
 
         const faceMidpoints = {
