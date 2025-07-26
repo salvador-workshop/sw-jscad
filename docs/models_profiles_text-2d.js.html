@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/profiles/text-2d.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/profiles/text-2d.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
+
+/**
+ * ...
+ * @memberof models.profiles
+ * @namespace text2d
+ */
+
+const DEFAULT_EXTRUDE_HEIGHT = 1;
+const DEFAULT_PANEL_HEIGHT = 2;
+
+const textUtils = ({ lib }) => {
+    const { union, subtract } = lib.booleans
+    const { circle, cuboid } = lib.primitives
+    const { translate, align } = lib.transforms
+    const { vectorText } = lib.text
+    const { hullChain } = lib.hulls
+    const { extrudeLinear } = lib.extrusions
+    const { measureDimensions, measureBoundingBox } = lib.measurements;
+
+    /**
+     * Creates a simple 2D line of text
+     * @memberof models.profiles.text2d
+     * @instance
+     * @param {*} param0 
+     * @returns ...
+     */
+    const basicText = (opts) => {
+        const lineRadius = opts.charLineWidth / 2
+        const lineCorner = circle({ radius: lineRadius })
+
+        const lineSegmentPointArrays = vectorText({ x: 0, y: 0, input: opts.message, height: opts.fontSize }) // line segments for each character
+        const lineSegments = []
+        lineSegmentPointArrays.forEach((segmentPoints) => { // process the line segment
+            const corners = segmentPoints.map((point) => translate(point, lineCorner))
+            lineSegments.push(hullChain(corners))
+        })
+        return union(lineSegments)
+    }
+
+    /**
+     * Creates a simple 3D line of text
+     * @memberof models.profiles.text2d
+     * @instance
+     * @param {*} param0 
+     * @returns ...
+     */
+    const flatText = (opts) => {
+        if (opts.message === undefined || opts.message.length === 0) return []
+
+        const message2D = basicText({
+            message: opts.message,
+            fontSize: opts.fontSize,
+            charLineWidth: opts.charLineWidth
+        })
+        const message3D = extrudeLinear({ height: opts.extrudeHeight || DEFAULT_EXTRUDE_HEIGHT }, message2D)
+
+        return align({ modes: ['center', 'center', 'center'] }, message3D)
+    }
+
+    return {
+        basicText,
+        flatText,
+        /**
+         * Creates a rectangular panel with engraved text
+         * @memberof models.profiles.text2d
+         * @instance
+         * @param {*} opts 
+         * @returns ...
+         */
+        textPanel: (opts) => {
+            const extrudeHt = opts.extrudeHeight || DEFAULT_EXTRUDE_HEIGHT;
+
+            const textModel = flatText({
+                ...opts,
+                extrudeHeight: extrudeHt,
+            });
+            const textModelDims = measureDimensions(textModel);
+            const panelOffset = opts.panelOffset || 2;
+
+            const textPanel = cuboid({
+                size: [
+                    textModelDims[0] + panelOffset,
+                    textModelDims[1] + panelOffset,
+                    opts.panelThickness || extrudeHt * 2
+                ]
+            })
+
+            const embossedPanel = subtract(
+                align({ modes: ['center', 'center', 'max'] }, textPanel),
+                align({ modes: ['center', 'center', 'max'] }, textModel)
+            )
+
+            return align({ modes: ['center', 'center', 'center'] }, embossedPanel);
+        }
+    }
+}
+
+module.exports = { init: textUtils };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.geometry.html">core.geometry</a></li><li><a href="core.geometry.points.html">core.geometry.points</a></li><li><a href="core.geometry.regPoly.html">core.geometry.regPoly</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.position.cuboid.html">core.position.cuboid</a></li><li><a href="core.position.rectangle.html">core.position.rectangle</a></li><li><a href="core.position.triangle.html">core.position.triangle</a></li><li><a href="models.prefab.foils3d.html">models.prefab.foils3d</a></li><li><a href="models.prefab.mesh3d.html">models.prefab.mesh3d</a></li><li><a href="models.prefab.mouldings.html">models.prefab.mouldings</a></li><li><a href="models.prefab.text3d.html">models.prefab.text3d</a></li><li><a href="models.profiles.html">models.profiles</a></li><li><a href="models.profiles.connections.html">models.profiles.connections</a></li><li><a href="models.profiles.curves.html">models.profiles.curves</a></li><li><a href="models.profiles.edge.html">models.profiles.edge</a></li><li><a href="models.profiles.ellipse.html">models.profiles.ellipse</a></li><li><a href="models.profiles.foils2d.html">models.profiles.foils2d</a></li><li><a href="models.profiles.frameRect.html">models.profiles.frameRect</a></li><li><a href="models.profiles.rectangle.html">models.profiles.rectangle</a></li><li><a href="models.profiles.reinforcement.html">models.profiles.reinforcement</a></li><li><a href="models.profiles.text2d.html">models.profiles.text2d</a></li><li><a href="models.profiles.triangle.html">models.profiles.triangle</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.extras.html">utils.extras</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Jul 26 2025 14:14:39 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

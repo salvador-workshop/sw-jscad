@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/prefab/mouldings.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/prefab/mouldings.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
+
+/**
+ * Builds positive mouldings and negative moulds for various ornaments.
+ * These would then be subtracted from a shape to produce the final result.
+ * Input 2D profiles must be centred at (0, 0, 0)
+ * @memberof models.prefab
+ * @namespace mouldings
+ */
+
+const mouldBuilder = ({ lib, swLib }) => {
+  const { measureBoundingBox } = lib.measurements
+  const { extrudeLinear, extrudeRotate } = lib.extrusions
+  const { union, intersect } = lib.booleans
+  const { rotate, align, translate, mirror } = lib.transforms
+  const { cuboid, cylinder } = lib.primitives
+
+  /**
+   * Builds a cuboid with given 2D profile placed on one edge.
+   * @memberof models.prefab.mouldings
+   * @instance
+   * @param {Object} opts
+   * @param {number[]} opts.size - size (x, y, z)
+   * @param {string} opts.alignment - where to align when profile size differs from
+   *     base cuboid ('top' | 'middle' | 'bottom'). Defaults to 'middle'
+   * @param {geom2.Geom2} geomProfile - 2D positive cross-section profile
+   */
+  const cuboidMouldingOneEdge = (opts, geomProfile) => {
+    const profileBbox = measureBoundingBox(geomProfile);
+    const profileSize = [profileBbox[1][0] - profileBbox[0][0], profileBbox[1][1] - profileBbox[0][1]];
+
+    const baseBlock = cuboid({ size: [opts.size[0] - profileSize[0], opts.size[1], opts.size[2]] });
+    const edgeBlock = rotate([Math.PI / 2, 0, 0], extrudeLinear({ height: opts.size[1] }, geomProfile));
+    const baseBlockBbox = measureBoundingBox(baseBlock);
+    const alignedEdgeBlock = align({ modes: ['min', 'max', 'none'], relativeTo: baseBlockBbox[1] }, edgeBlock);
+
+    return align({ modes: ['center', 'center', 'none'] }, union(baseBlock, alignedEdgeBlock));
+  }
+
+  return {
+    cuboidMouldingOneEdge,
+    /**
+     * Positive moulding for a cuboid with the given 2D profile placed onto all the side edges.
+     * @memberof models.prefab.mouldings
+     * @instance
+     * @param {Object} opts
+     * @param {number[]} opts.size - size (x, y, z)
+     * @param {geom2.Geom2} geomProfile - 2D positive cross-section profile
+     */
+    cuboidMoulding: (opts, geomProfile) => {
+      // // X axis
+      const xHalfSize = [opts.size[0] / 2, opts.size[1], opts.size[2]];
+      const xHalfBlock = align({ modes: ['min', 'center', 'none'] }, cuboidMouldingOneEdge({ size: xHalfSize }, geomProfile));
+      const xBlock = union(xHalfBlock, mirror({ normal: [1, 0, 0] }, xHalfBlock));
+
+      // // Y axis
+      const yHalfSize = [opts.size[1] / 2, opts.size[0], opts.size[2]];
+      const yHalfBlock = rotate([0, 0, Math.PI / -2], cuboidMouldingOneEdge({ size: yHalfSize }, geomProfile));
+      const yHalfBlockAdj = align({ modes: ['center', 'max', 'none'] }, yHalfBlock);
+      const yBlock = union(yHalfBlockAdj, mirror({ normal: [0, 1, 0] }, yHalfBlockAdj));
+
+      return intersect(xBlock, yBlock);
+    },
+    /**
+     * Positive moulding for a cylinder with the given 2D profile placed onto the edge.
+     * @memberof models.prefab.mouldings
+     * @instance
+     * @param {Object} opts
+     * @param {number} opts.radius - Cylinder radius.
+     * @param {number} opts.height - Cylinder height.
+     * @param {number} opts.segments - Cylinder height.
+     * @param {geom2.Geom2} geomProfile - 2D positive cross-section profile
+     */
+    circularMoulding: (opts, geomProfile) => {
+      const profileBbox = measureBoundingBox(geomProfile);
+      const profileSize = [profileBbox[1][0] - profileBbox[0][0], profileBbox[1][1] - profileBbox[0][1]];
+      const baseCylRad = opts.radius - profileSize[0];
+      // cylinder expanded by a tiny amount to ensure no gaps
+      const baseCyl = cylinder({ radius: baseCylRad + 0.05, height: opts.height });
+
+      const adjProfile = translate([baseCylRad + profileSize[0] / 2], geomProfile);
+      const edgeMoulding = extrudeRotate({ segments: opts.segments || 48 }, adjProfile);
+
+      return union(baseCyl, edgeMoulding);
+    },
+    /**
+     * Negative mould for a rectangular sunken panel, to be placed on a wall/ceiling surface
+     * @memberof models.prefab.mouldings
+     * @instance
+     * @param {Object} opts
+     * @param {number[]} opts.edge - size (x, y)
+     * @param {geom2.Geom2} geomProfile - 2D positive cross-section profile for edge
+     */
+    sunkenPanelRect: (opts, geomProfile) => {
+      return null;
+    },
+    /**
+     * Negative mould for a circular sunken panel, to be placed on a wall/ceiling surface
+     * @memberof models.prefab.mouldings
+     * @instance
+     * @param {Object} opts
+     * @param {number} opts.radius - panel radius
+     * @param {geom2.Geom2} geomProfile - 2D positive cross-section profile for edge
+     */
+    sunkenPanelCirc: (opts, geomProfile) => {
+      return null;
+    },
+  }
+}
+
+module.exports = { init: mouldBuilder }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.geometry.html">core.geometry</a></li><li><a href="core.geometry.points.html">core.geometry.points</a></li><li><a href="core.geometry.regPoly.html">core.geometry.regPoly</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.position.cuboid.html">core.position.cuboid</a></li><li><a href="core.position.rectangle.html">core.position.rectangle</a></li><li><a href="core.position.triangle.html">core.position.triangle</a></li><li><a href="models.prefab.foils3d.html">models.prefab.foils3d</a></li><li><a href="models.prefab.mesh3d.html">models.prefab.mesh3d</a></li><li><a href="models.prefab.mouldings.html">models.prefab.mouldings</a></li><li><a href="models.prefab.text3d.html">models.prefab.text3d</a></li><li><a href="models.profiles.html">models.profiles</a></li><li><a href="models.profiles.connections.html">models.profiles.connections</a></li><li><a href="models.profiles.curves.html">models.profiles.curves</a></li><li><a href="models.profiles.edge.html">models.profiles.edge</a></li><li><a href="models.profiles.ellipse.html">models.profiles.ellipse</a></li><li><a href="models.profiles.foils2d.html">models.profiles.foils2d</a></li><li><a href="models.profiles.frameRect.html">models.profiles.frameRect</a></li><li><a href="models.profiles.rectangle.html">models.profiles.rectangle</a></li><li><a href="models.profiles.reinforcement.html">models.profiles.reinforcement</a></li><li><a href="models.profiles.text2d.html">models.profiles.text2d</a></li><li><a href="models.profiles.triangle.html">models.profiles.triangle</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.extras.html">utils.extras</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Jul 26 2025 14:14:39 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

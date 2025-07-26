@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/profiles/profiles.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/profiles/profiles.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
+
+const standards = require("sw-jscad-std-specs/src/core/standards");
+
+/**
+ * Builds various 2D profiles
+ * @memberof models
+ * @namespace profiles
+ */
+
+const EDGE_PROFILE_MARGIN = 1;
+
+const profileBuilder = ({ lib, swLib }) => {
+  const { square, circle, rectangle, triangle, ellipse } = lib.primitives
+  const { intersect, union, subtract } = lib.booleans
+  const { rotate, align, translate, mirror } = lib.transforms
+  const { bezier } = lib.curves
+  const { hull } = lib.hulls
+  const { degToRad } = lib.utils
+  const { geom2, path2 } = lib.geometries
+
+  const { TAU } = lib.maths.constants
+
+  const { geometry } = swLib.utils
+  const { constants, position, maths } = swLib.core
+
+
+  //-------------
+  //  TRIANGLES
+  //-------------
+
+  const createRtTriangle = ({ base, height, ratio }) => {
+    const validOpts = {
+      short: base || height / ratio,
+      long: height || base * ratio
+    }
+    const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+    return triangle(triOpts);
+  }
+
+  /**
+   * Triangle profiles
+   * @memberof models.profiles
+   * @namespace triangle
+   */
+  const triangles = {
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    equilateral: ({ base }) => {
+      return triangle({ type: 'SSS', values: [base, base, base] })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    right45: ({ base }) => {
+      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
+      return triangle(triOpts);
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    right30: ({ base, height }) => {
+      return createRtTriangle({ base, height, ratio: 2 });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    rightGolden: ({ base, height }) => {
+      return createRtTriangle({ base, height, ratio: constants.PHI });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    rightSilver: ({ base, height }) => {
+      return createRtTriangle({ base, height, ratio: constants.SILVER_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    rightBronze: ({ base, height }) => {
+      return createRtTriangle({ base, height, ratio: constants.BRONZE_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
+    rightCopper: ({ base, height }) => {
+      return createRtTriangle({ base, height, ratio: constants.COPPER_RATIO });
+    },
+  }
+
+
+  //--------------
+  //  RECTANGLES
+  //--------------
+
+  const createRect = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    return rectangle({ size: validSize });
+  }
+
+  /**
+   * Rectangle profiles
+   * @memberof models.profiles
+   * @namespace rectangle
+   */
+  const rectangles = {
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    golden: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.PHI });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    sixtyThirty: ({ length, width }) => {
+      return createRect({ length, width, ratio: 2 });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    silver: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.SILVER_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    bronze: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.BRONZE_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    copper: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.COPPER_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    superGolden: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.SUPERGOLDEN_RATIO });
+    },
+    /**
+     * ...
+     * @memberof models.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
+    plastic: ({ length, width }) => {
+      return createRect({ length, width, ratio: constants.PLASTIC_RATIO });
+    },
+  }
+
+
+  //----------
+  //  CURVES
+  //----------
+
+  const getBezierPts = (bezierCurve, segments) => {
+    const points = [];
+    const segmentsInput = segments - 1
+    const totalLength = bezier.length(100, bezierCurve)
+    const increment = totalLength / segmentsInput;
+    for (let i = 0; i &lt;= segmentsInput; i++) {
+      const t = bezier.arcLengthToT({ distance: i * increment }, bezierCurve);
+      const point = bezier.valueAt(t, bezierCurve);
+      points.push(point);
+    }
+    return points;
+  }
+
+  const createRtCornerCurve = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    const container = rectangle({ size: validSize })
+    const bez = bezier.create([
+      [0, 0],
+      [0, validSize[1]],
+      [validSize[0], validSize[1]]
+    ])
+    const segments = 12
+    const bezPts = getBezierPts(bez, segments)
+    const bezPath = path2.fromPoints({ closed: true }, [[0, validSize[1]], ...bezPts])
+    const bezGeom = align({ modes: ['center', 'center', 'center'] }, geom2.fromPoints(path2.toPoints(bezPath)))
+    return subtract(container, bezGeom)
+  }
+
+  /**
+   * Curve profiles
+   * @memberof models.profiles
+   * @namespace curves
+   */
+  const curves = {
+    rightCorner: {
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      golden: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.PHI })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      sixtyThirty: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: 2 })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      silver: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.SILVER_RATIO })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      bronze: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.BRONZE_RATIO })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      copper: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.COPPER_RATIO })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      superGolden: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
+      },
+      /**
+       * ...
+       * @memberof models.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
+      plastic: ({ length, width }) => {
+        return createRtCornerCurve({ length, width, ratio: constants.PLASTIC_RATIO })
+      },
+    },
+    // smoothTriangle: {
+    //   golden: ({ length, width }) => {
+    //     const validSize = [
+    //       length || width * constants.PHI,
+    //       width || length / constants.PHI
+    //     ]
+    //     const bez = bezier.create([
+    //       [0, 0],
+    //       [0, validSize[1]],
+    //       [validSize[0], validSize[1]]
+    //     ])
+    //     const segments = 12
+    //     const bezPts = getBezierPts(bez, segments)
+    //     return path2.fromPoints({}, bezPts)
+    //   },
+    // }
+  }
+
+
+  //-----------
+  //  ELLIPSE
+  //-----------
+
+  const createEllipse = ({ length, width, ratio }) => {
+    const validSize = [
+      length || width * ratio,
+      width || length / ratio
+    ]
+    return ellipse({ radius: validSize });
+  }
+
+  /**
+   * Ellipse profiles
+   * @memberof models.profiles
+   * @namespace ellipse
+   */
+  const ellipses = {
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    golden: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.PHI })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    sixtyThirty: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: 2 })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    silver: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.SILVER_RATIO })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    bronze: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.BRONZE_RATIO })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    copper: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.COPPER_RATIO })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    superGolden: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
+    plastic: ({ length, width }) => {
+      return createEllipse({ length, width, ratio: constants.PLASTIC_RATIO })
+    },
+  }
+
+
+  //-----------------
+  //  REINFORCEMENT
+  //-----------------
+
+  /**
+   * ...
+   * @memberof models.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
+  const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
+    const baseShape = rectangle({ size: [thickness, length] })
+    const baseShapeCoords = position.getGeomCoords(baseShape)
+    const offsetWidths = [insetWidth, offsetWidth]
+    const fThickness = flangeThickness || thickness
+
+    const offsetShapes = offsetWidths.map(offWidth => {
+      if (offWidth == 0) {
+        return null
+      }
+      return union(
+        align(
+          { modes: ['min', 'max', 'center'] },
+          rectangle({ size: [offWidth, fThickness] }),
+        ),
+        align(
+          { modes: ['min', 'min', 'center'] },
+          triangles.right30({ base: offWidth }),
+        ),
+      )
+    })
+
+    const adjOffsetShapes = offsetShapes.map((offShape, idx) => {
+      if (offShape == null) {
+        return null
+      }
+      // default idx == 0 (inset)
+      let adjOffShape = align(
+        { modes: ['max', 'min', 'center'], relativeTo: [baseShapeCoords.left, baseShapeCoords.front, 0] },
+        offShape
+      )
+      if (idx == 1) {
+        // offset
+        adjOffShape = align(
+          { modes: ['min', 'min', 'center'], relativeTo: [baseShapeCoords.right, baseShapeCoords.front, 0] },
+          mirror({ normal: [1, 0, 0], origin: [thickness / 2, 0, 0] }, offShape)
+        )
+      }
+      return adjOffShape;
+    })
+
+    let finalShape = baseShape
+    adjOffsetShapes.forEach((oShape, idx) => {
+      if (oShape) {
+        finalShape = union(finalShape, oShape)
+      }
+    })
+
+    const mirrored = mirror({ normal: [0, 1, 0] }, finalShape)
+
+    if (doubleFlanged) {
+      return union(finalShape, mirrored)
+    }
+
+    return mirrored
+  }
+  /**
+   * ...
+   * @memberof models.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
+  const cBeam = ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+    const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+      [0, 0, TAU / -4],
+      straightBeam({ length, thickness, flangeThickness })
+    ))
+    const beam2 = align(
+      { modes: ['center', 'min', 'center'], relativeTo: [(length + thickness) / -2, 0, 0] },
+      straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    )
+    const beam3 = align(
+      { modes: ['center', 'min', 'center'], relativeTo: [(length + thickness) / 2, 0, 0] },
+      straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+    )
+
+    return union(beam1, beam2, beam3)
+  }
+
+  /**
+   * ...
+   * @memberof models.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
+  const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
+    const beams = []
+    const beam = align(
+      { modes: ['min', 'min', 'center'], relativeTo: [-insetWidth - (thickness / 2), 0, 0] },
+      straightBeam({ length: radius / 2, thickness, insetWidth, offsetWidth })
+    )
+    for (let idx = 0; idx &lt; segments; idx++) {
+      const angle = idx / segments * TAU
+      const rotatedBeam = rotate([0, 0, angle], beam)
+      beams.push(rotatedBeam)
+    }
+
+    return union(...beams)
+  }
+
+  /**
+   * Reinforcement profiles
+   * @memberof models.profiles
+   * @namespace reinforcement
+   */
+  const reinforcement = {
+    straight: straightBeam,
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts
+     * @returns ...
+     */
+    corner: ({ length, depth, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0 }) => {
+      const beam1 = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [insetWidth, 0, (thickness + offsetWidth) / 2] },
+        rotate([0, 0, TAU / -4], straightBeam({ length, thickness, flangeThickness, insetWidth, offsetWidth }))
+      )
+      const beam2 = align({ modes: ['min', 'min', 'center'], relativeTo: [-insetWidth + thickness, 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
+
+      return union(beam1, beam2)
+    },
+    cBeam,
+    uBeam: cBeam,
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    tBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+      const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+        [0, 0, TAU / -4],
+        straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      ))
+      const beam2 = align(
+        { modes: ['center', 'min', 'center'] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
+
+      return union(beam1, beam2)
+    },
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    doubleTBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
+      const beamPoints = [length / 3 - (length / 2), length * 2 / 3 - (length / 2)]
+      const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
+        [0, 0, TAU / -4],
+        straightBeam({ length, thickness, flangeThickness, insetWidth, doubleFlanged: true })
+      ))
+      const beam2 = align(
+        { modes: ['center', 'min', 'center'], relativeTo: [beamPoints[0], 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
+      const beam3 = align(
+        { modes: ['center', 'min', 'center'], relativeTo: [beamPoints[1], 0, 0] },
+        straightBeam({ length: depth, thickness, flangeThickness, insetWidth, offsetWidth })
+      )
+
+      return union(beam1, beam2, beam3)
+    },
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    triBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 3, thickness, insetWidth, offsetWidth })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    crossBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 4, thickness, insetWidth, offsetWidth })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    pentaBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 5, thickness, insetWidth, offsetWidth })
+    },
+    /**
+     * ...
+     * @memberof models.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
+    hexBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
+      return polyBeam({ radius, segments: 6, thickness, insetWidth, offsetWidth })
+    },
+  }
+
+
+  //---------------
+  //  CONNECTIONS
+  //---------------
+
+  const connectionDefaults = {
+    tolerance: maths.inchesToMm(1 / 128),
+    fit: maths.inchesToMm(1 / 128),
+    cornerRadius: maths.inchesToMm(1 / 4),
+    dovetailAngle: degToRad(8),
+    dovetailMargin: 1,
+    tabAngle: degToRad(8),
+    tabMargin: 1,
+  }
+
+  const createConnTrapezoid = ({ depth, width, angle, reverse = false }) => {
+    const baseRect = rectangle({ size: [depth, width] })
+    const baseRectCoords = position.getGeomCoords(baseRect)
+    const triOpts = geometry.triangle.rightTriangleOpts({ long: depth, longAngle: angle })
+    const triangleEnds = [
+      align(
+        { modes: ['center', 'max', 'center'], relativeTo: [0, baseRectCoords.back, 0] },
+        mirror({ normal: [0, 1, 0] }, triangle(triOpts))
+      ),
+      align(
+        { modes: ['center', 'min', 'center'], relativeTo: [0, baseRectCoords.front, 0] },
+        triangle(triOpts)
+      ),
+    ]
+
+    const outShape = subtract(baseRect, triangleEnds)
+
+    if (reverse) {
+      return mirror({ normal: [1, 0, 0] }, outShape)
+    }
+    return outShape
+  }
+
+  /**
+   * Connection profiles
+   * @memberof models.profiles
+   * @namespace connections
+   */
+  const connections = {
+    /**
+     * ...
+     * @memberof models.profiles.connections
+     * @param {object} opts 
+     * @returns ...
+     */
+    pegboard: ({
+      spacing,
+      radius,
+      margin,
+      cornerRadius = connectionDefaults.cornerRadius,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const diametre = radius * 2
+      const totalGap = fit / 4 + (tolerance / 4)
+      const specs = {
+        ...connectionDefaults,
+        diametre,
+        fitDowelRadius: -totalGap + radius,
+        fitHoleRadius: totalGap + radius,
+        margin: margin || radius,
+      }
+      specs.totalWidth = specs.margin * 2 + (radius * 2 + spacing)
+      const halfWidth = specs.totalWidth / 2
+      specs.cornerPoints = [
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, -halfWidth + cornerRadius, 0],
+        [halfWidth - cornerRadius, -halfWidth + cornerRadius, 0],
+      ]
+      const halfUnit = spacing / 2
+      specs.dowelPoints = [
+        [halfUnit, halfUnit, 0],
+        [-halfUnit, halfUnit, 0],
+        [-halfUnit, -halfUnit, 0],
+        [halfUnit, -halfUnit, 0],
+      ]
+
+      const corners = specs.cornerPoints.map(cPt => {
+        return translate(cPt, circle({ radius: cornerRadius }))
+      })
+      const dowels = specs.dowelPoints.map(dPt => {
+        return translate(dPt, circle({ radius: specs.fitDowelRadius }))
+      })
+      const dowelDies = specs.dowelPoints.map(dPt => {
+        return translate(dPt, circle({ radius: specs.fitHoleRadius }))
+      })
+
+      const basePlate = hull(corners)
+      const dowelAssembly = union(dowels)
+
+      const male = dowelAssembly
+      const female = subtract(basePlate, dowelDies)
+
+      return {
+        male,
+        female,
+        size: [specs.totalWidth, specs.totalWidth],
+      }
+    },
+    /**
+     * ...
+     * @memberof models.profiles.connections
+     * @param {object} opts
+     * @returns ...
+     */
+    polygon: ({
+      radius,
+      segments,
+      margin,
+      cornerRadius = connectionDefaults.cornerRadius,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const diametre = radius * 2
+      const totalGap = fit / 4 + (tolerance / 4)
+      const specs = {
+        ...connectionDefaults,
+        diametre,
+        fitDowelRadius: -totalGap + radius,
+        fitHoleRadius: totalGap + radius,
+        margin: margin || radius,
+      }
+      specs.totalWidth = specs.margin * 2 + specs.diametre
+      const halfWidth = specs.totalWidth / 2
+      specs.cornerPoints = [
+        [halfWidth - cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, halfWidth - cornerRadius, 0],
+        [-halfWidth + cornerRadius, -halfWidth + cornerRadius, 0],
+        [halfWidth - cornerRadius, -halfWidth + cornerRadius, 0],
+      ]
+
+      const dowel = circle({ radius: specs.fitDowelRadius, segments })
+      const dowelDie = circle({ radius: specs.fitHoleRadius, segments })
+
+      const corners = specs.cornerPoints.map(cPt => {
+        return translate(cPt, circle({ radius: cornerRadius }))
+      })
+      const basePlate = hull(corners)
+
+      const male = dowel
+      const female = subtract(basePlate, dowelDie)
+
+      return {
+        male,
+        female,
+        size: [specs.totalWidth, specs.totalWidth],
+      }
+    },
+    /**
+     * Tab and Dovetail profiles are designed to fit right against the male edge.
+     * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof models.profiles.connections
+     * @param {*} opts 
+     * @returns ...
+     */
+    tab: ({
+      width,
+      depth,
+      margin = connectionDefaults.tabMargin,
+      angle = connectionDefaults.tabAngle,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const specs = {
+        ...connectionDefaults,
+        totalWidth: margin * 2 + width,
+        totalTabDepth: margin + depth,
+      }
+
+      const baseRect = rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      const baseRectCoords = position.getGeomCoords(baseRect)
+
+      const male = align(
+        { modes: ['max', 'center', 'center'], relativeTo: [baseRectCoords.right, 0, 0] },
+        createConnTrapezoid({ depth, width, angle })
+      )
+      const female = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [baseRectCoords.left, 0, 0] },
+        subtract(baseRect, male)
+      )
+
+      return {
+        male,
+        female,
+        size: [specs.totalTabDepth, specs.totalWidth],
+      }
+    },
+    /**
+     * Tab and Dovetail profiles are designed to fit right against the male edge.
+     * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof models.profiles.connections
+     * @param {*} opts 
+     * @returns ...
+     */
+    dovetail: ({
+      width,
+      depth,
+      margin = connectionDefaults.dovetailMargin,
+      angle = connectionDefaults.dovetailAngle,
+      fit = connectionDefaults.fit,
+      tolerance = connectionDefaults.tolerance
+    }) => {
+      const specs = {
+        ...connectionDefaults,
+        totalWidth: margin * 2 + width,
+        totalTabDepth: margin + depth,
+      }
+
+      const baseRect = rectangle({ size: [specs.totalTabDepth, specs.totalWidth] })
+      const baseRectCoords = position.getGeomCoords(baseRect)
+
+      const male = align(
+        { modes: ['max', 'center', 'center'], relativeTo: [baseRectCoords.right, 0, 0] },
+        createConnTrapezoid({ depth, width, angle, reverse: true })
+      )
+      const female = align(
+        { modes: ['min', 'center', 'center'], relativeTo: [baseRectCoords.left, 0, 0] },
+        subtract(baseRect, male)
+      )
+
+      return {
+        male,
+        female,
+        size: [specs.totalTabDepth, specs.totalWidth],
+      }
+    },
+  }
+
+
+  //--------
+  //  EDGE
+  //--------
+
+  /**
+   * Edge profile: Circular notch in bottom half
+   * @memberof models.profiles.edge
+   * @instance
+   * @param {Object} opts 
+   * @param {number} opts.totalThickness - total thickness of edge
+   * @param {number} opts.topThickness - thickness of top (left intact by ornaments)
+   * @param {number} opts.smallOffset - small offset between notch and main edge
+   */
+  const circNotch = (opts) => {
+    const ornamentThickness = opts.totalThickness - opts.topThickness;
+    const smallOffset = opts.smallOffset || ornamentThickness / 6;
+    const notchRadius = ornamentThickness - (smallOffset * 2);
+    const profileWidth = smallOffset * 2 + notchRadius;
+
+    const baseRect = rectangle({ size: [profileWidth, opts.totalThickness] });
+    const margin = rectangle({ size: [EDGE_PROFILE_MARGIN, opts.totalThickness] });
+    const alignedMargin = align({ modes: ['max', 'center', 'none'], relativeTo: [profileWidth / -2, 0, 0] }, margin)
+    const baseShape = union(baseRect, alignedMargin);
+
+    const cutawayCircle = circle({ radius: notchRadius, center: [profileWidth / 2 - smallOffset, opts.totalThickness / -2 + smallOffset] });
+    const cutawayCorner1 = square({
+      size: smallOffset * 2, center: [
+        profileWidth / -2 + smallOffset,
+        opts.totalThickness / -2,
+      ]
+    });
+    const cutawayCorner2 = square({
+      size: smallOffset * 2, center: [
+        profileWidth / 2,
+        opts.totalThickness / 2 - opts.topThickness - smallOffset,
+      ]
+    });
+    const cutaway = union(cutawayCircle, cutawayCorner1, cutawayCorner2);
+
+    return align({ modes: ['center', 'center', 'none'] }, subtract(baseShape, cutaway));
+  }
+
+  /**
+  * Edge profile: Circular portrusion in bottom half
+  * @memberof models.profiles.edge
+  * @instance
+  * @param {Object} opts 
+  * @param {number} opts.totalThickness - total thickness of edge
+  * @param {number} opts.topThickness - thickness of top (left intact by ornaments)
+  * @param {number} opts.smallOffset - small offset between portrusion and main edge
+  */
+  const circPortrusion = (opts) => {
+    const ornamentThickness = opts.totalThickness - opts.topThickness;
+    const smallOffset = opts.smallOffset || ornamentThickness / 8;
+    const circRadius = ornamentThickness - (smallOffset * 3);
+    const profileWidth = smallOffset * 3 + circRadius;
+
+    const baseRect = rectangle({ size: [profileWidth, opts.totalThickness] });
+    const margin = rectangle({ size: [EDGE_PROFILE_MARGIN, opts.totalThickness] });
+    const alignedMargin = align({ modes: ['max', 'center', 'none'], relativeTo: [profileWidth / -2, 0, 0] }, margin)
+
+    const cutaway = translate([0, opts.topThickness / -2], rectangle({ size: [profileWidth, ornamentThickness] }));
+    const cutShape = subtract(baseRect, cutaway);
+    const baseShape = union(cutShape, alignedMargin);
+
+    const portCircle = circle({ radius: circRadius, center: [profileWidth / -2 + smallOffset, opts.totalThickness / 2 - opts.topThickness - smallOffset] });
+    const portArc = intersect(baseRect, portCircle);
+    const smallCorner1 = rectangle({
+      size: [smallOffset, smallOffset * 2], center: [
+        profileWidth / -2 + (smallOffset / 2),
+        opts.totalThickness / -2 + (smallOffset * 2),
+      ]
+    });
+    const smallCorner2 = square({
+      size: smallOffset * 2, center: [
+        profileWidth / 2 - (smallOffset * 2),
+        opts.totalThickness / 2 - opts.topThickness,
+      ]
+    });
+    const ornament = union(portArc, smallCorner1, smallCorner2)
+
+    return align({ modes: ['center', 'center', 'none'] }, union(baseShape, ornament));
+  }
+
+  /**
+   * Edge profiles
+   * @memberof models.profiles
+   * @namespace edge
+   */
+  const edge = {
+    circNotch,
+    circPortrusion,
+  }
+
+
+  //----------
+  //  OUTPUT
+  //----------
+
+  return {
+    /**
+     * Square with circular notches at corners.
+     * @memberof models.profiles
+     * @instance
+     * @param {Object} opts 
+     * @param {number} opts.sqLength - side length for bounding square 
+     * @param {number} opts.notchRadius - radius of circular notch
+     */
+    sqCornerCircNotch: (opts) => {
+      // TODO - fix implementation. Everything assumes that cornerRad === sqLen / 4.
+      // So the bounding square probably would be off if it's changed.
+      const sqLen = opts.sqLength;
+      const halfUnit = sqLen / 2
+      const cornerRad = opts.notchRadius || sqLen / 4;
+      const centrePoints = [
+        [halfUnit, halfUnit],
+        [-halfUnit, halfUnit],
+        [halfUnit, -halfUnit],
+        [-halfUnit, -halfUnit],
+      ];
+
+      const baseSquare = square({ size: sqLen });
+      const cornerCircles = union(centrePoints.map(cPt => {
+        return circle({ radius: cornerRad, center: cPt });
+      }));
+
+      return subtract(baseSquare, cornerCircles);
+    },
+    /**
+     * Square with circles at corners.
+     * @memberof models.profiles
+     * @instance
+     * @param {Object} opts 
+     * @param {number} opts.sqLength - side length for bounding square 
+     * @param {number} opts.cornerRadius - radius of circular corner
+     */
+    sqCornerCircles: (opts) => {
+      // TODO - fix implementation. Everything assumes that cornerRad === baseSqLen / 4.
+      // So the bounding square probably would be off if it's changed.
+      const sqLen = opts.sqLength;
+
+      const baseSqLen = sqLen * 2 / 3;
+      const halfUnit = baseSqLen / 2;
+      const cornerRad = opts.cornerRadius || baseSqLen / 4;
+      const centrePoints = [
+        [halfUnit, halfUnit],
+        [-halfUnit, halfUnit],
+        [halfUnit, -halfUnit],
+        [-halfUnit, -halfUnit],
+      ];
+
+      const baseSquare = square({ size: baseSqLen });
+      const cornerCircles = union(centrePoints.map(cPt => {
+        return circle({ radius: cornerRad, center: cPt });
+      }));
+
+      return union(baseSquare, cornerCircles);
+    },
+    /**
+     * Octagonal
+     * @memberof models.profiles
+     * @instance
+     * @param {Object} opts 
+     * @param {number} opts.sqLength - side length for bounding square 
+     */
+    octagonal: (opts) => {
+      const sqLen = opts.sqLength;
+      // const octagonSideLen = Math.tan(Math.PI / 8) * (sqLen / 2) * 2;
+
+      const baseSquare = square({ size: sqLen });
+      const angledSquare = rotate([0, 0, Math.PI / 4], baseSquare);
+
+      return intersect(baseSquare, angledSquare);
+    },
+    edge,
+    triangle: triangles,
+    rectangle: rectangles,
+    curves,
+    ellipse: ellipses,
+    reinforcement,
+    connections,
+  }
+}
+
+module.exports = { init: profileBuilder }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.geometry.html">core.geometry</a></li><li><a href="core.geometry.points.html">core.geometry.points</a></li><li><a href="core.geometry.regPoly.html">core.geometry.regPoly</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.position.cuboid.html">core.position.cuboid</a></li><li><a href="core.position.rectangle.html">core.position.rectangle</a></li><li><a href="core.position.triangle.html">core.position.triangle</a></li><li><a href="models.prefab.foils3d.html">models.prefab.foils3d</a></li><li><a href="models.prefab.mesh3d.html">models.prefab.mesh3d</a></li><li><a href="models.prefab.mouldings.html">models.prefab.mouldings</a></li><li><a href="models.prefab.text3d.html">models.prefab.text3d</a></li><li><a href="models.profiles.html">models.profiles</a></li><li><a href="models.profiles.connections.html">models.profiles.connections</a></li><li><a href="models.profiles.curves.html">models.profiles.curves</a></li><li><a href="models.profiles.edge.html">models.profiles.edge</a></li><li><a href="models.profiles.ellipse.html">models.profiles.ellipse</a></li><li><a href="models.profiles.foils2d.html">models.profiles.foils2d</a></li><li><a href="models.profiles.frameRect.html">models.profiles.frameRect</a></li><li><a href="models.profiles.rectangle.html">models.profiles.rectangle</a></li><li><a href="models.profiles.reinforcement.html">models.profiles.reinforcement</a></li><li><a href="models.profiles.text2d.html">models.profiles.text2d</a></li><li><a href="models.profiles.triangle.html">models.profiles.triangle</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.extras.html">utils.extras</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Jul 26 2025 14:14:39 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
