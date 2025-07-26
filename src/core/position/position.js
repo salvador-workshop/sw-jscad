@@ -10,7 +10,7 @@ const posTriangle = require('./pos-triangle');
  * @namespace position
  */
 
-const positionUtils = ({ lib }) => {
+const positionUtils = ({ lib, swLib }) => {
     const {
         measureDimensions,
         measureBoundingBox,

@@ -13,9 +13,8 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     const { measureDimensions } = lib.measurements
     const { TAU } = lib.maths.constants
 
-    const { position } = swLib.core
-    const { geometry } = swLib.utils
-    const { profiles } = swLib.details
+    const { position, geometry } = swLib.core
+    const { profiles } = swLib.models
 
     // Defining corner styles and available tag options
     const cornerStyleTypes = ['round', 'tri', 'rect', 'ellipse', 'cornerBez']
