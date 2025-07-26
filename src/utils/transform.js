@@ -14,6 +14,7 @@ const transformUtils = ({ lib, swLib }) => {
 
     /**
      * ...
+     * @memberof utils.transform
      * @param {object} opts 
      * @param {boolean} opts.reverse 
      * @param {object[]} geoms 

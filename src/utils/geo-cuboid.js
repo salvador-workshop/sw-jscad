@@ -15,10 +15,22 @@ const geoCuboid = ({ lib, swLib }) => {
 
     const { position } = swLib.core
 
+    /**
+     * ...
+     * @memberof utils.geometry.cuboid
+     * @param {object} cuboidGeom 
+     * @returns ...
+     */
     const getCuboidCoords = (cuboidGeom) => {
         return position.getGeomCoords(cuboidGeom)
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.cuboid
+     * @param {object} cuboidGeom 
+     * @returns ...
+     */
     const getCuboidCorners = (cuboidGeom) => {
         const bBox = measureBoundingBox(cuboidGeom);
 
@@ -35,10 +47,22 @@ const geoCuboid = ({ lib, swLib }) => {
         }
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.cuboid
+     * @param {object} cuboidGeom 
+     * @returns ...
+     */
     const getCuboidCentre = (cuboidGeom) => {
         return measureCenter(cuboidGeom);
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.cuboid
+     * @param {*} cuboidGeom 
+     * @returns ...
+     */
     const getCuboidCtrlPoints = (cuboidGeom) => {
         const bBox = measureBoundingBox(cuboidGeom);
         const dims = measureDimensions(cuboidGeom);

@@ -2,7 +2,8 @@
 
 /**
  * ...
- * @namespace utils.superPrimitives
+ * @memberof utils.superPrimitives
+ * @namespace mesh
  */
 
 //-----------
@@ -94,6 +95,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
+     * @memberof utils.superPrimitives.mesh
      * @param {*} opts 
      * @param {number[]} opts.size
      * @param {Number} opts.radius - radius
@@ -241,6 +243,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
+     * @memberof utils.superPrimitives.mesh
      * @param {*} param0 
      * @returns ...
      */
@@ -357,6 +360,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * ...
+     * @memberof utils.superPrimitives.mesh
      * @param {*} opts 
      * @returns ...
      */

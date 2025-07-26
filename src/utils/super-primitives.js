@@ -2,7 +2,8 @@
 
 /**
  * ...
- * @namespace utils.superPrimitives
+ * @memberof utils
+ * @namespace superPrimitives
  */
 
 //-----------
@@ -14,7 +15,7 @@
 const superPrimitivesInit = ({ lib, swLib }) => {
     const meshPrims = require('./super-prims-mesh').init({ lib, swLib });
 
-    const { cuboid, cylinder, triangle, rectangle } = lib.primitives
+    const { cuboid } = lib.primitives
 
     /**
      * Frame cuboid
