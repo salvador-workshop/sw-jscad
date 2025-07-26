@@ -249,9 +249,6 @@ const rectangularFrameInit = ({ lib, swLib }) => {
             if (['tri', 'cornerBez'].includes(styleType)) {
                 baseNotch = rectangle({ size: [cornerPieceDims[0] - 0.01, cornerPieceDims[1] - 0.01] })
             }
-            // console.log(styleType)
-            //             console.log(cornerPiece, baseNotch)
-            // console.log(cornerPieceDims, measureDimensions(baseNotch))
 
             Object.entries(outRectCorners).forEach(([cName, cPt]) => {
                 let inPieceRotation = null
@@ -344,7 +341,6 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                 cornerPieces.push(newCornerPiece)
             })
 
-            // console.log(notches, cornerPieces)
             outRect = subtract(outRect, ...notches)
             outRect = union(outRect, ...cornerPieces)
         }
