@@ -2,7 +2,8 @@
 
 /**
  * ...
- * @namespace utils.superPrimitives
+ * @memberof utils.superPrimitives
+ * @namespace mesh
  */
 
 //-----------
@@ -13,10 +14,9 @@
 
 const superPrimsMeshInit = ({ lib, swLib }) => {
     const { cuboid, cylinder, triangle, rectangle } = lib.primitives
-    const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox, measureDimensions } = lib.measurements
+    const { measureBoundingBox } = lib.measurements
     const { extrudeRotate, extrudeLinear } = lib.extrusions
     const { TAU } = lib.maths.constants
 
@@ -94,6 +94,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
+     * @memberof utils.superPrimitives.mesh
      * @param {*} opts 
      * @param {number[]} opts.size
      * @param {Number} opts.radius - radius
@@ -241,6 +242,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
+     * @memberof utils.superPrimitives.mesh
      * @param {*} param0 
      * @returns ...
      */
@@ -357,6 +359,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
     /**
      * ...
+     * @memberof utils.superPrimitives.mesh
      * @param {*} opts 
      * @returns ...
      */

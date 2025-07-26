@@ -1,4 +1,4 @@
-# sw-jscad ideas
+# sw-jscad ideas (jul 06)
 
 ## Plinth Data Points
 

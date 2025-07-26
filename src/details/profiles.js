@@ -17,12 +17,11 @@ const profileBuilder = ({ lib, swLib }) => {
   const { hull } = lib.hulls
   const { degToRad } = lib.utils
   const { geom2, path2 } = lib.geometries
-  const { line } = lib.primitives
 
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
-  const { constants, position, maths, standards } = swLib.core
+  const { constants, position, maths } = swLib.core
 
 
   //-------------
@@ -38,26 +37,73 @@ const profileBuilder = ({ lib, swLib }) => {
     return triangle(triOpts);
   }
 
+  /**
+   * Triangle profiles
+   * @memberof details.profiles
+   * @namespace triangle
+   */
   const triangles = {
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     equilateral: ({ base }) => {
       return triangle({ type: 'SSS', values: [base, base, base] })
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     right45: ({ base }) => {
       const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
       return triangle(triOpts);
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     right30: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: 2 });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightGolden: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.PHI });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightSilver: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.SILVER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightBronze: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.BRONZE_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightCopper: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.COPPER_RATIO });
     },
@@ -76,25 +122,72 @@ const profileBuilder = ({ lib, swLib }) => {
     return rectangle({ size: validSize });
   }
 
+  /**
+   * Rectangle profiles
+   * @memberof details.profiles
+   * @namespace rectangle
+   */
   const rectangles = {
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     golden: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.PHI });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     sixtyThirty: ({ length, width }) => {
       return createRect({ length, width, ratio: 2 });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     silver: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.SILVER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     bronze: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.BRONZE_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     copper: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.COPPER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     superGolden: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.SUPERGOLDEN_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     plastic: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.PLASTIC_RATIO });
     },
@@ -136,26 +229,73 @@ const profileBuilder = ({ lib, swLib }) => {
     return subtract(container, bezGeom)
   }
 
+  /**
+   * Curve profiles
+   * @memberof details.profiles
+   * @namespace curves
+   */
   const curves = {
     rightCorner: {
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       golden: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.PHI })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       sixtyThirty: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: 2 })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       silver: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.SILVER_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       bronze: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.BRONZE_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       copper: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.COPPER_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       superGolden: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       plastic: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.PLASTIC_RATIO })
       },
@@ -191,25 +331,72 @@ const profileBuilder = ({ lib, swLib }) => {
     return ellipse({ radius: validSize });
   }
 
+  /**
+   * Ellipse profiles
+   * @memberof details.profiles
+   * @namespace ellipse
+   */
   const ellipses = {
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     golden: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.PHI })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     sixtyThirty: ({ length, width }) => {
       return createEllipse({ length, width, ratio: 2 })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     silver: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.SILVER_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     bronze: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.BRONZE_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     copper: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.COPPER_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     superGolden: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     plastic: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.PLASTIC_RATIO })
     },
@@ -220,6 +407,12 @@ const profileBuilder = ({ lib, swLib }) => {
   //  REINFORCEMENT
   //-----------------
 
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
     const baseShapeCoords = position.getGeomCoords(baseShape)
@@ -276,7 +469,12 @@ const profileBuilder = ({ lib, swLib }) => {
 
     return mirrored
   }
-
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const cBeam = ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
     const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
       [0, 0, TAU / -4],
@@ -294,6 +492,12 @@ const profileBuilder = ({ lib, swLib }) => {
     return union(beam1, beam2, beam3)
   }
 
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
     const beams = []
     const beam = align(
@@ -309,8 +513,19 @@ const profileBuilder = ({ lib, swLib }) => {
     return union(...beams)
   }
 
+  /**
+   * Reinforcement profiles
+   * @memberof details.profiles
+   * @namespace reinforcement
+   */
   const reinforcement = {
     straight: straightBeam,
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts
+     * @returns ...
+     */
     corner: ({ length, depth, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0 }) => {
       const beam1 = align(
         { modes: ['min', 'center', 'center'], relativeTo: [insetWidth, 0, (thickness + offsetWidth) / 2] },
@@ -324,6 +539,12 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     cBeam,
     uBeam: cBeam,
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     tBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
       const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
         [0, 0, TAU / -4],
@@ -336,6 +557,12 @@ const profileBuilder = ({ lib, swLib }) => {
 
       return union(beam1, beam2)
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     doubleTBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
       const beamPoints = [length / 3 - (length / 2), length * 2 / 3 - (length / 2)]
       const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
@@ -353,15 +580,39 @@ const profileBuilder = ({ lib, swLib }) => {
 
       return union(beam1, beam2, beam3)
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     triBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 3, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     crossBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 4, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     pentaBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 5, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     hexBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 6, thickness, insetWidth, offsetWidth })
     },
@@ -405,7 +656,18 @@ const profileBuilder = ({ lib, swLib }) => {
     return outShape
   }
 
+  /**
+   * Connection profiles
+   * @memberof details.profiles
+   * @namespace connections
+   */
   const connections = {
+    /**
+     * ...
+     * @memberof details.profiles.connections
+     * @param {object} opts 
+     * @returns ...
+     */
     pegboard: ({
       spacing,
       radius,
@@ -461,6 +723,12 @@ const profileBuilder = ({ lib, swLib }) => {
         size: [specs.totalWidth, specs.totalWidth],
       }
     },
+    /**
+     * ...
+     * @memberof details.profiles.connections
+     * @param {object} opts
+     * @returns ...
+     */
     polygon: ({
       radius,
       segments,
@@ -507,6 +775,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof details.profiles.connections
      * @param {*} opts 
      * @returns ...
      */
@@ -545,6 +814,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof details.profiles.connections
      * @param {*} opts 
      * @returns ...
      */

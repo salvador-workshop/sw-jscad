@@ -24,6 +24,12 @@ const positionUtils = ({ lib }) => {
         }
     };
 
+    /**
+     * Gets 3D bounding coordinates of a given geometry
+     * @memberof core.position
+     * @param {object} geom 
+     * @returns Bounding coords (right, left, back, front, top, bottom)
+     */
     const getGeomCoords = (geom) => {
         const bBox = measureBoundingBox(geom);
 
@@ -38,15 +44,14 @@ const positionUtils = ({ lib }) => {
     }
 
     /**
-     * ...
+     * Finds long axis of a coord set
+     * @memberof core.position
      * @param {number[]} size - [x, y, z]
      * @returns axis with longest value (either "x", "y", or "z") or `null` if invalid
      */
     const findLongAxis = (size) => {
-        console.log('findLongAxis', size)
         const is2d = size.length == 2 && size.every(sizeNum => typeof sizeNum === 'number' && sizeNum > 0)
         const is3d = size.length == 3 && size.every(sizeNum => typeof sizeNum === 'number' && sizeNum > 0)
-        console.log(is2d, is3d)
 
         if (!is2d && !is3d) {
             return null
@@ -55,7 +60,6 @@ const positionUtils = ({ lib }) => {
         const maxDim = Math.max(...size)
         const maxDimIdx = size.indexOf(maxDim)
         const axes = ['x', 'y', 'z']
-        console.log(maxDim, maxDimIdx, axes[maxDimIdx])
 
         return axes[maxDimIdx]
     }

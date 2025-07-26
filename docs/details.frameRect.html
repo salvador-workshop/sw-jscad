@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: moulds</title>
+    <title>JSDoc: Namespace: frameRect</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: moulds</h1>
+    <h1 class="page-title">Namespace: frameRect</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="details.html">details</a>.</span>moulds</h2>
+            <span class="ancestors"><a href="details.html">details</a>.</span>frameRect</h2>
         
     
 </header>
@@ -38,9 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Builds positive mouldings and negative moulds for various ornaments.
-These would then be subtracted from a shape to produce the final result.
-Input 2D profiles must be centred at (0, 0, 0)</div>
+            <div class="description">Builds rectangular frames with varying corner details</div>
         
 
         
@@ -75,7 +73,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line3">line 3</a>
+        <a href="details_frame-rect.js.html">details/frame-rect.js</a>, <a href="details_frame-rect.js.html#line3">line 3</a>
     </li></ul></dd>
     
 
@@ -114,7 +112,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     
 
     
-    <h4 class="name" id="circularMoulding"><span class="type-signature"></span>circularMoulding<span class="signature">(opts, geomProfile)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".rectangularFrame"><span class="type-signature">(static) </span>rectangularFrame<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -122,7 +120,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
 
 <div class="description">
-    Positive moulding for a cylinder with the given 2D profile placed onto the edge.
+    Builds a rectangular frame with the given corner options (interior and exterior)
 </div>
 
 
@@ -164,262 +162,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
             <td class="type">
             
                 
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>radius</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Cylinder radius.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Cylinder height.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>segments</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Cylinder height.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>geomProfile</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">geom2.Geom2</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">2D positive cross-section profile</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line73">line 73</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="cuboidMoulding"><span class="type-signature"></span>cuboidMoulding<span class="signature">(opts, geomProfile)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Positive moulding for a cuboid with the given 2D profile placed onto all the side edges.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>opts</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -471,223 +214,14 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">size (x, y, z)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">Size of interior space</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>geomProfile</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">geom2.Geom2</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">2D positive cross-section profile</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line49">line 49</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="cuboidMouldingOneEdge"><span class="type-signature"></span>cuboidMouldingOneEdge<span class="signature">(opts, geomProfile)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Builds a cuboid with given 2D profile placed on one edge.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>opts</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">size (x, y, z)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>alignment</code></td>
+                <td class="name"><code>direction</code></td>
             
 
             <td class="type">
@@ -703,28 +237,20 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">where to align when profile size differs from
-    base cuboid ('top' | 'middle' | 'bottom'). Defaults to 'middle'</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">Where ornaments are applied. Choose between "in" (default), "out", or "both"</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>geomProfile</code></td>
+                <td class="name"><code>frameWidth</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">geom2.Geom2</span>
+<span class="param-type">number</span>
 
 
             
@@ -734,134 +260,20 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">2D positive cross-section profile</td>
+            <td class="description last">Width of frame around interior space</td>
         </tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line27">line 27</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="sunkenPanelCirc"><span class="type-signature"></span>sunkenPanelCirc<span class="signature">(opts, geomProfile)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Negative mould for a circular sunken panel, to be placed on a wall/ceiling surface
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>opts</code></td>
+                <td class="name"><code>cornerOpts</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -871,7 +283,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">
+            <td class="description last">options for interior side
                 <h6>Properties</h6>
                 
 
@@ -893,6 +305,98 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>style</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">profile type, like "tri45deg", "rectSixtyThirty", "ellipseGolden", "cornerBezSilver"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
     
 
         <tr>
@@ -913,7 +417,53 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">panel radius</td>
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>longAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Option for each corner. Choose between "inv", "inset", "offset"</td>
         </tr>
 
     
@@ -927,13 +477,13 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
         <tr>
             
-                <td class="name"><code>geomProfile</code></td>
+                <td class="name"><code>outCornerOpts</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">geom2.Geom2</span>
+<span class="param-type">object</span>
 
 
             
@@ -943,7 +493,14 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">2D positive cross-section profile for edge</td>
+            <td class="description last">options for exterior side</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -984,7 +541,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line104">line 104</a>
+        <a href="details_frame-rect.js.html">details/frame-rect.js</a>, <a href="details_frame-rect.js.html#line374">line 374</a>
     </li></ul></dd>
     
 
@@ -1009,6 +566,16 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
 
 
 
@@ -1020,7 +587,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     
 
     
-    <h4 class="name" id="sunkenPanelRect"><span class="type-signature"></span>sunkenPanelRect<span class="signature">(opts, geomProfile)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".shapedRectangle"><span class="type-signature">(static) </span>shapedRectangle<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1028,7 +595,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
 
 <div class="description">
-    Negative mould for a rectangular sunken panel, to be placed on a wall/ceiling surface
+    Builds a shaped rectangle with the given corner options
 </div>
 
 
@@ -1070,7 +637,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -1106,7 +673,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
         <tr>
             
-                <td class="name"><code>edge</code></td>
+                <td class="name"><code>size</code></td>
             
 
             <td class="type">
@@ -1122,7 +689,210 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
             
 
-            <td class="description last">size (x, y)</td>
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cornerOpts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">options for interior side
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>style</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">profile type, like "tri45deg", "rectSixtyThirty", "ellipseGolden", "cornerBezSilver"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>radius</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>longAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Option for each corner. Choose between "inv", "inset", "offset"</td>
         </tr>
 
     
@@ -1133,26 +903,10 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
         </tr>
 
     
+    </tbody>
+</table>
 
-        <tr>
-            
-                <td class="name"><code>geomProfile</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">geom2.Geom2</span>
-
-
-            
             </td>
-
-            
-
-            
-
-            <td class="description last">2D positive cross-section profile for edge</td>
         </tr>
 
     
@@ -1193,7 +947,7 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_moulds.js.html">details/moulds.js</a>, <a href="details_moulds.js.html#line93">line 93</a>
+        <a href="details_frame-rect.js.html">details/frame-rect.js</a>, <a href="details_frame-rect.js.html#line234">line 234</a>
     </li></ul></dd>
     
 
@@ -1218,6 +972,16 @@ Input 2D profiles must be centred at (0, 0, 0)</div>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
 
 
 

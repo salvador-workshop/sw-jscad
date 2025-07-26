@@ -7,7 +7,8 @@
 
 /**
  * ...
- * @param {*} str 
+ * @memberof utils
+ * @param {string} str 
  * @returns ...
  */
 const camelCase = (str) => {
@@ -21,6 +22,12 @@ const init = ({ lib, swLib }) => {
     const utils = {
         transform: require('./transform').init({ lib, swLib }),
         camelCase,
+        /**
+         * ...
+         * @memberof utils
+         * @param {string} str 
+         * @returns ...
+         */
         constantToCamelCase: (str) => {
             return camelCase(str.replaceAll('_', ' ').toLowerCase())
         }

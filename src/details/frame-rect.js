@@ -1,12 +1,15 @@
 "use strict"
 
+/**
+ * Builds rectangular frames with varying corner details
+ * @namespace details.frameRect
+ */
+
 const rectangularFrameInit = ({ lib, swLib }) => {
-    const { circle, cuboid, cylinder, triangle, rectangle } = lib.primitives
-    const { expand } = lib.expansions
-    const { translate, rotate, align, mirror } = lib.transforms
+    const { circle, rectangle } = lib.primitives
+    const { rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox, measureDimensions } = lib.measurements
-    const { extrudeRotate, extrudeLinear } = lib.extrusions
+    const { measureDimensions } = lib.measurements
     const { TAU } = lib.maths.constants
 
     const { position } = swLib.core
@@ -212,7 +215,8 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     rectangularFrameDefOpts.outCornerOpts = rectangularFrameDefOpts.cornerOpts
 
     /**
-     * ...
+     * Builds a shaped rectangle with the given corner options
+     * @memberof details.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size
      * @param {object} opts.cornerOpts - options for interior side
@@ -245,9 +249,6 @@ const rectangularFrameInit = ({ lib, swLib }) => {
             if (['tri', 'cornerBez'].includes(styleType)) {
                 baseNotch = rectangle({ size: [cornerPieceDims[0] - 0.01, cornerPieceDims[1] - 0.01] })
             }
-            // console.log(styleType)
-            //             console.log(cornerPiece, baseNotch)
-            // console.log(cornerPieceDims, measureDimensions(baseNotch))
 
             Object.entries(outRectCorners).forEach(([cName, cPt]) => {
                 let inPieceRotation = null
@@ -340,7 +341,6 @@ const rectangularFrameInit = ({ lib, swLib }) => {
                 cornerPieces.push(newCornerPiece)
             })
 
-            // console.log(notches, cornerPieces)
             outRect = subtract(outRect, ...notches)
             outRect = union(outRect, ...cornerPieces)
         }
@@ -348,8 +348,8 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     }
 
     /**
-     * Frame rect
-     * @memberof utils.superPrimitives
+     * Builds a rectangular frame with the given corner options (interior and exterior)
+     * @memberof details.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size - Size of interior space
      * @param {string} opts.direction - Where ornaments are applied. Choose between "in" (default), "out", or "both"

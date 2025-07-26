@@ -15,10 +15,22 @@ const geoRectangle = ({ lib, swLib }) => {
 
     const { position } = swLib.core
 
+    /**
+     * ...
+     * @memberof utils.geometry.rectangle
+     * @param {object} rectGeom 
+     * @returns ...
+     */
     const getRectangleCoords = (rectGeom) => {
         return position.getGeomCoords(rectGeom)
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.rectangle
+     * @param {object} rectGeom 
+     * @returns ...
+     */
     const getRectangleCorners = (rectGeom) => {
         const bBox = measureBoundingBox(rectGeom);
 
@@ -31,10 +43,22 @@ const geoRectangle = ({ lib, swLib }) => {
         }
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.rectangle
+     * @param {object} rectGeom 
+     * @returns ...
+     */
     const getRectangleCentre = (rectGeom) => {
         return measureCenter(rectGeom);
     }
 
+    /**
+     * ...
+     * @memberof utils.geometry.rectangle
+     * @param {object} rectGeom 
+     * @returns ...
+     */
     const getRectangleCtrlPoints = (rectGeom) => {
         const bBox = measureBoundingBox(rectGeom);
         const dims = measureDimensions(rectGeom);
