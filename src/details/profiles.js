@@ -38,26 +38,73 @@ const profileBuilder = ({ lib, swLib }) => {
     return triangle(triOpts);
   }
 
+  /**
+   * Triangle profiles
+   * @memberof details.profiles
+   * @namespace triangle
+   */
   const triangles = {
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     equilateral: ({ base }) => {
       return triangle({ type: 'SSS', values: [base, base, base] })
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     right45: ({ base }) => {
       const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
       return triangle(triOpts);
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     right30: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: 2 });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightGolden: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.PHI });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightSilver: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.SILVER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightBronze: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.BRONZE_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.triangle
+     * @param {object} opts
+     * @returns ...
+     */
     rightCopper: ({ base, height }) => {
       return createRtTriangle({ base, height, ratio: constants.COPPER_RATIO });
     },
@@ -76,25 +123,72 @@ const profileBuilder = ({ lib, swLib }) => {
     return rectangle({ size: validSize });
   }
 
+  /**
+   * Rectangle profiles
+   * @memberof details.profiles
+   * @namespace rectangle
+   */
   const rectangles = {
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     golden: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.PHI });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     sixtyThirty: ({ length, width }) => {
       return createRect({ length, width, ratio: 2 });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     silver: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.SILVER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     bronze: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.BRONZE_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     copper: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.COPPER_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     superGolden: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.SUPERGOLDEN_RATIO });
     },
+    /**
+     * ...
+     * @memberof details.profiles.rectangle
+     * @param {object} opts
+     * @returns ...
+     */
     plastic: ({ length, width }) => {
       return createRect({ length, width, ratio: constants.PLASTIC_RATIO });
     },
@@ -136,26 +230,73 @@ const profileBuilder = ({ lib, swLib }) => {
     return subtract(container, bezGeom)
   }
 
+  /**
+   * Curve profiles
+   * @memberof details.profiles
+   * @namespace curves
+   */
   const curves = {
     rightCorner: {
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       golden: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.PHI })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       sixtyThirty: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: 2 })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       silver: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.SILVER_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       bronze: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.BRONZE_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       copper: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.COPPER_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       superGolden: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
       },
+      /**
+       * ...
+       * @memberof details.profiles.curves
+       * @param {object} opts
+       * @returns ...
+       */
       plastic: ({ length, width }) => {
         return createRtCornerCurve({ length, width, ratio: constants.PLASTIC_RATIO })
       },
@@ -191,25 +332,72 @@ const profileBuilder = ({ lib, swLib }) => {
     return ellipse({ radius: validSize });
   }
 
+  /**
+   * Ellipse profiles
+   * @memberof details.profiles
+   * @namespace ellipse
+   */
   const ellipses = {
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     golden: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.PHI })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     sixtyThirty: ({ length, width }) => {
       return createEllipse({ length, width, ratio: 2 })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     silver: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.SILVER_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     bronze: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.BRONZE_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     copper: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.COPPER_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     superGolden: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.SUPERGOLDEN_RATIO })
     },
+    /**
+     * ...
+     * @memberof details.profiles.ellipse
+     * @param {object} opts
+     * @returns ...
+     */
     plastic: ({ length, width }) => {
       return createEllipse({ length, width, ratio: constants.PLASTIC_RATIO })
     },
@@ -335,6 +523,7 @@ const profileBuilder = ({ lib, swLib }) => {
     straight: straightBeam,
     /**
      * ...
+     * @memberof details.profiles.reinforcement
      * @param {object} opts
      * @returns ...
      */
@@ -537,6 +726,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
+     * @memberof details.profiles.connections
      * @param {object} opts
      * @returns ...
      */

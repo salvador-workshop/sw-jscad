@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: edge</title>
+    <title>JSDoc: Namespace: connections</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: edge</h1>
+    <h1 class="page-title">Namespace: connections</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="details.html">details</a><a href="details.profiles.html">.profiles</a>.</span>edge</h2>
+            <span class="ancestors"><a href="details.html">details</a><a href="details.profiles.html">.profiles</a>.</span>connections</h2>
         
     
 </header>
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Edge profiles</div>
+            <div class="description">Connection profiles</div>
         
 
         
@@ -73,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line941">line 941</a>
+        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line660">line 660</a>
     </li></ul></dd>
     
 
@@ -112,7 +112,7 @@
     
 
     
-    <h4 class="name" id="circNotch"><span class="type-signature"></span>circNotch<span class="signature">(opts)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".dovetail"><span class="type-signature">(static) </span>dovetail<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -120,7 +120,8 @@
 
 
 <div class="description">
-    Edge profile: Circular notch in bottom half
+    Tab and Dovetail profiles are designed to fit right against the male edge.
+With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
 </div>
 
 
@@ -162,7 +163,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">*</span>
 
 
             
@@ -172,102 +173,7 @@
 
             
 
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>totalThickness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">total thickness of edge</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>topThickness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">thickness of top (left intact by ornaments)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>smallOffset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">small offset between notch and main edge</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -308,7 +214,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line870">line 870</a>
+        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line822">line 822</a>
     </li></ul></dd>
     
 
@@ -333,6 +239,16 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
 
 
 
@@ -344,7 +260,7 @@
     
 
     
-    <h4 class="name" id="circPortrusion"><span class="type-signature"></span>circPortrusion<span class="signature">(opts)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".pegboard"><span class="type-signature">(static) </span>pegboard<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -352,7 +268,7 @@
 
 
 <div class="description">
-    Edge profile: Circular portrusion in bottom half
+    ...
 </div>
 
 
@@ -394,7 +310,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -404,102 +320,7 @@
 
             
 
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>totalThickness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">total thickness of edge</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>topThickness</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">thickness of top (left intact by ornaments)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>smallOffset</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">small offset between portrusion and main edge</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -540,7 +361,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line908">line 908</a>
+        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line672">line 672</a>
     </li></ul></dd>
     
 
@@ -565,6 +386,311 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".polygon"><span class="type-signature">(static) </span>polygon<span class="signature">(opts)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    ...
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line733">line 733</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".tab"><span class="type-signature">(static) </span>tab<span class="signature">(opts)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Tab and Dovetail profiles are designed to fit right against the male edge.
+With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="details_profiles.js.html">details/profiles.js</a>, <a href="details_profiles.js.html#line783">line 783</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ...
+</div>
+
+
+
+    
 
 
 

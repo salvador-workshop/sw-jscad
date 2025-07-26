@@ -28,7 +28,7 @@ const positionUtils = ({ lib }) => {
      * Gets 3D bounding coordinates of a given geometry
      * @memberof core.position
      * @param {object} geom 
-     * @returns Bounding coords ({ right, left, back, front, top, bottom })
+     * @returns Bounding coords (right, left, back, front, top, bottom)
      */
     const getGeomCoords = (geom) => {
         const bBox = measureBoundingBox(geom);
