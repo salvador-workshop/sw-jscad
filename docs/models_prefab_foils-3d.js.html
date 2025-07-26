@@ -37,61 +37,9 @@
 const foilBuilder = ({ lib, swLib }) => {
     const { union, subtract, scission } = lib.booleans
     const { rotate, align, translate, mirror } = lib.transforms
-    const { circle, cuboid, rectangle } = lib.primitives
+    const { cuboid, rectangle } = lib.primitives
     const { measureBoundingBox } = lib.measurements
     const { extrudeRotate } = lib.extrusions
-
-    /**
-     * Builds a 2D n-foil opening
-     * @memberof models.prefab.foils3d
-     * @instance
-     * @param {Object} opts
-     * @param {number} opts.numLobes - number of lobes
-     * @param {number} opts.radius - radius of container circle
-     * @param {string} opts.lobeRadiusType - "inSlice", "halfRadius", "mean"
-     * @access private
-     */
-    const buildFoil2d = (opts) => {
-        const centralAngle = Math.PI * 2 / opts.numLobes;
-        const sinHalfCentral = Math.sin(centralAngle / 2);
-
-        // this radius has zero overlap between lobe circles
-        const lobeRadiusInSlice = sinHalfCentral / (1 + sinHalfCentral) * opts.radius;
-        const lobeRadiusDiff = opts.radius / 2 - lobeRadiusInSlice;
-        const lobeRadiusMean = lobeRadiusInSlice + (lobeRadiusDiff / 2);
-
-        const lobeRadType = opts.lobeRadiusType || 'mean'
-        let lobeRadius = lobeRadiusMean;
-        if (lobeRadType === 'inSlice') {
-            lobeRadius = lobeRadiusInSlice
-        } else if (lobeRadType === 'halfRadius') {
-            lobeRadius = opts.radius / 2
-        }
-
-        const lobeCircle = circle({ radius: lobeRadius });
-        const alignedLobeCircle = align({ modes: ['none', 'min'], relativeTo: [0, -opts.radius] }, lobeCircle);
-        let centreCircle = lobeCircle;
-        if (opts.numLobes === 3) {
-            // special case for trefoils
-            if (lobeRadType === 'mean') {
-                centreCircle = circle({ radius: opts.radius * 0.435 });
-            }
-            else if (lobeRadType === 'inSlice') {
-                centreCircle = circle({ radius: opts.radius * 0.3 });
-            }
-        }
-
-        const rotationAngles = [];
-        for (let index = 1; index &lt; opts.numLobes; index++) {
-            rotationAngles.push(centralAngle * index);
-        }
-
-        const rotatedLobes = rotationAngles.map(angle => {
-            return rotate([0, 0, angle], alignedLobeCircle);
-        });
-
-        return union(centreCircle, alignedLobeCircle, ...rotatedLobes);
-    }
 
     /**
      * Builds a 3D n-foil opening using a given 2D cross-section profile
@@ -171,7 +119,6 @@ const foilBuilder = ({ lib, swLib }) => {
     }
 
     return {
-        buildFoil2d,
         buildFoil3d,
         /**
          * Builds a trefoil opening using a given 2d cross-section profile
@@ -184,11 +131,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         trefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 3 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 3 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 3 }, geomProfile);
         },
         /**
          * Builds a quatrefoil opening using a given 2d cross-section profile
@@ -201,11 +144,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         quatrefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 4 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 4 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 4 }, geomProfile);
         },
         /**
          * Builds a cinquefoil opening using a given 2d cross-section profile
@@ -218,11 +157,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         cinquefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 5 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 5 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 5 }, geomProfile);
         },
         /**
          * Builds a sexfoil opening using a given 2d cross-section profile
@@ -235,11 +170,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         sexfoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 6 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 6 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 6 }, geomProfile);
         },
         /**
          * Builds an octofoil opening using a given 2d cross-section profile
@@ -252,11 +183,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         octofoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 8 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 8 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 8 }, geomProfile);
         },
     }
 }
@@ -272,13 +199,13 @@ module.exports = { init: foilBuilder };
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.geometry.html">core.geometry</a></li><li><a href="core.geometry.points.html">core.geometry.points</a></li><li><a href="core.geometry.regPoly.html">core.geometry.regPoly</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.position.cuboid.html">core.position.cuboid</a></li><li><a href="core.position.rectangle.html">core.position.rectangle</a></li><li><a href="core.position.triangle.html">core.position.triangle</a></li><li><a href="models.prefab.foils3d.html">models.prefab.foils3d</a></li><li><a href="models.prefab.mesh3d.html">models.prefab.mesh3d</a></li><li><a href="models.prefab.mouldings.html">models.prefab.mouldings</a></li><li><a href="models.prefab.text3d.html">models.prefab.text3d</a></li><li><a href="models.profiles.html">models.profiles</a></li><li><a href="models.profiles.connections.html">models.profiles.connections</a></li><li><a href="models.profiles.curves.html">models.profiles.curves</a></li><li><a href="models.profiles.edge.html">models.profiles.edge</a></li><li><a href="models.profiles.ellipse.html">models.profiles.ellipse</a></li><li><a href="models.profiles.foils2d.html">models.profiles.foils2d</a></li><li><a href="models.profiles.frameRect.html">models.profiles.frameRect</a></li><li><a href="models.profiles.rectangle.html">models.profiles.rectangle</a></li><li><a href="models.profiles.reinforcement.html">models.profiles.reinforcement</a></li><li><a href="models.profiles.text2d.html">models.profiles.text2d</a></li><li><a href="models.profiles.triangle.html">models.profiles.triangle</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.extras.html">utils.extras</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="core.html">core</a></li><li><a href="core.geometry.html">core.geometry</a></li><li><a href="core.geometry.points.html">core.geometry.points</a></li><li><a href="core.geometry.regPoly.html">core.geometry.regPoly</a></li><li><a href="core.position.html">core.position</a></li><li><a href="core.position.cuboid.html">core.position.cuboid</a></li><li><a href="core.position.rectangle.html">core.position.rectangle</a></li><li><a href="core.position.triangle.html">core.position.triangle</a></li><li><a href="models.prefab.foils2d.html">models.prefab.foils2d</a></li><li><a href="models.prefab.foils3d.html">models.prefab.foils3d</a></li><li><a href="models.prefab.mesh3d.html">models.prefab.mesh3d</a></li><li><a href="models.prefab.mouldings.html">models.prefab.mouldings</a></li><li><a href="models.prefab.text3d.html">models.prefab.text3d</a></li><li><a href="models.profiles.html">models.profiles</a></li><li><a href="models.profiles.connections.html">models.profiles.connections</a></li><li><a href="models.profiles.curves.html">models.profiles.curves</a></li><li><a href="models.profiles.edge.html">models.profiles.edge</a></li><li><a href="models.profiles.ellipse.html">models.profiles.ellipse</a></li><li><a href="models.profiles.frameRect.html">models.profiles.frameRect</a></li><li><a href="models.profiles.rectangle.html">models.profiles.rectangle</a></li><li><a href="models.profiles.reinforcement.html">models.profiles.reinforcement</a></li><li><a href="models.profiles.text2d.html">models.profiles.text2d</a></li><li><a href="models.profiles.triangle.html">models.profiles.triangle</a></li><li><a href="utils.html">utils</a></li><li><a href="utils.extras.html">utils.extras</a></li><li><a href="utils.transform.html">utils.transform</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Jul 26 2025 14:14:39 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sat Jul 26 2025 14:28:03 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
