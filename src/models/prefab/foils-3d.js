@@ -9,61 +9,9 @@
 const foilBuilder = ({ lib, swLib }) => {
     const { union, subtract, scission } = lib.booleans
     const { rotate, align, translate, mirror } = lib.transforms
-    const { circle, cuboid, rectangle } = lib.primitives
+    const { cuboid, rectangle } = lib.primitives
     const { measureBoundingBox } = lib.measurements
     const { extrudeRotate } = lib.extrusions
-
-    /**
-     * Builds a 2D n-foil opening
-     * @memberof models.prefab.foils3d
-     * @instance
-     * @param {Object} opts
-     * @param {number} opts.numLobes - number of lobes
-     * @param {number} opts.radius - radius of container circle
-     * @param {string} opts.lobeRadiusType - "inSlice", "halfRadius", "mean"
-     * @access private
-     */
-    const buildFoil2d = (opts) => {
-        const centralAngle = Math.PI * 2 / opts.numLobes;
-        const sinHalfCentral = Math.sin(centralAngle / 2);
-
-        // this radius has zero overlap between lobe circles
-        const lobeRadiusInSlice = sinHalfCentral / (1 + sinHalfCentral) * opts.radius;
-        const lobeRadiusDiff = opts.radius / 2 - lobeRadiusInSlice;
-        const lobeRadiusMean = lobeRadiusInSlice + (lobeRadiusDiff / 2);
-
-        const lobeRadType = opts.lobeRadiusType || 'mean'
-        let lobeRadius = lobeRadiusMean;
-        if (lobeRadType === 'inSlice') {
-            lobeRadius = lobeRadiusInSlice
-        } else if (lobeRadType === 'halfRadius') {
-            lobeRadius = opts.radius / 2
-        }
-
-        const lobeCircle = circle({ radius: lobeRadius });
-        const alignedLobeCircle = align({ modes: ['none', 'min'], relativeTo: [0, -opts.radius] }, lobeCircle);
-        let centreCircle = lobeCircle;
-        if (opts.numLobes === 3) {
-            // special case for trefoils
-            if (lobeRadType === 'mean') {
-                centreCircle = circle({ radius: opts.radius * 0.435 });
-            }
-            else if (lobeRadType === 'inSlice') {
-                centreCircle = circle({ radius: opts.radius * 0.3 });
-            }
-        }
-
-        const rotationAngles = [];
-        for (let index = 1; index < opts.numLobes; index++) {
-            rotationAngles.push(centralAngle * index);
-        }
-
-        const rotatedLobes = rotationAngles.map(angle => {
-            return rotate([0, 0, angle], alignedLobeCircle);
-        });
-
-        return union(centreCircle, alignedLobeCircle, ...rotatedLobes);
-    }
 
     /**
      * Builds a 3D n-foil opening using a given 2D cross-section profile
@@ -143,7 +91,6 @@ const foilBuilder = ({ lib, swLib }) => {
     }
 
     return {
-        buildFoil2d,
         buildFoil3d,
         /**
          * Builds a trefoil opening using a given 2d cross-section profile
@@ -156,11 +103,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         trefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 3 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 3 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 3 }, geomProfile);
         },
         /**
          * Builds a quatrefoil opening using a given 2d cross-section profile
@@ -173,11 +116,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         quatrefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 4 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 4 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 4 }, geomProfile);
         },
         /**
          * Builds a cinquefoil opening using a given 2d cross-section profile
@@ -190,11 +129,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         cinquefoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 5 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 5 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 5 }, geomProfile);
         },
         /**
          * Builds a sexfoil opening using a given 2d cross-section profile
@@ -207,11 +142,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         sexfoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 6 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 6 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 6 }, geomProfile);
         },
         /**
          * Builds an octofoil opening using a given 2d cross-section profile
@@ -224,11 +155,7 @@ const foilBuilder = ({ lib, swLib }) => {
          * @param {geom2.Geom2} geomProfile - 2D cross-section profile
          */
         octofoil: (opts, geomProfile) => {
-            if (geomProfile) {
-                return buildFoil3d({ ...opts, numLobes: 8 }, geomProfile);
-            } else {
-                return buildFoil2d({ ...opts, numLobes: 8 });
-            }
+            return buildFoil3d({ ...opts, numLobes: 8 }, geomProfile);
         },
     }
 }

@@ -10,33 +10,11 @@ const DEFAULT_EXTRUDE_HEIGHT = 1;
 const DEFAULT_PANEL_HEIGHT = 2;
 
 const textUtils = ({ lib }) => {
-    const { union, subtract } = lib.booleans
-    const { circle, cuboid } = lib.primitives
-    const { translate, align } = lib.transforms
-    const { vectorText } = lib.text
-    const { hullChain } = lib.hulls
+    const { subtract } = lib.booleans
+    const { cuboid } = lib.primitives
+    const { align } = lib.transforms
     const { extrudeLinear } = lib.extrusions
-    const { measureDimensions, measureBoundingBox } = lib.measurements;
-
-    /**
-     * Creates a simple 2D line of text
-     * @memberof models.prefab.text3d
-     * @instance
-     * @param {*} param0 
-     * @returns ...
-     */
-    const basicText = (opts) => {
-        const lineRadius = opts.charLineWidth / 2
-        const lineCorner = circle({ radius: lineRadius })
-
-        const lineSegmentPointArrays = vectorText({ x: 0, y: 0, input: opts.message, height: opts.fontSize }) // line segments for each character
-        const lineSegments = []
-        lineSegmentPointArrays.forEach((segmentPoints) => { // process the line segment
-            const corners = segmentPoints.map((point) => translate(point, lineCorner))
-            lineSegments.push(hullChain(corners))
-        })
-        return union(lineSegments)
-    }
+    const { measureDimensions } = lib.measurements;
 
     /**
      * Creates a simple 3D line of text
@@ -59,7 +37,6 @@ const textUtils = ({ lib }) => {
     }
 
     return {
-        basicText,
         flatText,
         /**
          * Creates a rectangular panel with engraved text
