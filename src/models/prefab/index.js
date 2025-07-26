@@ -14,4 +14,4 @@ const prefabInit = ({ lib, swLib }) => {
     }
 }
 
-module.exports = { prefabInit };
+module.exports = { init: prefabInit };

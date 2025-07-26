@@ -4,4 +4,4 @@ const geometryInit = ({ lib, swLib }) => {
     return require('./geometry').init({ lib, swLib })
 }
 
-module.exports = { geometryInit };
+module.exports = { init: geometryInit };

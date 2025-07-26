@@ -5,7 +5,7 @@
  * @namespace core
  */
 
-const init = ({ stdSpecs, lib }) => {
+const coreInit = ({ stdSpecs, lib }) => {
     const nextCoreLayer = {}
 
     nextCoreLayer.position = require('./position').init({ stdSpecs, lib, swLib: { core: { ...stdSpecs, ...nextCoreLayer } } });
@@ -14,4 +14,4 @@ const init = ({ stdSpecs, lib }) => {
     return nextCoreLayer;
 }
 
-module.exports = { init };
+module.exports = { init: coreInit };

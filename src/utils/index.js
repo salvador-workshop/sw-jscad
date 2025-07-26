@@ -5,7 +5,7 @@
  * @namespace utils
  */
 
-const init = ({ lib, swLib }) => {
+const utilsInit = ({ lib, swLib }) => {
     const utils = {
         transform: require('./transform').init({ lib, swLib }),
         extras: require('./extras'),
@@ -14,4 +14,4 @@ const init = ({ lib, swLib }) => {
     return utils;
 }
 
-module.exports = { init };
+module.exports = { init: utilsInit };

@@ -12,4 +12,4 @@ const modelsInit = ({ lib, swLib }) => {
     }
 }
 
-module.exports = { modelsInit };
+module.exports = { init: modelsInit };

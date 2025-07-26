@@ -13,4 +13,4 @@ const profilesInit = ({ lib, swLib }) => {
     }
 }
 
-module.exports = { profilesInit };
+module.exports = { init: profilesInit };

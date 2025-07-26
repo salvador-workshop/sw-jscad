@@ -4,4 +4,4 @@ const positionInit = ({ lib, swLib }) => {
     return require('./position').init({ lib, swLib })
 }
 
-module.exports = { positionInit };
+module.exports = { init: positionInit };
