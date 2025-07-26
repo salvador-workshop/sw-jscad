@@ -20,8 +20,7 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
     const { extrudeRotate, extrudeLinear } = lib.extrusions
     const { TAU } = lib.maths.constants
 
-    const { maths } = swLib.core
-    const { geometry } = swLib.utils
+    const { maths, geometry, position } = swLib.core
 
     const getPunchPoints = (pattern, length, width, radius) => {
         let punchPoints = geometry.getTriangularPtsInArea(length, width, radius)
@@ -130,8 +129,8 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
         let outputPanel = null
         const basePlate = cuboid({ size });
-        const basePlateCoords = geometry.cuboid.getCuboidCoords(basePlate)
-        const basePlateCtrlPoints = geometry.cuboid.getCuboidCtrlPoints(basePlate)
+        const basePlateCoords = position.cuboid.getCuboidCoords(basePlate)
+        const basePlateCtrlPoints = position.cuboid.getCuboidCtrlPoints(basePlate)
         let baseShape = basePlate
 
         const hasInset = edgeInsets.some(insetVal => insetVal > 0)
@@ -265,8 +264,8 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
 
         const baseCuboid = cuboid({ size })
         const baseCuboidBb = measureBoundingBox(baseCuboid);
-        const baseCuboidCoords = geometry.cuboid.getCuboidCoords(baseCuboid)
-        const baseCuboidCtrlPoints = geometry.cuboid.getCuboidCtrlPoints(baseCuboid)
+        const baseCuboidCoords = position.cuboid.getCuboidCoords(baseCuboid)
+        const baseCuboidCtrlPoints = position.cuboid.getCuboidCtrlPoints(baseCuboid)
 
         // [x,y,z (default)]
         const mPanelSpecs = [

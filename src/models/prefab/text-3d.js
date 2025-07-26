@@ -9,12 +9,14 @@
 const DEFAULT_EXTRUDE_HEIGHT = 1;
 const DEFAULT_PANEL_HEIGHT = 2;
 
-const textUtils = ({ lib }) => {
+const textUtils = ({ lib, swLib }) => {
     const { subtract } = lib.booleans
     const { cuboid } = lib.primitives
     const { align } = lib.transforms
     const { extrudeLinear } = lib.extrusions
     const { measureDimensions } = lib.measurements;
+
+    const { text2d } = swLib.models.profiles
 
     /**
      * Creates a simple 3D line of text
@@ -26,7 +28,7 @@ const textUtils = ({ lib }) => {
     const flatText = (opts) => {
         if (opts.message === undefined || opts.message.length === 0) return []
 
-        const message2D = basicText({
+        const message2D = text2d.basicText({
             message: opts.message,
             fontSize: opts.fontSize,
             charLineWidth: opts.charLineWidth

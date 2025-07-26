@@ -21,7 +21,6 @@ const profileBuilder = ({ lib, swLib }) => {
 
   const { TAU } = lib.maths.constants
 
-  const { geometry } = swLib.utils
   const { constants, position, maths } = swLib.core
 
 
@@ -34,7 +33,7 @@ const profileBuilder = ({ lib, swLib }) => {
       short: base || height / ratio,
       long: height || base * ratio
     }
-    const triOpts = geometry.triangle.rightTriangleOpts({ ...validOpts })
+    const triOpts = position.triangle.rightTriangleOpts({ ...validOpts })
     return triangle(triOpts);
   }
 
@@ -60,7 +59,7 @@ const profileBuilder = ({ lib, swLib }) => {
      * @returns ...
      */
     right45: ({ base }) => {
-      const triOpts = geometry.triangle.rightTriangleOpts({ short: base, long: base })
+      const triOpts = position.triangle.rightTriangleOpts({ short: base, long: base })
       return triangle(triOpts);
     },
     /**
@@ -637,7 +636,7 @@ const profileBuilder = ({ lib, swLib }) => {
   const createConnTrapezoid = ({ depth, width, angle, reverse = false }) => {
     const baseRect = rectangle({ size: [depth, width] })
     const baseRectCoords = position.getGeomCoords(baseRect)
-    const triOpts = geometry.triangle.rightTriangleOpts({ long: depth, longAngle: angle })
+    const triOpts = position.triangle.rightTriangleOpts({ long: depth, longAngle: angle })
     const triangleEnds = [
       align(
         { modes: ['center', 'max', 'center'], relativeTo: [0, baseRectCoords.back, 0] },

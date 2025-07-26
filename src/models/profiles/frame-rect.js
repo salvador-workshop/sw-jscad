@@ -13,7 +13,7 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     const { measureDimensions } = lib.measurements
     const { TAU } = lib.maths.constants
 
-    const { position, geometry } = swLib.core
+    const { position } = swLib.core
     const { profiles } = swLib.models
 
     // Defining corner styles and available tag options
@@ -235,7 +235,7 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     }) => {
         let outRect = rectangle({ size })
         const outRectCoords = position.getGeomCoords(outRect)
-        const outRectCorners = geometry.rectangle.getRectangleCorners(outRect)
+        const outRectCorners = position.rectangle.getRectangleCorners(outRect)
         const cornerStyle = cornerStyles[cornerOpts.style]
 
         const cornerPieces = []
