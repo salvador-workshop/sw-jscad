@@ -2,7 +2,8 @@
 
 /**
  * ...
- * @namespace utils.transform
+ * @memberof utils
+ * @namespace transform
  */
 
 const transformUtils = ({ lib, swLib }) => {

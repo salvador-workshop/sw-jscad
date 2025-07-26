@@ -1,6 +1,6 @@
 const coreModule = require('./core');
 const utilsModule = require('./utils');
-const detailsModule = require('./details');
+const modelModule = require('./models');
 
 const init = ({ lib }) => {
     const stdSpecs = require('sw-jscad-std-specs').init({ lib });
@@ -15,7 +15,7 @@ const init = ({ lib }) => {
     }
 
     swJscad.utils = utilsModule.init({ lib, swLib: swJscad });
-    swJscad.details = detailsModule.init({ lib, swLib: swJscad });
+    swJscad.models = modelModule.init({ lib, swLib: swJscad });
 
     return swJscad;
 }

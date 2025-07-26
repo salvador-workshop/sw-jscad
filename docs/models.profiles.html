@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: transform</title>
+    <title>JSDoc: Namespace: profiles</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: transform</h1>
+    <h1 class="page-title">Namespace: profiles</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="utils.html">utils</a>.</span>transform</h2>
+            <span class="ancestors"><a href="models.html">models</a>.</span>profiles</h2>
         
     
 </header>
@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">...</div>
+            <div class="description">Builds various 2D profiles</div>
         
 
         
@@ -73,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_transform.js.html">utils/transform.js</a>, <a href="utils_transform.js.html#line3">line 3</a>
+        <a href="models_profiles_profiles.js.html">models/profiles/profiles.js</a>, <a href="models_profiles_profiles.js.html#line5">line 5</a>
     </li></ul></dd>
     
 
@@ -100,6 +100,40 @@
     
 
     
+        <h3 class="subsection-title">Namespaces</h3>
+
+        <dl>
+            <dt><a href="models.profiles.connections.html">connections</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.curves.html">curves</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.edge.html">edge</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.ellipse.html">ellipse</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.foils2d.html">foils2d</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.frameRect.html">frameRect</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.rectangle.html">rectangle</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.reinforcement.html">reinforcement</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.text2d.html">text2d</a></dt>
+            <dd></dd>
+        
+            <dt><a href="models.profiles.triangle.html">triangle</a></dt>
+            <dd></dd>
+        </dl>
+    
 
     
 
@@ -112,7 +146,7 @@
     
 
     
-    <h4 class="name" id="bisect3d"><span class="type-signature"></span>bisect3d<span class="signature">(opts, geom)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="octagonal"><span class="type-signature"></span>octagonal<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -120,7 +154,7 @@
 
 
 <div class="description">
-    Cuts a given geometry in half.
+    Octagonal
 </div>
 
 
@@ -198,226 +232,7 @@
 
         <tr>
             
-                <td class="name"><code>axis</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Axis direction pointing to the remaining geometry. This could be negative, specified like "x" or "-y"</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>geom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object we're cutting</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_transform.js.html">utils/transform.js</a>, <a href="utils_transform.js.html#line43">line 43</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    bisected geometry
-</div>
-
-
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="cutCircularSlice"><span class="type-signature"></span>cutCircularSlice<span class="signature">(opts, geom)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Cuts a slice of an object
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>opts</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>centralAngle</code></td>
+                <td class="name"><code>sqLength</code></td>
             
 
             <td class="type">
@@ -433,7 +248,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">side length for bounding square</td>
         </tr>
 
     
@@ -441,29 +256,6 @@
 </table>
 
             </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>geom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object we're cutting</td>
         </tr>
 
     
@@ -504,7 +296,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_transform.js.html">utils/transform.js</a>, <a href="utils_transform.js.html#line89">line 89</a>
+        <a href="models_profiles_profiles.js.html">models/profiles/profiles.js</a>, <a href="models_profiles_profiles.js.html#line1022">line 1022</a>
     </li></ul></dd>
     
 
@@ -529,16 +321,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    bisected geometry
-</div>
-
-
-
-    
 
 
 
@@ -550,7 +332,7 @@
     
 
     
-    <h4 class="name" id=".stack"><span class="type-signature">(static) </span>stack<span class="signature">(opts, geoms)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="sqCornerCircNotch"><span class="type-signature"></span>sqCornerCircNotch<span class="signature">(opts)</span><span class="type-signature"></span></h4>
     
 
     
@@ -558,7 +340,7 @@
 
 
 <div class="description">
-    ...
+    Square with circular notches at corners.
 </div>
 
 
@@ -600,7 +382,7 @@
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">Object</span>
 
 
             
@@ -636,13 +418,13 @@
 
         <tr>
             
-                <td class="name"><code>reverse</code></td>
+                <td class="name"><code>sqLength</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">number</span>
 
 
             
@@ -652,7 +434,30 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">side length for bounding square</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>notchRadius</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">radius of circular notch</td>
         </tr>
 
     
@@ -660,29 +465,6 @@
 </table>
 
             </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>geoms</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;object></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
         </tr>
 
     
@@ -723,7 +505,216 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_transform.js.html">utils/transform.js</a>, <a href="utils_transform.js.html#line23">line 23</a>
+        <a href="models_profiles_profiles.js.html">models/profiles/profiles.js</a>, <a href="models_profiles_profiles.js.html#line965">line 965</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="sqCornerCircles"><span class="type-signature"></span>sqCornerCircles<span class="signature">(opts)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Square with circles at corners.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sqLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">side length for bounding square</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cornerRadius</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">radius of circular corner</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="models_profiles_profiles.js.html">models/profiles/profiles.js</a>, <a href="models_profiles_profiles.js.html#line993">line 993</a>
     </li></ul></dd>
     
 

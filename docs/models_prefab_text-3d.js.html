@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: utils</title>
+    <title>JSDoc: Source: models/prefab/text-3d.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,109 +17,94 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: utils</h1>
+    <h1 class="page-title">Source: models/prefab/text-3d.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>utils</h2>
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict"
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Utilities</div>
-        
+/**
+ * ...
+ * @memberof models.prefab
+ * @namespace text3d
+ */
 
-        
+const DEFAULT_EXTRUDE_HEIGHT = 1;
+const DEFAULT_PANEL_HEIGHT = 2;
 
+const textUtils = ({ lib }) => {
+    const { subtract } = lib.booleans
+    const { cuboid } = lib.primitives
+    const { align } = lib.transforms
+    const { extrudeLinear } = lib.extrusions
+    const { measureDimensions } = lib.measurements;
 
-<dl class="details">
+    /**
+     * Creates a simple 3D line of text
+     * @memberof models.prefab.text3d
+     * @instance
+     * @param {*} param0 
+     * @returns ...
+     */
+    const flatText = (opts) => {
+        if (opts.message === undefined || opts.message.length === 0) return []
 
-    
+        const message2D = basicText({
+            message: opts.message,
+            fontSize: opts.fontSize,
+            charLineWidth: opts.charLineWidth
+        })
+        const message3D = extrudeLinear({ height: opts.extrudeHeight || DEFAULT_EXTRUDE_HEIGHT }, message2D)
 
-    
+        return align({ modes: ['center', 'center', 'center'] }, message3D)
+    }
 
-    
+    return {
+        flatText,
+        /**
+         * Creates a rectangular panel with engraved text
+         * @memberof models.prefab.text3d
+         * @instance
+         * @param {*} opts 
+         * @returns ...
+         */
+        textPanel: (opts) => {
+            const extrudeHt = opts.extrudeHeight || DEFAULT_EXTRUDE_HEIGHT;
 
-    
+            const textModel = flatText({
+                ...opts,
+                extrudeHeight: extrudeHt,
+            });
+            const textModelDims = measureDimensions(textModel);
+            const panelOffset = opts.panelOffset || 2;
 
-    
+            const textPanel = cuboid({
+                size: [
+                    textModelDims[0] + panelOffset,
+                    textModelDims[1] + panelOffset,
+                    opts.panelThickness || extrudeHt * 2
+                ]
+            })
 
-    
+            const embossedPanel = subtract(
+                align({ modes: ['center', 'center', 'max'] }, textPanel),
+                align({ modes: ['center', 'center', 'max'] }, textModel)
+            )
 
-    
+            return align({ modes: ['center', 'center', 'center'] }, embossedPanel);
+        }
+    }
+}
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_index.js.html">utils/index.js</a>, <a href="utils_index.js.html#line3">line 3</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="utils.extras.html">extras</a></dt>
-            <dd></dd>
-        
-            <dt><a href="utils.transform.html">transform</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+module.exports = { init: textUtils };
+</code></pre>
+        </article>
+    </section>
 
 
 
