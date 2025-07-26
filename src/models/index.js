@@ -6,10 +6,11 @@
  */
 
 const modelsInit = ({ lib, swLib }) => {
-    return {
-        prefab: require('./prefab').init({ lib, swLib }),
+    const models = {
         profiles: require('./profiles').init({ lib, swLib }),
     }
+    models.prefab = require('./prefab').init({ lib, swLib: { ...swLib, models } })
+    return models
 }
 
 module.exports = { init: modelsInit };
