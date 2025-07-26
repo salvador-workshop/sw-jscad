@@ -1,5 +1,9 @@
 "use strict"
 
+const geoCuboid = require('./geo-cuboid');
+const geoRectangle = require('./geo-rectangle');
+const geoTriangle = require('./geo-triangle');
+
 /**
  * ...
  * @namespace core.position
@@ -77,7 +81,10 @@ const positionUtils = ({ lib }) => {
         getKeypoints: (inputGeom) => {
             // keypoints: box corners, midpoints of edges, midpoints of box faces
             return null;
-        }
+        },
+        cuboid: geoCuboid.init({ lib, swLib }),
+        rectangle: geoRectangle.init({ lib, swLib }),
+        triangle: geoTriangle.init({ lib, swLib }),
     }
 }
 

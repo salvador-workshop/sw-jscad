@@ -2,7 +2,7 @@
 
 /**
  * Cuboid calculations
- * @memberof utils.geometry
+ * @memberof core.position
  * @namespace cuboid
  */
 
@@ -17,7 +17,7 @@ const geoCuboid = ({ lib, swLib }) => {
 
     /**
      * ...
-     * @memberof utils.geometry.cuboid
+     * @memberof core.position.cuboid
      * @param {object} cuboidGeom 
      * @returns ...
      */
@@ -27,7 +27,7 @@ const geoCuboid = ({ lib, swLib }) => {
 
     /**
      * ...
-     * @memberof utils.geometry.cuboid
+     * @memberof core.position.cuboid
      * @param {object} cuboidGeom 
      * @returns ...
      */
@@ -49,7 +49,7 @@ const geoCuboid = ({ lib, swLib }) => {
 
     /**
      * ...
-     * @memberof utils.geometry.cuboid
+     * @memberof core.position.cuboid
      * @param {object} cuboidGeom 
      * @returns ...
      */
@@ -59,7 +59,7 @@ const geoCuboid = ({ lib, swLib }) => {
 
     /**
      * ...
-     * @memberof utils.geometry.cuboid
+     * @memberof core.position.cuboid
      * @param {*} cuboidGeom 
      * @returns ...
      */

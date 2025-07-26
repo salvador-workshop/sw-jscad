@@ -1,9 +1,6 @@
 "use strict"
 
-const geoCuboid = require('./geo-cuboid');
-const geoRectangle = require('./geo-rectangle');
 const geoRegPoly = require('./geo-cuboid');
-const geoTriangle = require('./geo-triangle');
 
 /**
  * ...
@@ -143,10 +140,7 @@ const geometryUtils = ({ lib, swLib }) => {
         points: {
             centroid: ptCentroid,
         },
-        cuboid: geoCuboid.init({ lib, swLib }),
-        rectangle: geoRectangle.init({ lib, swLib }),
         regPoly: geoRegPoly.init({ lib, swLib }),
-        triangle: geoTriangle.init({ lib, swLib }),
     }
 }
 

@@ -2,7 +2,7 @@
 
 /**
  * Triangle calculations
- * @memberof utils.geometry
+ * @memberof core.position
  * @namespace triangle
  */
 
