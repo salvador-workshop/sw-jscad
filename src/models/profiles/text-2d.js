@@ -2,7 +2,8 @@
 
 /**
  * ...
- * @namespace core.text
+ * @memberof models.profiles
+ * @namespace text2d
  */
 
 const DEFAULT_EXTRUDE_HEIGHT = 1;
@@ -19,7 +20,7 @@ const textUtils = ({ lib }) => {
 
     /**
      * Creates a simple 2D line of text
-     * @memberof core.text
+     * @memberof models.profiles.text2d
      * @instance
      * @param {*} param0 
      * @returns ...
@@ -39,7 +40,7 @@ const textUtils = ({ lib }) => {
 
     /**
      * Creates a simple 3D line of text
-     * @memberof core.text
+     * @memberof models.profiles.text2d
      * @instance
      * @param {*} param0 
      * @returns ...
@@ -62,7 +63,7 @@ const textUtils = ({ lib }) => {
         flatText,
         /**
          * Creates a rectangular panel with engraved text
-         * @memberof core.text
+         * @memberof models.profiles.text2d
          * @instance
          * @param {*} opts 
          * @returns ...

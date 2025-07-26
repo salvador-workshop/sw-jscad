@@ -4,7 +4,8 @@ const standards = require("sw-jscad-std-specs/src/core/standards");
 
 /**
  * Builds various 2D profiles
- * @namespace details.profiles
+ * @memberof models
+ * @namespace profiles
  */
 
 const EDGE_PROFILE_MARGIN = 1;
@@ -39,13 +40,13 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Triangle profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace triangle
    */
   const triangles = {
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -54,7 +55,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -64,7 +65,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -73,7 +74,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -82,7 +83,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -91,7 +92,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -100,7 +101,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.triangle
+     * @memberof models.profiles.triangle
      * @param {object} opts
      * @returns ...
      */
@@ -124,13 +125,13 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Rectangle profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace rectangle
    */
   const rectangles = {
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -139,7 +140,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -148,7 +149,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -157,7 +158,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -166,7 +167,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -175,7 +176,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -184,7 +185,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.rectangle
+     * @memberof models.profiles.rectangle
      * @param {object} opts
      * @returns ...
      */
@@ -231,14 +232,14 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Curve profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace curves
    */
   const curves = {
     rightCorner: {
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -247,7 +248,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -256,7 +257,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -265,7 +266,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -274,7 +275,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -283,7 +284,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -292,7 +293,7 @@ const profileBuilder = ({ lib, swLib }) => {
       },
       /**
        * ...
-       * @memberof details.profiles.curves
+       * @memberof models.profiles.curves
        * @param {object} opts
        * @returns ...
        */
@@ -333,13 +334,13 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Ellipse profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace ellipse
    */
   const ellipses = {
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -348,7 +349,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -357,7 +358,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -366,7 +367,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -375,7 +376,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -384,7 +385,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -393,7 +394,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.ellipse
+     * @memberof models.profiles.ellipse
      * @param {object} opts
      * @returns ...
      */
@@ -409,7 +410,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * ...
-   * @memberof details.profiles.reinforcement
+   * @memberof models.profiles.reinforcement
    * @param {object} opts 
    * @returns ...
    */
@@ -471,7 +472,7 @@ const profileBuilder = ({ lib, swLib }) => {
   }
   /**
    * ...
-   * @memberof details.profiles.reinforcement
+   * @memberof models.profiles.reinforcement
    * @param {object} opts 
    * @returns ...
    */
@@ -494,7 +495,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * ...
-   * @memberof details.profiles.reinforcement
+   * @memberof models.profiles.reinforcement
    * @param {object} opts 
    * @returns ...
    */
@@ -515,14 +516,14 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Reinforcement profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace reinforcement
    */
   const reinforcement = {
     straight: straightBeam,
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts
      * @returns ...
      */
@@ -541,7 +542,7 @@ const profileBuilder = ({ lib, swLib }) => {
     uBeam: cBeam,
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -559,7 +560,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -582,7 +583,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -591,7 +592,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -600,7 +601,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -609,7 +610,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.reinforcement
+     * @memberof models.profiles.reinforcement
      * @param {object} opts 
      * @returns ...
      */
@@ -658,13 +659,13 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Connection profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace connections
    */
   const connections = {
     /**
      * ...
-     * @memberof details.profiles.connections
+     * @memberof models.profiles.connections
      * @param {object} opts 
      * @returns ...
      */
@@ -725,7 +726,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * ...
-     * @memberof details.profiles.connections
+     * @memberof models.profiles.connections
      * @param {object} opts
      * @returns ...
      */
@@ -775,7 +776,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
-     * @memberof details.profiles.connections
+     * @memberof models.profiles.connections
      * @param {*} opts 
      * @returns ...
      */
@@ -814,7 +815,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
-     * @memberof details.profiles.connections
+     * @memberof models.profiles.connections
      * @param {*} opts 
      * @returns ...
      */
@@ -859,7 +860,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Edge profile: Circular notch in bottom half
-   * @memberof details.profiles.edge
+   * @memberof models.profiles.edge
    * @instance
    * @param {Object} opts 
    * @param {number} opts.totalThickness - total thickness of edge
@@ -897,7 +898,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
   * Edge profile: Circular portrusion in bottom half
-  * @memberof details.profiles.edge
+  * @memberof models.profiles.edge
   * @instance
   * @param {Object} opts 
   * @param {number} opts.totalThickness - total thickness of edge
@@ -939,7 +940,7 @@ const profileBuilder = ({ lib, swLib }) => {
 
   /**
    * Edge profiles
-   * @memberof details.profiles
+   * @memberof models.profiles
    * @namespace edge
    */
   const edge = {
@@ -955,7 +956,7 @@ const profileBuilder = ({ lib, swLib }) => {
   return {
     /**
      * Square with circular notches at corners.
-     * @memberof details.profiles
+     * @memberof models.profiles
      * @instance
      * @param {Object} opts 
      * @param {number} opts.sqLength - side length for bounding square 
@@ -983,7 +984,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * Square with circles at corners.
-     * @memberof details.profiles
+     * @memberof models.profiles
      * @instance
      * @param {Object} opts 
      * @param {number} opts.sqLength - side length for bounding square 
@@ -1013,7 +1014,7 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     /**
      * Octagonal
-     * @memberof details.profiles
+     * @memberof models.profiles
      * @instance
      * @param {Object} opts 
      * @param {number} opts.sqLength - side length for bounding square 

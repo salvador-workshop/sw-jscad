@@ -2,7 +2,8 @@
 
 /**
  * Builds "foil" shapes such as trefoils, quatrefoils, cinquefoils, etc. Input 2D profiles must be centred at (0, 0, 0)
- * @namespace details.foils
+ * @memberof models.prefab
+ * @namespace foils3d
  */
 
 const foilBuilder = ({ lib, swLib }) => {
@@ -14,7 +15,7 @@ const foilBuilder = ({ lib, swLib }) => {
 
     /**
      * Builds a 2D n-foil opening
-     * @memberof details.foils
+     * @memberof models.prefab.foils3d
      * @instance
      * @param {Object} opts
      * @param {number} opts.numLobes - number of lobes
@@ -66,7 +67,7 @@ const foilBuilder = ({ lib, swLib }) => {
 
     /**
      * Builds a 3D n-foil opening using a given 2D cross-section profile
-     * @memberof details.foils
+     * @memberof models.prefab.foils3d
      * @instance
      * @param {Object} opts
      * @param {number} opts.numLobes - number of lobes
@@ -146,7 +147,7 @@ const foilBuilder = ({ lib, swLib }) => {
         buildFoil3d,
         /**
          * Builds a trefoil opening using a given 2d cross-section profile
-         * @memberof details.foils
+         * @memberof models.prefab.foils3d
          * @instance
          * @param {Object} opts
          * @param {number} opts.radius - radius of container circle
@@ -163,7 +164,7 @@ const foilBuilder = ({ lib, swLib }) => {
         },
         /**
          * Builds a quatrefoil opening using a given 2d cross-section profile
-         * @memberof details.foils
+         * @memberof models.prefab.foils3d
          * @instance
          * @param {Object} opts
          * @param {number} opts.radius - radius of container circle
@@ -180,7 +181,7 @@ const foilBuilder = ({ lib, swLib }) => {
         },
         /**
          * Builds a cinquefoil opening using a given 2d cross-section profile
-         * @memberof details.foils
+         * @memberof models.prefab.foils3d
          * @instance
          * @param {Object} opts
          * @param {number} opts.radius - radius of container circle
@@ -197,7 +198,7 @@ const foilBuilder = ({ lib, swLib }) => {
         },
         /**
          * Builds a sexfoil opening using a given 2d cross-section profile
-         * @memberof details.foils
+         * @memberof models.prefab.foils3d
          * @instance
          * @param {Object} opts
          * @param {number} opts.radius - radius of container circle
@@ -214,7 +215,7 @@ const foilBuilder = ({ lib, swLib }) => {
         },
         /**
          * Builds an octofoil opening using a given 2d cross-section profile
-         * @memberof details.foils
+         * @memberof models.prefab.foils3d
          * @instance
          * @param {Object} opts
          * @param {number} opts.radius - radius of container circle

@@ -4,7 +4,8 @@
  * Builds positive mouldings and negative moulds for various ornaments.
  * These would then be subtracted from a shape to produce the final result.
  * Input 2D profiles must be centred at (0, 0, 0)
- * @namespace details.moulds
+ * @memberof models.prefab
+ * @namespace mouldings
  */
 
 const mouldBuilder = ({ lib, swLib }) => {
@@ -16,7 +17,7 @@ const mouldBuilder = ({ lib, swLib }) => {
 
   /**
    * Builds a cuboid with given 2D profile placed on one edge.
-   * @memberof details.moulds
+   * @memberof models.prefab.mouldings
    * @instance
    * @param {Object} opts
    * @param {number[]} opts.size - size (x, y, z)
@@ -40,7 +41,7 @@ const mouldBuilder = ({ lib, swLib }) => {
     cuboidMouldingOneEdge,
     /**
      * Positive moulding for a cuboid with the given 2D profile placed onto all the side edges.
-     * @memberof details.moulds
+     * @memberof models.prefab.mouldings
      * @instance
      * @param {Object} opts
      * @param {number[]} opts.size - size (x, y, z)
@@ -62,7 +63,7 @@ const mouldBuilder = ({ lib, swLib }) => {
     },
     /**
      * Positive moulding for a cylinder with the given 2D profile placed onto the edge.
-     * @memberof details.moulds
+     * @memberof models.prefab.mouldings
      * @instance
      * @param {Object} opts
      * @param {number} opts.radius - Cylinder radius.
@@ -84,7 +85,7 @@ const mouldBuilder = ({ lib, swLib }) => {
     },
     /**
      * Negative mould for a rectangular sunken panel, to be placed on a wall/ceiling surface
-     * @memberof details.moulds
+     * @memberof models.prefab.mouldings
      * @instance
      * @param {Object} opts
      * @param {number[]} opts.edge - size (x, y)
@@ -95,7 +96,7 @@ const mouldBuilder = ({ lib, swLib }) => {
     },
     /**
      * Negative mould for a circular sunken panel, to be placed on a wall/ceiling surface
-     * @memberof details.moulds
+     * @memberof models.prefab.mouldings
      * @instance
      * @param {Object} opts
      * @param {number} opts.radius - panel radius

@@ -2,7 +2,8 @@
 
 /**
  * Builds rectangular frames with varying corner details
- * @namespace details.frameRect
+ * @memberof models.profiles
+ * @namespace frameRect
  */
 
 const rectangularFrameInit = ({ lib, swLib }) => {
@@ -216,7 +217,7 @@ const rectangularFrameInit = ({ lib, swLib }) => {
 
     /**
      * Builds a shaped rectangle with the given corner options
-     * @memberof details.frameRect
+     * @memberof models.profiles.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size
      * @param {object} opts.cornerOpts - options for interior side
@@ -349,7 +350,7 @@ const rectangularFrameInit = ({ lib, swLib }) => {
 
     /**
      * Builds a rectangular frame with the given corner options (interior and exterior)
-     * @memberof details.frameRect
+     * @memberof models.profiles.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size - Size of interior space
      * @param {string} opts.direction - Where ornaments are applied. Choose between "in" (default), "out", or "both"
