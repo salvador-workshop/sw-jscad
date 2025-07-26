@@ -6,12 +6,10 @@
  */
 
 const rectangularFrameInit = ({ lib, swLib }) => {
-    const { circle, cuboid, cylinder, triangle, rectangle } = lib.primitives
-    const { expand } = lib.expansions
-    const { translate, rotate, align, mirror } = lib.transforms
+    const { circle, rectangle } = lib.primitives
+    const { rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox, measureDimensions } = lib.measurements
-    const { extrudeRotate, extrudeLinear } = lib.extrusions
+    const { measureDimensions } = lib.measurements
     const { TAU } = lib.maths.constants
 
     const { position } = swLib.core

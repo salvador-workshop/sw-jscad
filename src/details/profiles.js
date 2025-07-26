@@ -17,12 +17,11 @@ const profileBuilder = ({ lib, swLib }) => {
   const { hull } = lib.hulls
   const { degToRad } = lib.utils
   const { geom2, path2 } = lib.geometries
-  const { line } = lib.primitives
 
   const { TAU } = lib.maths.constants
 
   const { geometry } = swLib.utils
-  const { constants, position, maths, standards } = swLib.core
+  const { constants, position, maths } = swLib.core
 
 
   //-------------

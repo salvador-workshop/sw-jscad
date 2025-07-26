@@ -14,10 +14,9 @@
 
 const superPrimsMeshInit = ({ lib, swLib }) => {
     const { cuboid, cylinder, triangle, rectangle } = lib.primitives
-    const { expand } = lib.expansions
     const { translate, rotate, align, mirror } = lib.transforms
     const { subtract, union } = lib.booleans
-    const { measureBoundingBox, measureDimensions } = lib.measurements
+    const { measureBoundingBox } = lib.measurements
     const { extrudeRotate, extrudeLinear } = lib.extrusions
     const { TAU } = lib.maths.constants
 
