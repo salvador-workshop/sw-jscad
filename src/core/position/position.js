@@ -6,7 +6,8 @@ const posTriangle = require('./pos-triangle');
 
 /**
  * ...
- * @namespace core.position
+ * @memberof core
+ * @namespace position
  */
 
 const positionUtils = ({ lib }) => {

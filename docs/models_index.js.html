@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: core/geometry/geo-reg-poly.js</title>
+    <title>JSDoc: Source: models/index.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: core/geometry/geo-reg-poly.js</h1>
+    <h1 class="page-title">Source: models/index.js</h1>
 
     
 
@@ -29,75 +29,18 @@
             <pre class="prettyprint source linenums"><code>"use strict"
 
 /**
- * Functions related to regular polygons
- * @memberof core.geometry
- * @namespace regPoly
+ * 2D and 3D models
+ * @namespace models
  */
 
-const geoRegPoly = ({ lib, swLib }) => {
+const modelsInit = ({ lib, swLib }) => {
     return {
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        sideLengthFromApothem: (apothem, numSides) => {
-            return apothem * 2 * Math.tan(Math.PI / numSides);
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        sideLengthFromCircumRadius: (circumradius, numSides) => {
-            return circumradius * 2 * Math.sin(Math.PI / numSides);
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        apothemFromCircumradius: (circumradius, numSides) => {
-            return circumradius * Math.cos(Math.PI / numSides)
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        apothemFromSideLength: (sideLength, numSides) => {
-            return sideLength / 2 * Math.tan(Math.PI / numSides)
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        circumradiusFromApothem: (apothem, numSides) => {
-            return apothem / Math.cos(Math.PI / numSides);
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        circumradiusFromSideLength: (sideLength, numSides) => {
-            return sideLength / 2 * Math.sin(Math.PI / numSides)
-        },
-        /**
-         * ...
-         * @memberof core.geometry.regPoly
-         * @returns ...
-         */
-        interiorAngle: (numSides) => {
-            return 2 * Math.PI / numSides;
-        },
+        prefab: require('./prefab').init({ lib, swLib }),
+        profiles: require('./profiles').init({ lib, swLib }),
     }
 }
 
-module.exports = {
-    init: geoRegPoly,
-};
+module.exports = { modelsInit };
 </code></pre>
         </article>
     </section>
