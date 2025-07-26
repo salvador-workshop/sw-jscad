@@ -220,6 +220,12 @@ const profileBuilder = ({ lib, swLib }) => {
   //  REINFORCEMENT
   //-----------------
 
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const straightBeam = ({ length, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0, doubleFlanged = false }) => {
     const baseShape = rectangle({ size: [thickness, length] })
     const baseShapeCoords = position.getGeomCoords(baseShape)
@@ -276,7 +282,12 @@ const profileBuilder = ({ lib, swLib }) => {
 
     return mirrored
   }
-
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const cBeam = ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
     const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
       [0, 0, TAU / -4],
@@ -294,6 +305,12 @@ const profileBuilder = ({ lib, swLib }) => {
     return union(beam1, beam2, beam3)
   }
 
+  /**
+   * ...
+   * @memberof details.profiles.reinforcement
+   * @param {object} opts 
+   * @returns ...
+   */
   const polyBeam = ({ radius, segments, thickness, insetWidth, offsetWidth }) => {
     const beams = []
     const beam = align(
@@ -309,8 +326,18 @@ const profileBuilder = ({ lib, swLib }) => {
     return union(...beams)
   }
 
+  /**
+   * Reinforcement profiles
+   * @memberof details.profiles
+   * @namespace reinforcement
+   */
   const reinforcement = {
     straight: straightBeam,
+    /**
+     * ...
+     * @param {object} opts
+     * @returns ...
+     */
     corner: ({ length, depth, thickness, flangeThickness, insetWidth = 0, offsetWidth = 0 }) => {
       const beam1 = align(
         { modes: ['min', 'center', 'center'], relativeTo: [insetWidth, 0, (thickness + offsetWidth) / 2] },
@@ -324,6 +351,12 @@ const profileBuilder = ({ lib, swLib }) => {
     },
     cBeam,
     uBeam: cBeam,
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     tBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
       const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
         [0, 0, TAU / -4],
@@ -336,6 +369,12 @@ const profileBuilder = ({ lib, swLib }) => {
 
       return union(beam1, beam2)
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     doubleTBeam: ({ length, depth, thickness, flangeThickness, insetWidth, offsetWidth }) => {
       const beamPoints = [length / 3 - (length / 2), length * 2 / 3 - (length / 2)]
       const beam1 = align({ modes: ['center', 'min', 'center'] }, rotate(
@@ -353,15 +392,39 @@ const profileBuilder = ({ lib, swLib }) => {
 
       return union(beam1, beam2, beam3)
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     triBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 3, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     crossBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 4, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     pentaBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 5, thickness, insetWidth, offsetWidth })
     },
+    /**
+     * ...
+     * @memberof details.profiles.reinforcement
+     * @param {object} opts 
+     * @returns ...
+     */
     hexBeam: ({ radius, thickness, insetWidth, offsetWidth }) => {
       return polyBeam({ radius, segments: 6, thickness, insetWidth, offsetWidth })
     },
@@ -405,7 +468,18 @@ const profileBuilder = ({ lib, swLib }) => {
     return outShape
   }
 
+  /**
+   * Connection profiles
+   * @memberof details.profiles
+   * @namespace connections
+   */
   const connections = {
+    /**
+     * ...
+     * @memberof details.profiles.connections
+     * @param {object} opts 
+     * @returns ...
+     */
     pegboard: ({
       spacing,
       radius,
@@ -461,6 +535,11 @@ const profileBuilder = ({ lib, swLib }) => {
         size: [specs.totalWidth, specs.totalWidth],
       }
     },
+    /**
+     * ...
+     * @param {object} opts
+     * @returns ...
+     */
     polygon: ({
       radius,
       segments,
@@ -507,6 +586,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof details.profiles.connections
      * @param {*} opts 
      * @returns ...
      */
@@ -545,6 +625,7 @@ const profileBuilder = ({ lib, swLib }) => {
     /**
      * Tab and Dovetail profiles are designed to fit right against the male edge.
      * With a margin (1mm default) extending into the female edge to ensure one shape that holds both dovetail ends.
+     * @memberof details.profiles.connections
      * @param {*} opts 
      * @returns ...
      */

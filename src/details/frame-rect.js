@@ -1,5 +1,10 @@
 "use strict"
 
+/**
+ * Builds rectangular frames with varying corner details
+ * @namespace details.frameRect
+ */
+
 const rectangularFrameInit = ({ lib, swLib }) => {
     const { circle, cuboid, cylinder, triangle, rectangle } = lib.primitives
     const { expand } = lib.expansions
@@ -212,7 +217,8 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     rectangularFrameDefOpts.outCornerOpts = rectangularFrameDefOpts.cornerOpts
 
     /**
-     * ...
+     * Builds a shaped rectangle with the given corner options
+     * @memberof details.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size
      * @param {object} opts.cornerOpts - options for interior side
@@ -348,8 +354,8 @@ const rectangularFrameInit = ({ lib, swLib }) => {
     }
 
     /**
-     * Frame rect
-     * @memberof utils.superPrimitives
+     * Builds a rectangular frame with the given corner options (interior and exterior)
+     * @memberof details.frameRect
      * @param {object} opts 
      * @param {number[]} opts.size - Size of interior space
      * @param {string} opts.direction - Where ornaments are applied. Choose between "in" (default), "out", or "both"
