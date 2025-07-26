@@ -1,16 +1,17 @@
 "use strict"
 
-const geoRegPoly = require('./geo-cuboid');
-
 /**
- * ...
- * @namespace utils.geometry
+ * Geometry
+ * @memberof core
+ * @namespace geometry
  */
+
+const geoRegPoly = require('./geo-reg-poly');
 
 /**
  * Finds the central point (avg.) between the given points
  * @param {number[]} points
- * @memberof utils.geometry.points
+ * @memberof core.geometry.points
  * @returns central point (avg.) between the given points
  */
 const ptCentroid = (points, mode = '3d') => {
@@ -46,7 +47,7 @@ const geometryUtils = ({ lib, swLib }) => {
     return {
         /**
          * Gets triangular points in area
-         * @memberof utils.geometry
+         * @memberof core.geometry
          * @param {*} x 
          * @param {*} y 
          * @param {*} radius 
@@ -93,7 +94,7 @@ const geometryUtils = ({ lib, swLib }) => {
         },
         /**
          * Gets square points in area
-         * @memberof utils.geometry
+         * @memberof core.geometry
          * @param {*} x 
          * @param {*} y 
          * @param {*} radius 
@@ -134,7 +135,7 @@ const geometryUtils = ({ lib, swLib }) => {
         },
         /**
          * Functions related to sets of Cartesian points
-         * @memberof utils.geometry
+         * @memberof core.geometry
          * @namespace points
          */
         points: {

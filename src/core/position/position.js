@@ -1,8 +1,8 @@
 "use strict"
 
-const geoCuboid = require('./geo-cuboid');
-const geoRectangle = require('./geo-rectangle');
-const geoTriangle = require('./geo-triangle');
+const posCuboid = require('./pos-cuboid');
+const posRectangle = require('./pos-rectangle');
+const posTriangle = require('./pos-triangle');
 
 /**
  * ...
@@ -82,9 +82,9 @@ const positionUtils = ({ lib }) => {
             // keypoints: box corners, midpoints of edges, midpoints of box faces
             return null;
         },
-        cuboid: geoCuboid.init({ lib, swLib }),
-        rectangle: geoRectangle.init({ lib, swLib }),
-        triangle: geoTriangle.init({ lib, swLib }),
+        cuboid: posCuboid.init({ lib, swLib }),
+        rectangle: posRectangle.init({ lib, swLib }),
+        triangle: posTriangle.init({ lib, swLib }),
     }
 }
 
