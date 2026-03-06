@@ -92,13 +92,14 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
     }
 
     /**
-     * Builds a flat mesh panel model. Mesh thickness is determined by `size[2]`
+     * Builds a flat mesh panel model.
      * @memberof models.prefab.mesh3d.mesh
      * @param {*} opts 
      * @param {number[]} opts.size
      * @param {Number} opts.radius - radius
      * @param {Number} opts.segments - # of segments in mesh holes
      * @param {Number} opts.edgeMargin - distance between edges and mesh holes
+     * @param {Number} opts.meshThickness - distance between mesh openings
      * @param {String} opts.pattern - 'tri' (default) or 'square'
      * @param {String} opts.patternMode - 'contain' (default) or 'fill'
      * @returns ...
@@ -106,13 +107,15 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
     const meshPanel = ({
         size,
         radius,
-        segments = 16,
+        segments = 12,
         edgeMargin,
+        meshThickness,
         pattern = 'tri',
         patternMode = 'contain',
         edgeInsets = [0, 0],
         edgeOffsets = [0, 0],
     }) => {
+        const calcMeshThickness = meshThickness || size[2];
         const punchSpecs = {
             radius: radius,
             height: size[2] * 2,
@@ -120,8 +123,9 @@ const superPrimsMeshInit = ({ lib, swLib }) => {
         }
 
         const meshSpecs = {
-            radius: radius + (size[2] / 2),
+            radius: radius + (calcMeshThickness / 2),
             edgeMargin: edgeMargin || radius + size[2],
+
         }
         meshSpecs.length = size[0] - (meshSpecs.edgeMargin * 2)
         meshSpecs.width = size[1] - (meshSpecs.edgeMargin * 2)
